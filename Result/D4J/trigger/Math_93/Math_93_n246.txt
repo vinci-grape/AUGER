@@ -1,0 +1,5 @@
+public void test92() throws Throwable {
+    int int0 = 20;
+    long long0 = MathUtils.factorial(int0);
+    assertEquals(long0, 2432902008176640000L);
+}

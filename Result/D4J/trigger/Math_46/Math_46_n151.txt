@@ -1,0 +1,5 @@
+public void test30() throws Throwable  {
+    Complex complex0 = new Complex(3.0);
+    Complex complex1 = complex0.divide(0);
+    assertTrue(Double.isNaN(complex1.getReal()) || Double.isNaN(complex1.getImaginary()));
+}

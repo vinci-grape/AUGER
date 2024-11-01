@@ -1,0 +1,5 @@
+public void test82() throws Throwable  {
+    DoubleMetaphone doubleMetaphone0 = new DoubleMetaphone();
+    boolean boolean0 = doubleMetaphone0.isDoubleMetaphoneEqual("", "" + new Character((char) 65281));
+    assertFalse(boolean0);
+}

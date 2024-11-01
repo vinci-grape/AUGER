@@ -1,0 +1,12 @@
+public void test20() throws Throwable  {
+    XmlDeclaration xmlDeclaration0 = new XmlDeclaration("xmldecl", "http://localhost:8080", false);
+    StringBuffer stringBuffer0 = new StringBuffer();
+    try {
+        xmlDeclaration0.outerHtmlHead(stringBuffer0, 0, null);
+    }
+    catch (IOException e) {
+        e.printStackTrace();
+    }
+    String string1 = stringBuffer0.toString();
+    assertEquals("<?xmldecl?>", string1);
+}

@@ -1,0 +1,4 @@
+public void testConsumeToEnd() {
+        CharacterReader reader = new CharacterReader("TestString");
+        assertEquals("TestString", reader.consumeToEnd());
+    }

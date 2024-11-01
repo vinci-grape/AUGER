@@ -1,0 +1,4 @@
+public void testFactorial() {
+
+    long result = MathUtils.factorial(5); // This line should throw ArithmeticException
+}

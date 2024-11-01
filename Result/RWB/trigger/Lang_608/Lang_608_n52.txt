@@ -1,0 +1,11 @@
+public void test33() throws Throwable  {
+    ThreadGroup threadGroup0 = new ThreadGroup("");
+    Predicate predicate0 = new Predicate() {
+        public boolean test(Object o) {
+            ThreadGroup threadGroup = (ThreadGroup) o;
+            return threadGroup.getName().equals("TestGroup");
+        }
+    };
+    Collection<ThreadGroup> collection0 = ThreadUtils.findThreadGroups(threadGroup0, true, predicate0);
+    assertEquals(0, collection0.size());
+}

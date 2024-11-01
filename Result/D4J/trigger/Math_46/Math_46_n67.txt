@@ -1,0 +1,5 @@
+public void test24() throws Throwable  {
+    Complex complex1 = new Complex(5,2);
+    Complex complex0 = complex1.divide(0);
+    assertTrue(complex0.isNaN()); // Check if the result is NaN
+}

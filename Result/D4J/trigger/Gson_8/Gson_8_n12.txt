@@ -1,0 +1,10 @@
+public void test51() throws Throwable  {
+    UnsafeAllocator unsafeAllocator0 = UnsafeAllocator.create();
+    Class class0 = UnsafeAllocator.class;
+    UnsafeAllocator unsafeAllocator1 = UnsafeAllocator.create();
+    try {
+      unsafeAllocator1.newInstance(class0);
+    } catch (Exception exception0) {
+      assertTrue(exception0.toString(), exception0 instanceof UnsupportedOperationException);
+    }
+}

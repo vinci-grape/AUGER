@@ -1,0 +1,11 @@
+public void test46() throws Throwable  {
+    BisectionSolver bisectionSolver0 = new BisectionSolver();
+    UnivariateRealFunction univariateRealFunction0 = new UnivariateRealFunction() {
+
+        public double value(double x) throws FunctionEvaluationException {
+            return Math.exp(-x) - 0.5;
+        }
+    };
+    double double0 = bisectionSolver0.solve((UnivariateRealFunction) univariateRealFunction0, 0, 1, 0.5);
+    assertEquals(0.6931471805599453, double0, 1e-6);
+}

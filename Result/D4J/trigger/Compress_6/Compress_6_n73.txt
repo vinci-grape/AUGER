@@ -1,0 +1,8 @@
+public void test81() throws Throwable  {
+    ZipArchiveEntry zipArchiveEntry0 = new ZipArchiveEntry("test");
+    assertTrue(zipArchiveEntry0.equals(zipArchiveEntry0));
+    ZipArchiveEntry zipArchiveEntry1 = new ZipArchiveEntry("test");
+    assertTrue(zipArchiveEntry0.equals(zipArchiveEntry1));
+    ZipArchiveEntry zipArchiveEntry2 = new ZipArchiveEntry("test1");
+    assertFalse(zipArchiveEntry0.equals(zipArchiveEntry2));
+}

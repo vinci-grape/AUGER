@@ -1,0 +1,4 @@
+public void test2() throws IOException  {
+    JsonWriter writer = new JsonWriter(new StringWriter());
+    writer.value("hello");
+}

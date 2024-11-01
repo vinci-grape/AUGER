@@ -1,0 +1,8 @@
+public void testOctal() {
+    try {
+        byte[] buffer = "0010".getBytes();
+        assertEquals(8, TarUtils.parseOctal(buffer, 0, buffer.length));
+    } catch (IllegalArgumentException e) {
+        fail("Unexpected exception: " + e.getMessage());
+    }
+}

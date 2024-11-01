@@ -1,0 +1,11 @@
+public void test99() throws Throwable  {
+    RealMatrix realMatrix0 = MatrixUtils.createRealMatrix(new double[][] {{1, 1}, {1, 1}});
+    try {
+        CholeskyDecompositionImpl choleskyDecompositionImpl0 = new CholeskyDecompositionImpl(realMatrix0, 0.1, 0.1);
+        assertTrue(false);
+    } catch (NotPositiveDefiniteMatrixException ex) {
+        assertTrue(true);
+    } catch (Exception ex) {
+        assertTrue(false);
+    }
+}

@@ -1,0 +1,5 @@
+public void test2() throws Throwable  {
+    Comment comment0 = new Comment("<?xml version=\"10.0\" encoding=\"ISO-8859-1\" standalone=\"yes\" ?>");
+    XmlDeclaration xmlDeclaration0 = comment0.asXmlDeclaration();
+    assertNull(xmlDeclaration0);
+}

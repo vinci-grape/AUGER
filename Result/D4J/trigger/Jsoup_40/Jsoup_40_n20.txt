@@ -1,0 +1,4 @@
+public void test1() {
+      DocumentType documentType = new DocumentType("", "publicId", "systemId", "baseUri");
+      assertNotNull(documentType);
+    }

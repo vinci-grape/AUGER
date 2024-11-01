@@ -1,0 +1,4 @@
+public void test7() {
+    boolean result = MathUtils.equals(Double.NaN, Double.NaN);
+    assertFalse(result);
+}

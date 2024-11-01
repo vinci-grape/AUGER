@@ -1,0 +1,8 @@
+public void test99() throws Throwable  {
+    try {
+        NumberUtils.createNumber("--0x11");
+        fail("Expected NumberFormatException");
+    } catch (NumberFormatException e) {
+        // pass
+    }
+}

@@ -1,0 +1,15 @@
+public void test81() throws Throwable  {
+    ArrayRealVector arrayRealVector0 = new ArrayRealVector(10);
+    arrayRealVector0.setEntry(0, 1);
+    arrayRealVector0.setEntry(1, -1);
+    arrayRealVector0.setEntry(2, 2);
+    arrayRealVector0.setEntry(3, -2);
+    arrayRealVector0.setEntry(4, 3);
+    arrayRealVector0.setEntry(5, -3);
+    arrayRealVector0.setEntry(6, 4);
+    arrayRealVector0.setEntry(7, -4);
+    arrayRealVector0.setEntry(8, 5);
+    arrayRealVector0.setEntry(9, -5);
+    double double0 = arrayRealVector0.getLInfNorm();
+    assertEquals(5.0, double0, 0.0);
+}

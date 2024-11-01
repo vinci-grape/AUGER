@@ -1,0 +1,7 @@
+public void test77() throws IOException {
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(stringWriter);
+    String nullString = null;
+    jsonWriter.value(nullString); // Trigger Bug
+    Assert.assertEquals("null", stringWriter.toString());
+}

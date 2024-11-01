@@ -1,0 +1,10 @@
+public void test85() throws Throwable  {
+    BrentSolver brentSolver0 = new BrentSolver(new UnivariateRealFunction() {
+        public double value(double t) {
+            return t*t - 4;
+        }
+    });
+
+    double double0 = brentSolver0.solve(2, 3);
+    assertEquals(2, double0, 0.000001);
+}

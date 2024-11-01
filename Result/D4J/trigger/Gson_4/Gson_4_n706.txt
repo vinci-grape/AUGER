@@ -1,0 +1,7 @@
+public void test24() throws Throwable  {
+    StringWriter stringWriter0 = new StringWriter();
+    JsonWriter jsonWriter0 = new JsonWriter(stringWriter0);
+    Short short0 = new Short((short) 0);
+    jsonWriter0.value(short0);
+    assertEquals("0", stringWriter0.toString());
+}

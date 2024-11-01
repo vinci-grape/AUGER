@@ -1,0 +1,9 @@
+public void test105() {
+    byte[] buffer = {'0', '1', '0', '0'};
+    try {
+        long result = TarUtils.parseOctal(buffer, 0, 4);
+        assertEquals(64, result);
+    } catch (Exception e) {
+        fail(e.getMessage());
+    }
+}

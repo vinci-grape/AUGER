@@ -1,0 +1,6 @@
+public void test41() {
+    Complex c = new Complex(5, 6);
+    Complex result = c.divide(0);
+    assertEquals(Double.NaN, result.getReal(), 0);
+    assertEquals(Double.NaN, result.getImaginary(), 0);
+}

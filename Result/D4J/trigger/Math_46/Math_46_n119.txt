@@ -1,0 +1,5 @@
+public void test23() throws Throwable {
+        Complex c = new Complex(5,5);
+        Complex divide = c.divide(0);
+        assertTrue(divide == Complex.NaN);
+    }

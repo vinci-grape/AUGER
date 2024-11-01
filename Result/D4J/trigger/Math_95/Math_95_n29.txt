@@ -1,0 +1,5 @@
+public void test92() throws Throwable  {
+    FDistributionImpl fDistributionImpl0 = new FDistributionImpl(1.0D, 1.0D);
+    double double0 = fDistributionImpl0.getInitialDomain(0.5D);
+    assertEquals(1.0D, double0, 0.01D);
+}

@@ -1,0 +1,4 @@
+public void testEndingCharacterReader() throws Exception{
+        CharacterReader reader = new CharacterReader("This is a test");
+        assertEquals("This is a test", reader.consumeToEnd());
+    }

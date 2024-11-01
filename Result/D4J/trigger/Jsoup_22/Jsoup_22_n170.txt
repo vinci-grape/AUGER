@@ -1,0 +1,9 @@
+public void test() {
+
+    Document doc = Jsoup.parse("<html><head><title>Test</title></head><body><p>Test</p></body></html>");
+    Elements elements = doc.select("p");
+
+    Element p = elements.first();
+    Elements siblingElements = p.siblingElements();
+    assertEquals(0, siblingElements.size());
+}

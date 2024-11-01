@@ -1,0 +1,14 @@
+public void test30() throws Throwable  {
+    class ThreadGroupPredicate implements Predicate<Thread> {
+        public boolean test(Thread thread) {
+            return thread.isAlive();
+        }
+    }
+    ThreadGroup threadGroup = new ThreadGroup("group");
+    new Thread(threadGroup, new Runnable() {
+        public void run() {
+            Thread.currentThread().interrupt();
+        }
+    }).start();
+    ThreadUtils.findThreads(threadGroup, true, new ThreadGroupPredicate()); // Should throw InterruptedException
+}

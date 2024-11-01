@@ -1,0 +1,7 @@
+public void test87() throws Throwable {
+    StringBuilder stringBuilder0 = new StringBuilder();
+    CSVFormat cSVFormat0 = CSVFormat.DEFAULT.withRecordSeparator((String) null);
+    CSVPrinter cSVPrinter0 = new CSVPrinter(stringBuilder0, cSVFormat0);
+    cSVPrinter0.println();
+    assertEquals("", stringBuilder0.toString());
+}

@@ -1,0 +1,6 @@
+public void test1() {
+    Base64 base64 = new Base64();
+    byte[] binaryData = {'h', 'e', 'l', 'l', 'o'};
+    String encoded = base64.encodeBase64String(binaryData);
+    assertEquals("aGVsbG8=", encoded);
+}

@@ -1,0 +1,6 @@
+public void test30() throws Throwable  {
+    Document doc = Jsoup.parse("<html><head><title>Test</title></head><body><p>Hello, world.</p></body></html>");
+    Element elm = doc.select("p").first();
+    Elements els = elm.siblingElements();
+    assertEquals(0, els.size());
+}

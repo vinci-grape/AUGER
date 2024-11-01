@@ -1,0 +1,7 @@
+public void test90() throws Throwable  {
+    BufferRecycler bufferRecycler0 = new BufferRecycler();
+    IOContext iOContext0 = new IOContext(bufferRecycler0, null, false);
+    byte[] byteArray0 = new byte[]{5};
+    byte[] byteArray1 = new byte[]{1};
+    iOContext0._verifyRelease(byteArray0, byteArray1);
+}

@@ -1,0 +1,6 @@
+public void test18() throws Throwable  {
+    ByteArrayOutputStream byteArrayOutputStream0 = new ByteArrayOutputStream();
+    CpioArchiveOutputStream cpioArchiveOutputStream0 = new CpioArchiveOutputStream(byteArrayOutputStream0);
+    cpioArchiveOutputStream0.close();
+    assertFalse(byteArrayOutputStream0.size() > 0);
+}

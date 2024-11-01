@@ -1,0 +1,3 @@
+public void testEquals() {
+    assertFalse(MathUtils.equals(Double.NaN, Double.NaN));
+}

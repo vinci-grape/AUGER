@@ -1,0 +1,5 @@
+public void test11() throws Exception {
+    double[] dArray = new double[] {-2, 4.1, 5.5, 3};
+    ArrayRealVector arrayRealVector = new ArrayRealVector(dArray);
+    assertEquals(5.5, arrayRealVector.getLInfNorm(), 0);
+}

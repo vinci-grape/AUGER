@@ -1,0 +1,6 @@
+public void test69() throws Throwable  {
+    // Create a reader with an input that has a '<' character
+    CharacterReader characterReader0 = new CharacterReader("<html>");
+    String string0 = characterReader0.consumeTagName();
+    assertEquals("", string0);
+}

@@ -1,0 +1,5 @@
+public void test20() throws Throwable  {
+    JsonWriter jsonWriter0 = new JsonWriter(new StringWriter());
+    jsonWriter0.value(1.23e-309); // this is the min positive double but still should be not throw an exception
+    assertTrue(true);
+}

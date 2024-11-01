@@ -1,0 +1,9 @@
+public void test86() throws Throwable  {
+    try {
+        X7875_NewUnix x7875_newUnix0 = new X7875_NewUnix();
+        ZipShort zipShort0 = x7875_newUnix0.getCentralDirectoryLength();
+        assertTrue(zipShort0.getValue() == 0);
+    } catch (AssertionError e) {
+        throw e;
+    }
+}

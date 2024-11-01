@@ -1,0 +1,9 @@
+public void test40() throws Throwable  {
+    Iterator<Integer> iterator0 = new ArrayList<Integer>(Arrays.asList(1, 2, 3)).iterator();
+    Iterator<Integer> iterator1 = new ArrayList<Integer>(Arrays.asList(1, 2, 3)).iterator();
+    Iterator<Integer> iterator2 = IteratorUtils.collatedIterator((Comparator<Integer>) null, iterator0, iterator1);
+    while (iterator2.hasNext()) {
+        Integer integer0 = iterator2.next();
+        assertTrue(Arrays.asList(1, 1, 2, 2, 3, 3).contains(integer0));
+    }
+}

@@ -1,0 +1,7 @@
+public void test87() throws Throwable  {
+    ByteArrayOutputStream byteArrayOutputStream0 = new ByteArrayOutputStream();
+    TarArchiveOutputStream tarArchiveOutputStream0 = new TarArchiveOutputStream(byteArrayOutputStream0);
+    tarArchiveOutputStream0.close();
+    byte[] byteArray = byteArrayOutputStream0.toByteArray();
+    assertTrue(byteArray.length == 0);
+}

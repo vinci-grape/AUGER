@@ -1,0 +1,4 @@
+public void test23() throws Throwable  {
+    DocumentType d1 = new DocumentType("", "PUBLIC", "systemId", "baseURI");
+    assertTrue(true);
+}

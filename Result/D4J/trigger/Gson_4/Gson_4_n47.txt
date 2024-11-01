@@ -1,0 +1,5 @@
+public void test55() throws Throwable  {
+    JsonWriter jsonWriter0 = new JsonWriter(new StringWriter());
+    boolean boolean0 = jsonWriter0.value("value") instanceof JsonWriter;
+    assertTrue(boolean0);
+}

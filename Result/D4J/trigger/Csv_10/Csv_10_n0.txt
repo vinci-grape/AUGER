@@ -1,0 +1,8 @@
+public void testCSVPrinter() throws Exception {
+        Appendable out = new StringBuilder();
+        CSVFormat format = CSVFormat.DEFAULT.withHeader("A", "B", "C");
+        CSVPrinter printer = new CSVPrinter(out, format);
+        printer.printRecord("1", "2", "3");
+        printer.flush();
+        assertEquals("A,B,C\r\n1,2,3\r\n", out.toString());
+    }

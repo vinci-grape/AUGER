@@ -1,0 +1,6 @@
+public void test54() throws Throwable  {
+    SubLine subLine0 = new SubLine(new Vector2D(0, 0), new Vector2D(1, 1));
+    SubLine subLine1 = new SubLine(new Vector2D(-1, -1), new Vector2D(1, 1));
+    Vector2D vector2D0 = subLine0.intersection(subLine1, true);
+    assertNull(vector2D0);
+}

@@ -1,0 +1,11 @@
+public void test101() throws Throwable  {
+    ArrayList<String> arrayList0 = new ArrayList<String>();
+    arrayList0.add("A");
+    arrayList0.add("B");
+    ArrayList<String> arrayList1 = new ArrayList<String>();
+    arrayList1.add("C");
+    arrayList1.add("D");
+    Iterator<String> iterator0 = IteratorUtils.collatedIterator((Comparator<String>) null, arrayList0.iterator(), arrayList1.iterator());
+    assertTrue(iterator0.hasNext());
+    assertEquals("A", iterator0.next());
+}

@@ -1,0 +1,7 @@
+public void test98() throws Throwable  {
+    ByteArrayOutputStream byteArrayOutputStream0 = new ByteArrayOutputStream();
+    ZipArchiveOutputStream zipArchiveOutputStream0 = new ZipArchiveOutputStream(byteArrayOutputStream0);
+    zipArchiveOutputStream0.close();
+    byte[] bytes0 = byteArrayOutputStream0.toByteArray();
+    assertTrue(bytes0.length == 0);
+}

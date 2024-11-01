@@ -1,0 +1,68 @@
+// I will give you a Java defective method, please generate a Java unit test to trigger this defect.
+
+// Class Name
+DOMNodePointer
+
+// Class Constructor
+public DOMNodePointer(Node node, Locale locale); 
+public DOMNodePointer(Node node, Locale locale, String id); 
+public DOMNodePointer(NodePointer parent, Node node);
+
+// Defective Method
+public boolean testNode(NodeTest test) {{
+    return testNode(node, test);
+}}
+
+// Test Case
+public void test24() throws Throwable  {{
+    HTMLDocumentImpl hTMLDocumentImpl0 = new HTMLDocumentImpl();
+    Locale locale0 = Locale.FRENCH;
+    HTMLTableElementImpl hTMLTableElementImpl0 = new HTMLTableElementImpl(hTMLDocumentImpl0, "Unknown namespace prefix: ");
+    DOMNodePointer dOMNodePointer0 = new DOMNodePointer(hTMLTableElementImpl0, locale0);
+    QName qName0 = dOMNodePointer0.getName();
+    NodeNameTest nodeNameTest0 = new NodeNameTest(qName0, "http://www.w3.org/XML/1998/namespace");
+    boolean boolean0 = dOMNodePointer0.testNode((NodeTest) nodeNameTest0);
+    assertFalse(boolean0);
+}}
+
+// End
+
+// I will give you a Java defective method, please generate a Java unit test to trigger this defect.
+
+// Class Name
+CoreFunction
+
+// Class Constructor
+public CoreFunction(int functionCode, Expression args[]);
+
+// Defective Method
+protected Object functionRound(EvalContext context) {{
+    assertArgCount(1);
+    double v = InfoSetUtil.doubleValue(getArg1().computeValue(context));
+    return new Double(Math.round(v));
+}}
+
+// Test Case
+public void test79() throws Throwable  {{
+    Constant constant0 = new Constant("concat");
+    Expression[] expressionArray0 = new Expression[1];
+    expressionArray0[0] = (Expression) constant0;
+    CoreFunction coreFunction0 = new CoreFunction(7, expressionArray0);
+    Object object0 = coreFunction0.functionRound((EvalContext) null);
+    assertEquals(1, object0);
+}}
+
+// End
+
+// I will give you a Java defective method, please generate a Java unit test to trigger this defect.
+
+// Class Name
+{class_name}
+
+// Class Constructor
+{class_constructor}
+
+// Defective Method
+{defective_method}
+
+// Test Case

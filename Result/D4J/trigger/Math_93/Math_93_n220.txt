@@ -1,0 +1,4 @@
+public void test99() {
+    double result = MathUtils.factorialDouble(5);
+    assertEquals(120, result, 0.0000001);
+}

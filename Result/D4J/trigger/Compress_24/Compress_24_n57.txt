@@ -1,0 +1,5 @@
+public void test28() {
+    byte[] b = "0100".getBytes();
+    long l = TarUtils.parseOctal(b, 0, 4);
+    assertEquals(64, l);
+}

@@ -1,0 +1,5 @@
+public void test82() throws Throwable  {
+    CSVParser cSVParser0 = new CSVParser(new StringReader(""), CSVFormat.DEFAULT);
+    Map<String, Integer> map0 = cSVParser0.getHeaderMap();
+    assertTrue(map0 == map0);
+}

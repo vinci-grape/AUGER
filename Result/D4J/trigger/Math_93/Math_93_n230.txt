@@ -1,0 +1,6 @@
+public void testFactorial() throws Exception {
+        double result = MathUtils.factorialLog(10);
+        double expected = (Math.log(1) + Math.log(2) + Math.log(3) + Math.log(4) + Math.log(5)
+                + Math.log(6) + Math.log(7) + Math.log(8) + Math.log(9) + Math.log(10));
+        assertEquals(expected, result, 0.0001);
+    }

@@ -1,0 +1,4 @@
+public void testLInfNorm() throws Exception {
+        ArrayRealVector vector = new ArrayRealVector(new double[] {2, -1, 0.5, 3.7});
+        assertEquals(3.7, vector.getLInfNorm(), 0);
+    }

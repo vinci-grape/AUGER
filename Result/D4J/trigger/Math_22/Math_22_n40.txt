@@ -1,0 +1,8 @@
+public void test02() throws Throwable {
+    double num_Deg_Free0 = 4.0;
+    double denom_Deg_Free0 = 12.0;
+    double inverseCumAccuracy0 = 0.1;
+    FDistribution fDistribution0 = new FDistribution(num_Deg_Free0, denom_Deg_Free0, inverseCumAccuracy0);
+    boolean boolean0 = fDistribution0.isSupportLowerBoundInclusive();
+    assertFalse(boolean0);
+}

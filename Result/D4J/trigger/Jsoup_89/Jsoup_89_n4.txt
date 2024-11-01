@@ -1,0 +1,5 @@
+public void test25() throws Throwable  {
+    Attribute attribute0 = new Attribute("foo", "bar");
+    attribute0.setValue("baz");
+    assertEquals("baz", attribute0.getValue());
+}

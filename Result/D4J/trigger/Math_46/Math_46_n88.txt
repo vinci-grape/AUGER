@@ -1,0 +1,6 @@
+public void testDivide() throws Exception {
+    Complex zero = new Complex(0);
+    Complex one = new Complex(1);
+    Complex result = one.divide(zero);
+    assertTrue(Double.isNaN(result.getReal()));
+}

@@ -1,0 +1,5 @@
+public void testFindThreads() {
+    ThreadGroup threadGroup = new ThreadGroup("testGroup");
+    Predicate<Thread> predicate = t -> t.getName().equals("testThread");
+    ThreadUtils.findThreads(threadGroup, true, predicate);
+}

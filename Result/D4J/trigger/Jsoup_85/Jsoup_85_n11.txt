@@ -1,0 +1,12 @@
+public void test79() throws Throwable  {
+    Attributes attribute0 = new Attributes();
+    String key = "  ";
+    String value = "value";
+    try {
+        Attribute attribute1 = new Attribute(key, value, attribute0);
+    } catch (IllegalArgumentException e) {
+        assertTrue(true);
+        return;
+    }
+    fail("Expected an IllegalArgumentException");
+}

@@ -1,0 +1,5 @@
+public void test74() throws Throwable  {
+    CharacterReader characterReader0 = new CharacterReader("<");
+    String string0 = characterReader0.consumeTagName();
+    assertEquals(string0, "");
+}

@@ -1,0 +1,10 @@
+public void test58() throws Throwable  {
+    StringWriter stringWriter0 = new StringWriter();
+    JsonWriter jsonWriter0 = new JsonWriter(stringWriter0);
+    try {
+        jsonWriter0.value("StringValue");
+    } catch (Exception exception0) {
+        exception0.printStackTrace();
+    }
+    assertTrue(stringWriter0.toString().equals("\"StringValue\""));
+}

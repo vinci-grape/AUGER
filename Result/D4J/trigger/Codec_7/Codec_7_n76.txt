@@ -1,0 +1,6 @@
+public void test39() throws Throwable  {
+    byte[] byteArray0 = new byte[]{ (byte) 1 };
+    Base64 base640 = new Base64();
+    String string0 = base640.encodeBase64String(byteArray0);
+    assertTrue(string0.equalsIgnoreCase("AQ=="));
+}

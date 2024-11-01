@@ -1,0 +1,10 @@
+public void testTimeSeriesClone() throws Throwable  {
+    Comparable name = new Comparable() {
+        public int compareTo(Object o) {
+            return 0;
+        }
+    };
+    TimeSeries timeSeries = new TimeSeries(name);
+    Object clone = timeSeries.clone();
+    assertEquals(timeSeries, clone);
+}

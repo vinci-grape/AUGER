@@ -1,0 +1,5 @@
+public void test63() throws Throwable  {
+    Attribute attribute0 = new Attribute("http-equiv", "Content-Type");
+    attribute0.setValue("Text/html; charset=UTF-8");
+    assertTrue(attribute0.getValue().equals("Text/html; charset=UTF-8"));
+}

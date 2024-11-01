@@ -1,0 +1,7 @@
+public void test33() {
+    Object[] objectArray0 = new Object[]{null, null};
+    Class<?>[] classArray0 = ClassUtils.toClass(objectArray0);
+    assertEquals(2, classArray0.length);
+    assertNull(classArray0[0]);
+    assertNull(classArray0[1]);
+}

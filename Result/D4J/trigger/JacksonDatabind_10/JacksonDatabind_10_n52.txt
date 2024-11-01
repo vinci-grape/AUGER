@@ -1,0 +1,7 @@
+public void test1() throws Throwable {
+    MapSerializer mapSerializer = null;
+    BeanProperty beanProperty = null;
+    AnyGetterWriter anyGetterWriter = new AnyGetterWriter(beanProperty, null, mapSerializer);
+    SerializerProvider serializerProvider = null;
+    anyGetterWriter.resolve(serializerProvider);
+}

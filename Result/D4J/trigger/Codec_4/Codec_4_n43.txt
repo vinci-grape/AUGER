@@ -1,0 +1,6 @@
+public void test55() throws Exception {
+        Base64 base64 = new Base64();
+        byte[] bytes = "Hello, World!".getBytes();
+        String encoded = new String(base64.encode(bytes));
+        assertEquals("SGVsbG8sIFdvcmxkIQ==", encoded);
+    }

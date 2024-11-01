@@ -1,0 +1,8 @@
+public void test24() throws Throwable  {
+    try {
+        NumberUtils.createNumber("--1234");
+        assertTrue(false); // should throw an exception
+    } catch (NumberFormatException nfe) {
+        assertTrue(true);
+    }
+}

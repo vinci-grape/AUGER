@@ -1,0 +1,6 @@
+public void test2() throws Throwable  {
+    IOContext ioContext = new IOContext(null, null, false);
+    byte[] bytes0 = new byte[5];
+    byte[] bytes1 = new byte[5];
+    ioContext._verifyRelease(bytes0, bytes1); // Test Buggy Line
+}

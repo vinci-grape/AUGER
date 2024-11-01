@@ -1,0 +1,4 @@
+public void test59() throws Throwable {
+        boolean b = MathUtils.equals(Double.NaN, 0.0d/0.0d); // Not a number
+        assertFalse(b);
+    }

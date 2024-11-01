@@ -1,0 +1,8 @@
+public void test15() {
+    try {
+        Attribute attribute = new Attribute(" ", "value", null);
+        fail("Attribute should not allow blank key");
+    } catch (Exception e) {
+        // expected
+    }
+}

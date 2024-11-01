@@ -1,0 +1,9 @@
+public void test62() throws Throwable  {
+    Exception exception0 = null;
+    try {
+        Number number0 = NumberUtils.createNumber("--123");
+    } catch (NumberFormatException ex) {
+        exception0 = ex;
+    }
+    assertNotNull(exception0);
+}

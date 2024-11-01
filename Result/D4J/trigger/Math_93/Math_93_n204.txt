@@ -1,0 +1,3 @@
+public void test89() throws Throwable {
+        MathUtils.factorial(14);
+}

@@ -1,0 +1,9 @@
+public void test58() {
+		try {
+			TimeSeries t = new TimeSeries("abc");
+			Object clone = t.clone(); // Trigger Bug
+			assertEquals(t, clone);
+		} catch (Exception e) {
+			fail("Unexpected exception: " + e);
+		}
+	}

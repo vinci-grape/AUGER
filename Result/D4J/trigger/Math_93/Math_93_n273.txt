@@ -1,0 +1,4 @@
+public void test35() throws Throwable  {
+    long long0 = MathUtils.factorial(12);
+    assertEquals(479001600, long0);
+}

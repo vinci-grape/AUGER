@@ -1,0 +1,4 @@
+public void test134() throws Throwable  {
+    Predicate<Thread> predicate = t -> t.getName().startsWith("ThreadGroup");
+    ThreadUtils.findThreads(Thread.currentThread().getThreadGroup(), true, predicate);
+}

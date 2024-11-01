@@ -1,0 +1,17 @@
+public void test54() {
+        // Create a test ThreadGroup
+        ThreadGroup threadGroup = new ThreadGroup("testGroup");
+        // Create and start a test thread
+        Thread testThread = new Thread(threadGroup, new Runnable() {
+            public void run() {
+                try { Thread.sleep(5000); } catch (Exception e) { e.printStackTrace(); }
+            }
+        });
+        testThread.start();
+        // Create a Predicate that matches the test thread
+        Predicate<Thread> testPredicate = (Thread t) -> t.getId() == testThread.getId();
+        // Find the test thread
+        Collection<Thread> foundThreads = ThreadUtils.findThreads(threadGroup, true, testPredicate);
+        // The foundThreads list should contain the testThread
+        assertTrue(foundThreads.contains(testThread));
+    }

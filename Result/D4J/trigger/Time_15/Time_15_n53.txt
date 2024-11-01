@@ -1,0 +1,8 @@
+public void test50() {
+    try {
+        long long0 = FieldUtils.safeMultiply(Long.MIN_VALUE, -1);
+        fail("Expected: ArithmeticException, actual: " + long0);
+    } catch (ArithmeticException e) {
+        assertEquals("Multiplication overflows a long: -9223372036854775808 * -1", e.getMessage());
+    }
+}

@@ -1,0 +1,9 @@
+public void test108() throws Throwable {
+    ByteArrayOutputStream outputStream0 = new ByteArrayOutputStream();
+    TarArchiveOutputStream tarArchiveOutputStream0 = new TarArchiveOutputStream(outputStream0);
+    HashMap hashMap0 = new HashMap();
+    hashMap0.put("", "");
+    tarArchiveOutputStream0.writePaxHeaders("", hashMap0);
+    tarArchiveOutputStream0.close();
+    assertTrue(true);
+}

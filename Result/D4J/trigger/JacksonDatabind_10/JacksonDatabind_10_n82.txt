@@ -1,0 +1,4 @@
+public void test73() throws Throwable  {
+    AnyGetterWriter anyGetterWriter0 = new AnyGetterWriter((BeanProperty) null, (AnnotatedMember) null, (MapSerializer) null);
+    anyGetterWriter0.resolve((SerializerProvider) null);
+}

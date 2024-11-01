@@ -1,0 +1,5 @@
+public void test95() throws Throwable  {
+    StringUtils stringUtils0 = new StringUtils();
+    boolean boolean0 = StringUtils.equals(new StringBuilder("Test"), new StringBuilder("Test"));
+    assertEquals(true, boolean0);
+}

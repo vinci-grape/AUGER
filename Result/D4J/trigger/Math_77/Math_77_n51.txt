@@ -1,0 +1,6 @@
+public void test79() throws Throwable  {
+    double[] d0 = new double[] { 2, 3, 4 };
+    ArrayRealVector arrayRealVector0 = new ArrayRealVector(d0);
+    double double0 = arrayRealVector0.getLInfNorm();
+    assertEquals(4, double0, 0.000001);
+}

@@ -1,0 +1,4 @@
+public void testOctalParse() {
+    byte[] buffer = "010".getBytes();
+    assertEquals(8, TarUtils.parseOctal(buffer, 0, 3));
+}

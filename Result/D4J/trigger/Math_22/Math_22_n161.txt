@@ -1,0 +1,7 @@
+public void test() {
+    double d1 = 0.0D;
+    double d2 = 1.0D;
+    UniformRealDistribution uniformRealDistribution = new UniformRealDistribution(d1, d2);
+    boolean isSupportUpperBoundInclusive = uniformRealDistribution.isSupportUpperBoundInclusive();
+    assertEquals(true, isSupportUpperBoundInclusive);
+}

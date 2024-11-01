@@ -1,0 +1,11 @@
+public void test94() {
+        try{
+            Base64 base64 = new Base64();
+            byte[] binaryData = { 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100 };
+            String encoded = base64.encodeBase64String(binaryData);
+            assertTrue(encoded.equals("aGVsbG8gd29ybGQ="));
+        }
+        catch(Exception e){
+            fail(e.getMessage());
+        }
+    }

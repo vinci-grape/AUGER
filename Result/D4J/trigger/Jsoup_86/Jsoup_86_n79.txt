@@ -1,0 +1,5 @@
+public void test26() {
+        Comment comment0 = new Comment("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>", "http://www.w3.org/2000/svg");
+        XmlDeclaration xmlDeclaration0 = comment0.asXmlDeclaration();
+        assertEquals(null, xmlDeclaration0);
+    }

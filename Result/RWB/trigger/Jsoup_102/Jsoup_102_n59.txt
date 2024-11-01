@@ -1,0 +1,10 @@
+public void test30() throws Throwable  {
+    HttpConnection httpConnection0 = new HttpConnection();
+    String string0 = "http://";
+    try {
+        httpConnection0.url(string0);
+        fail();
+    } catch (IllegalArgumentException e) {
+        assertTrue(e.getMessage().contains(string0));
+    }
+}

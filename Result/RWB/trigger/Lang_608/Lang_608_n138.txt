@@ -1,0 +1,10 @@
+public void test35() throws Throwable  {
+    final ThreadGroup threadGroup0 = new ThreadGroup("threadGroup0");
+    final boolean recurse0 = true;
+    final Predicate<ThreadGroup> predicate0 = (ThreadGroup threadGroup) -> {
+        return threadGroup.getName().equals("TestGroup");
+    };
+
+    Collection<ThreadGroup> collection0 = ThreadUtils.findThreadGroups(threadGroup0, recurse0, predicate0);
+    assertTrue(collection0.isEmpty());
+}

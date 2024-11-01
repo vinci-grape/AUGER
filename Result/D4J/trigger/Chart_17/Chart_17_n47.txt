@@ -1,0 +1,9 @@
+public void test133() throws Throwable {
+    TimeSeries timeSeries0 = new TimeSeries("test");
+    try {
+        Object object0 = timeSeries0.clone();
+    }
+    catch (CloneNotSupportedException e) {
+        e.printStackTrace();
+    }
+}

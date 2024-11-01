@@ -1,0 +1,6 @@
+public void test69() throws IOException  {
+    ByteArrayOutputStream byteArrayOutputStream0 = new ByteArrayOutputStream();
+    CpioArchiveOutputStream cpioArchiveOutputStream0 = new CpioArchiveOutputStream(byteArrayOutputStream0);
+    cpioArchiveOutputStream0.close();
+    assertTrue(byteArrayOutputStream0.toByteArray().length == 0); // This will fail because finish() method should be called before closing the output stream.
+}

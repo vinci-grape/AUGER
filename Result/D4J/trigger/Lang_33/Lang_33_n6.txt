@@ -1,0 +1,6 @@
+public void test11() throws Throwable {
+    Object[] objectArray0 = new Object[2];
+    ClassUtils classUtils0 = new ClassUtils();
+    Class<?>[] classArray0 = classUtils0.toClass(objectArray0);
+    assertEquals(2, classArray0.length);
+}

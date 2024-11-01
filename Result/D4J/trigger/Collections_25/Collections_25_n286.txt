@@ -1,0 +1,11 @@
+public void testCollatedIterator() {
+    Iterator<Integer> i1 = Arrays.asList(1, 4, 6).iterator();
+    Iterator<Integer> i2 = Arrays.asList(2, 3, 5).iterator();
+    Iterator<Integer> collated = IteratorUtils.collatedIterator(null, i1, i2); // Comparator is null
+    List<Integer> result = new ArrayList<Integer>();
+    while (collated.hasNext()) {
+        result.add(collated.next());
+    }
+
+    assertEquals(Arrays.asList(1, 2, 3, 4, 5, 6), result); // Fails because of the bug in collatedIterator
+}

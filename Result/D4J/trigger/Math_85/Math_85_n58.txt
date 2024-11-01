@@ -1,0 +1,18 @@
+public void test39() throws Throwable  {
+    UnivariateRealFunction function = new UnivariateRealFunction() {
+
+        @Override
+        public double value(double v) {
+            return (v*v) - 4;
+        }
+    };
+    double initial = 10;
+    double lowerBound = -10;
+    double upperBound = 10;
+    int maximumIterations = 100;
+    try {
+        double[] res = UnivariateRealSolverUtils.bracket(function, initial, lowerBound, upperBound, maximumIterations);
+    } catch (Exception e) {
+        fail(e.getMessage());
+    }
+}

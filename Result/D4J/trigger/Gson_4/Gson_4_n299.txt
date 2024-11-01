@@ -1,0 +1,7 @@
+public void test14() throws IOException, Throwable {
+    StringWriter stringWriter0 = new StringWriter();
+    JsonWriter jsonWriter0 = new JsonWriter(stringWriter0);
+    jsonWriter0.jsonValue("\"Hello\"");
+    String string0 = stringWriter0.toString();
+    assertEquals("\"Hello\"", string0);
+  }

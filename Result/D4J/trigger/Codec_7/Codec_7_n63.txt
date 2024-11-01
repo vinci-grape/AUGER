@@ -1,0 +1,5 @@
+public void test59() throws Exception {
+    Base64 base640 = new Base64();
+    String string0 = base640.encodeBase64String("abc".getBytes());
+    assertEquals("YWJj", string0);
+}

@@ -1,0 +1,8 @@
+public void test62() throws Throwable {
+    StringBuffer sb = new StringBuffer();
+    Document.OutputSettings os = new Document.OutputSettings();
+    Attributes a = new Attributes();
+    a.put("checked", "");
+    a.html(sb, os);
+    assertEquals(" checked", sb.toString());
+}

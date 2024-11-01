@@ -1,0 +1,12 @@
+public void test115() throws Throwable  {
+    try {
+        StringWriter stringWriter0 = new StringWriter();
+        JsonWriter jsonWriter0 = new JsonWriter(stringWriter0);
+        boolean boolean0 = true;
+        jsonWriter0.value(boolean0);
+        stringWriter0.toString();
+    } catch (Exception exception0) {
+        exception0.printStackTrace();
+        throw exception0;
+    }
+}

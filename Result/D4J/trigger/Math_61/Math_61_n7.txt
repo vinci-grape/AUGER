@@ -1,0 +1,10 @@
+public void test98() throws Throwable  {
+    double mean0 = 0;
+    double epsilon0 = 0;
+    int maxIterations0 = 0;
+    try {
+        PoissonDistributionImpl poissonDistributionImpl0 = new PoissonDistributionImpl(mean0, epsilon0, maxIterations0);
+        fail();
+    } catch (MathIllegalArgumentException e0) {
+    }
+}

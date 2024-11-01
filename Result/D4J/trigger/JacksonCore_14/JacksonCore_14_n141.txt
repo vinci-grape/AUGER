@@ -1,0 +1,6 @@
+public void test32() throws Throwable {
+        byte[] toRelease = new byte[5];
+        byte[] src = new byte[5];
+        IOContext ioContext0 = new IOContext(null, null, false);
+        ioContext0._verifyRelease(toRelease, src);
+    }

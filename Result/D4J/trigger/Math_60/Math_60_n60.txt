@@ -1,0 +1,5 @@
+public void test26() throws Throwable {
+    NormalDistributionImpl normalDistributionImpl0 = new NormalDistributionImpl(0.0d, 1.0d);
+    double result = normalDistributionImpl0.cumulativeProbability(Double.POSITIVE_INFINITY);
+    assertEquals(1.0d, result, 1e-15);
+}

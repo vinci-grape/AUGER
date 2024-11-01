@@ -1,0 +1,4 @@
+public void test69() throws Throwable  {
+    long long0 = MathUtils.factorial(5);
+    assertTrue(long0 > 0);
+}

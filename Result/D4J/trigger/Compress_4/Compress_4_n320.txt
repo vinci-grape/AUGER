@@ -1,0 +1,7 @@
+public void test26() throws Throwable  {
+    ByteArrayOutputStream byteArrayOutputStream0 = new ByteArrayOutputStream();
+    TarArchiveOutputStream tarArchiveOutputStream0 = new TarArchiveOutputStream(byteArrayOutputStream0);
+    tarArchiveOutputStream0.close();
+    boolean boolean0 = byteArrayOutputStream0.toByteArray().length == 0;
+    assertTrue(boolean0);
+}

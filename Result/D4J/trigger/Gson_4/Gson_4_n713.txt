@@ -1,0 +1,6 @@
+public void test23() throws Throwable  {
+    CharArrayWriter charArrayWriter0 = new CharArrayWriter();
+    JsonWriter jsonWriter0 = new JsonWriter(charArrayWriter0);
+    jsonWriter0.value(1.7976931348623157E308);
+    assertEquals("1.7976931348623157E308", charArrayWriter0.toString());
+}

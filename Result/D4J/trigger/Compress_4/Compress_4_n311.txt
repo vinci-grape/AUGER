@@ -1,0 +1,6 @@
+public void test02() throws Exception {
+    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    CpioArchiveOutputStream cpioArchiveOutputStream = new CpioArchiveOutputStream(byteArrayOutputStream);
+    cpioArchiveOutputStream.close();
+    assertTrue(byteArrayOutputStream.toByteArray().length == 0);
+}

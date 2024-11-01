@@ -1,0 +1,13 @@
+public void test20() throws Throwable  {
+    double[] doubleArray0 = new double[1];
+    doubleArray0[0] = 1;
+    double[] doubleArray1 = new double[1];
+    doubleArray1[0] = 2;
+    try{
+        double d = MathArrays.linearCombination(doubleArray0, doubleArray1);
+        assertEquals(d, 2.0, 0.01);
+    }
+    catch(DimensionMismatchException ex){
+        assertTrue(ex instanceof DimensionMismatchException);
+    }
+}

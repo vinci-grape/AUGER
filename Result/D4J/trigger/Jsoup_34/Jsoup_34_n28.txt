@@ -1,0 +1,7 @@
+public void testNextIndexOf() throws Throwable {
+    CharacterReader reader = new CharacterReader("abc");
+    assertEquals(0, reader.nextIndexOf("abc"));
+    assertEquals(-1, reader.nextIndexOf("abcd"));
+    assertEquals(2, reader.nextIndexOf("c"));
+    assertEquals(-1, reader.nextIndexOf("d"));
+}

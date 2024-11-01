@@ -1,0 +1,7 @@
+public void test29() {
+    Attributes attributes = new Attributes();
+    attributes.put("attribute1", "value1");
+    attributes.put("Attribute2", "value2");
+    attributes.removeIgnoreCase("attribute1");
+    assertEquals(attributes.get("Attribute2"), "value2");
+}

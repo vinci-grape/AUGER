@@ -1,0 +1,9 @@
+public void test84() throws Throwable  {
+    OpenMapRealVector openMapRealVector0 = new OpenMapRealVector(new double[]{1.0, 2.0, 3.0});
+    OpenMapRealVector openMapRealVector1 = new OpenMapRealVector(new double[]{1.0, 0.0, 1.0});
+    OpenMapRealVector openMapRealVector2 = openMapRealVector0.ebeMultiply(openMapRealVector1);
+    double[] doubleArray0 = openMapRealVector2.toArray();
+    assertEquals(1.0, doubleArray0[0], 0.00001);
+    assertEquals(0.0, doubleArray0[1], 0.00001);
+    assertEquals(3.0, doubleArray0[2], 0.00001);
+}

@@ -1,0 +1,9 @@
+public void test30() throws MaxIterationsExceededException, FunctionEvaluationException {
+    BrentSolver brentSolver = new BrentSolver(new UnivariateRealFunction() {
+        public double value(double x) {
+            return x * x;
+        }
+    });
+    double result = brentSolver.solve(0, 2);
+    assertEquals(0.0, result, 1e-6);
+}

@@ -1,0 +1,11 @@
+public void test50() throws Throwable  {
+    Integer integer0 = new Integer(1);
+    TimeSeries timeSeries0 = new TimeSeries(integer0);
+    int int0 = timeSeries0.getItemCount();
+    int int1 = 0;
+    int int2 = 0;
+    assertTrue(int1 <= int0);
+    TimeSeries timeSeries1 = (TimeSeries) timeSeries0.clone();
+    int int3 = timeSeries1.getItemCount();
+    assertEquals(int0, int3);
+}

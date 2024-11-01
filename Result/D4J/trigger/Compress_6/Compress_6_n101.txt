@@ -1,0 +1,6 @@
+public void testEqualsSymmetry() {
+    ZipArchiveEntry entry1 = new ZipArchiveEntry("file1.txt");
+    ZipArchiveEntry entry2 = new ZipArchiveEntry("file2.txt");
+    assertFalse(entry1.equals(entry2));
+    assertFalse(entry2.equals(entry1));
+}

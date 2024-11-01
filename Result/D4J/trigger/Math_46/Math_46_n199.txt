@@ -1,0 +1,6 @@
+public void testDivide() {
+    Complex c = new Complex(5,5);
+    Complex div = c.divide(0);
+    assertTrue(Double.isNaN(div.getReal()));
+    assertTrue(Double.isNaN(div.getImaginary()));
+}

@@ -1,0 +1,14 @@
+public void test45() throws CloneNotSupportedException {
+    // Create two different instances of TimeSeries with the same name
+    TimeSeries timeSeries1 = new TimeSeries("1");
+    TimeSeries timeSeries2 = new TimeSeries("2");
+    
+    
+    // Try to clone timeSeries1
+    TimeSeries clonedTimeSeries = (TimeSeries) timeSeries1.clone();
+    
+    
+    // Compare the two instances
+    assertFalse(timeSeries1 == clonedTimeSeries);
+    assertTrue(timeSeries1.equals(clonedTimeSeries));
+}

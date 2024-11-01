@@ -1,0 +1,5 @@
+public void test79() throws Throwable  {
+    Comment comment0 = new Comment("![CDATA[New comment]]");
+    XmlDeclaration xmlDeclaration0 = comment0.asXmlDeclaration();
+    assertNull(xmlDeclaration0);
+}

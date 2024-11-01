@@ -1,0 +1,8 @@
+public void testDivide() throws Throwable  {
+    double real = 10;
+    double imaginary = 2;
+    Complex complex0 = new Complex(real, imaginary);
+    Complex complex1 = new Complex(0);
+    Complex complex2 = complex0.divide(complex1);
+    assertTrue(complex2.isNaN());
+}

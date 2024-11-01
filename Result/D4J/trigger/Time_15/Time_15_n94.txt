@@ -1,0 +1,8 @@
+public void test46()  {
+    try {
+        FieldUtils.safeMultiply(9223372036854775807L, 2);
+        Assert.fail("Expected ArithmeticException");
+    } catch (ArithmeticException ae) {
+        Assert.assertEquals("Multiplication overflows a long: 9223372036854775807 * 2", ae.getMessage());
+    }
+}

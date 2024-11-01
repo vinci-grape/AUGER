@@ -1,0 +1,6 @@
+public void test1() throws IOException {
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(stringWriter);
+    jsonWriter.value(15);
+    assertEquals("15", stringWriter.toString());
+}

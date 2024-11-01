@@ -1,0 +1,9 @@
+public void test71() throws Throwable  {
+    double[] doubleArray0 = new double[2];
+    doubleArray0[0] = doubleArray0[1] = 5;
+    long[] longArray0 = new long[2];
+    longArray0[0] = longArray0[1] = 10;
+    ChiSquareTestImpl chiSquareTestImpl0 = new ChiSquareTestImpl();
+    double double0 = chiSquareTestImpl0.chiSquare(doubleArray0, longArray0);
+    assertEquals(double0, 0.0d, 0.001d);
+}

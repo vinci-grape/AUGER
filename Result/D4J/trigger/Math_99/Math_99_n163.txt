@@ -1,0 +1,6 @@
+public void test73() {
+    int int0 = 0;
+    int int1 = 0;
+    int int2 = MathUtils.lcm(int0, int1);
+    assertEquals(0, int2);
+}

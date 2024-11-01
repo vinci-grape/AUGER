@@ -1,0 +1,5 @@
+public void testEquals() throws Exception {
+    double x = 0.0d / 0.0d; // nan
+    double y = 0.0d / 0.0d; // nan
+    assertFalse(MathUtils.equals(x, y));
+}

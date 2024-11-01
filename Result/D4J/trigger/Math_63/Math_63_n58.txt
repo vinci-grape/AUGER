@@ -1,0 +1,4 @@
+public void testNan() {
+    boolean result = MathUtils.equals(Double.NaN, Double.NaN);
+    assertFalse(result); // If the buggy line is correct, the test case will fail
+}

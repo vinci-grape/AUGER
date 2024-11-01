@@ -1,0 +1,6 @@
+public void testJsonWriter() throws Exception{
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(stringWriter);
+    jsonWriter.value((long)123456789000L);
+    assertEquals("123456789000", stringWriter.toString());
+}

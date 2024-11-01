@@ -1,0 +1,9 @@
+public void test01() throws Throwable  {
+    double double0 = -3.0351030636129594E307;
+    double double1 = 3.0351030636129594E307;
+    NormalDistributionImpl normalDistributionImpl0 = new NormalDistributionImpl(0, 1);
+    double double2 = normalDistributionImpl0.cumulativeProbability(double0);
+    double double3 = normalDistributionImpl0.cumulativeProbability(double1);
+    assertEquals(0.0, double2, 0.0);
+    assertEquals(1.0, double3, 0.0);
+}

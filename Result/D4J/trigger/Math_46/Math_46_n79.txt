@@ -1,0 +1,7 @@
+public void testComplexDivision() {
+    Complex test = new Complex(1,1);
+    Complex result = test.divide(0);
+    // Assert that the result is NaN
+    assertTrue(Double.isNaN(result.getReal()));
+    assertTrue(Double.isNaN(result.getImaginary()));
+}

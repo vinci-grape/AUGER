@@ -1,0 +1,6 @@
+public void test99() throws Throwable  {
+    KeyedObjects2D keyedObjects2D0 = new KeyedObjects2D();
+    keyedObjects2D0.removeObject(new Integer(1), new Integer(1));
+    int int0 = keyedObjects2D0.getColumnCount();
+    assertEquals(0, int0);
+}

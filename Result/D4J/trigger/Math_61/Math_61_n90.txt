@@ -1,0 +1,12 @@
+public void testPoissonDistributionImpl() throws Exception {
+    double mean = 0.5;
+    double epsilon = 0.00001;
+    int maxIterations = 100;
+
+
+    try {
+        new PoissonDistributionImpl(mean, epsilon, maxIterations);
+    } catch (Exception e) {
+        Assert.fail(e.getMessage());
+    }
+}

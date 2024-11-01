@@ -1,0 +1,9 @@
+public void testFlatten() throws Throwable  {
+    PosixParser parser = new PosixParser();
+    Options options = new Options();
+    String[] arguments = {"-o", "--output=file"};
+    String[] flattened = parser.flatten(options, arguments, true);
+    assertEquals(2, flattened.length);
+    assertEquals("-o", flattened[0]);
+    assertEquals("--output=file", flattened[1]);
+}

@@ -1,0 +1,10 @@
+public void test112() throws Throwable  {
+    ThreadGroup threadGroup0 = new ThreadGroup("");
+    Predicate<Thread> predicate0 = new Predicate<Thread>() {
+        public boolean test(Thread t) {
+            return t.getPriority() == 10;
+        }
+    };
+    Collection<Thread> collection0 = ThreadUtils.findThreads(threadGroup0, true, predicate0);
+    assertTrue(collection0.isEmpty());
+}

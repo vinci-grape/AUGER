@@ -1,0 +1,5 @@
+public void test06() {
+    Attribute attribute0 = new Attribute("name", "value");
+    String string0 = attribute0.setValue("new value");
+    assertEquals("value", string0);
+}

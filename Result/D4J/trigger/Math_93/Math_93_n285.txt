@@ -1,0 +1,4 @@
+public void test98() throws Throwable  {
+    long long0 = MathUtils.factorial(10);
+    assertEquals(3628800L, long0);
+}

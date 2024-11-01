@@ -1,0 +1,7 @@
+public void test49() throws IOException  {
+    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    TarArchiveOutputStream tARArchiveOutputStream = new TarArchiveOutputStream(byteArrayOutputStream);
+    tARArchiveOutputStream.close();
+    byte[] b = byteArrayOutputStream.toByteArray();
+    assertEquals(b.length, 0);
+}

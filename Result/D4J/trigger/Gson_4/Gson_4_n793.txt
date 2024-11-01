@@ -1,0 +1,11 @@
+public void test1() {
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(stringWriter);
+
+    try {
+      jsonWriter.value(true);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    assertEquals("true", stringWriter.toString());
+}

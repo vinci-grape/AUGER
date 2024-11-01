@@ -1,0 +1,12 @@
+public void test46() {
+    HelpFormatter helpFormatter = new HelpFormatter();
+    StringBuffer sb = new StringBuffer();
+    int width = 5;
+    int nextLineTabStop = 2;
+    String text = "This is a test.";
+    try {
+        helpFormatter.renderWrappedText(sb, width, nextLineTabStop, text);
+    } catch (RuntimeException e) {
+        assertEquals("Text too long for line - throwing exception to avoid infinite loop [CLI-162]: " + text, e.getMessage());
+    }
+}

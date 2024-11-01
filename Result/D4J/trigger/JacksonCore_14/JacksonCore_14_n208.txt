@@ -1,0 +1,7 @@
+public void test80() throws Throwable  {
+        BufferRecycler br = new BufferRecycler();
+        IOContext iocontext0 = new IOContext(br, null, true);
+        char[] toRelease = "abc".toCharArray();
+        char[] src = new char[3];
+        iocontext0._verifyRelease(toRelease, src);
+    }

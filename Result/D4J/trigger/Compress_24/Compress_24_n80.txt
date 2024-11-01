@@ -1,0 +1,4 @@
+public void test82() {
+    byte[] bytes = { '0', '1', '0' };
+    assertEquals(8, TarUtils.parseOctal(bytes, 0, 3));
+}

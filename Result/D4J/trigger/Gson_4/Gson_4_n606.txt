@@ -1,0 +1,7 @@
+public void test90() throws Throwable  {
+    StringWriter stringWriter0 = new StringWriter();
+    JsonWriter jsonWriter0 = new JsonWriter(stringWriter0);
+    jsonWriter0.value(10L);
+    String string0 = stringWriter0.toString();
+    assertEquals("10", string0);
+}

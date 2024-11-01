@@ -1,0 +1,5 @@
+public void test77() throws Throwable {
+    UniformRealDistribution uniformRealDistribution = new UniformRealDistribution(0.0, 1.0, 1.0);
+    boolean supportUpperBoundInclusive = uniformRealDistribution.isSupportUpperBoundInclusive();
+    assertTrue(supportUpperBoundInclusive);
+}

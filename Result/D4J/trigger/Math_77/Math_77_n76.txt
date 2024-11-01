@@ -1,0 +1,6 @@
+public void test84() throws Exception  {
+    double[] array = {2, -5, -9.2, 10};
+    ArrayRealVector vector = new ArrayRealVector(array, false);
+    double norm = vector.getLInfNorm();
+    assertEquals(10, norm, 0.1);
+}

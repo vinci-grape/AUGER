@@ -1,0 +1,10 @@
+public void testGetObject() {
+        KeyedObjects2D ko = new KeyedObjects2D();
+        Comparable key = new String("key");
+        try {
+            ko.getObject(key, key);
+            fail("Expected exception due to null row data");
+        } catch (UnknownKeyException e) {
+            // OK
+        }
+    }

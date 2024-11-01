@@ -1,0 +1,12 @@
+public void testEqual() {
+    GeneralPath p1 = new GeneralPath();
+    GeneralPath p2 = new GeneralPath();
+    p1.moveTo(0, 0);
+    p1.lineTo(10, 10);
+    p2.moveTo(0, 0);
+    p2.lineTo(10, 10);
+    assertTrue(ShapeUtilities.equal(p1, p2));
+
+    p2.lineTo(20, 20);
+    assertFalse(ShapeUtilities.equal(p1, p2));
+}

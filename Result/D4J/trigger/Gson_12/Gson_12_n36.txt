@@ -1,0 +1,8 @@
+public void test45() throws Throwable {
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.addProperty("", "");
+    JsonTreeReader jsonTreeReader = new JsonTreeReader(jsonObject);
+    jsonTreeReader.hasNext();
+    jsonTreeReader.skipValue();
+    assertEquals(JsonToken.END_DOCUMENT, jsonTreeReader.peek());
+}

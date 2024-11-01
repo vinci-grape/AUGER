@@ -1,0 +1,5 @@
+public void test42() {
+    Complex complex0 = new Complex(42, 4);
+    Complex complex1 = complex0.divide(0);
+    assertTrue(complex1.isNaN());
+}

@@ -1,0 +1,5 @@
+public void test84() throws Throwable  {
+    ThreadUtils threadUtils = new ThreadUtils();
+    Collection<ThreadGroup> collection0 = threadUtils.findThreadGroups(Thread.currentThread().getThreadGroup(), true, (Predicate<ThreadGroup>) s -> {return "java".equals(s.getName());});
+    assertTrue(collection0.isEmpty());
+}

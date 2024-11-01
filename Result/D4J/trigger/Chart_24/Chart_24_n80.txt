@@ -1,0 +1,6 @@
+public void test57() throws Throwable  {
+    GrayPaintScale grayPaintScale0 = new GrayPaintScale(1.0, 2.0);
+    Paint paint0 = grayPaintScale0.getPaint(2.5);
+    Color color0 = (Color) paint0;
+    assertTrue((color0.getRed() == color0.getGreen()) && (color0.getRed() == color0.getBlue()));
+}

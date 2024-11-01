@@ -1,0 +1,12 @@
+public void test13() throws MaxIterationsExceededException, FunctionEvaluationException{
+    class SinFunction implements UnivariateRealFunction {
+        public double value(double x) {
+            return Math.sin(x);
+        }
+    }
+
+
+    BrentSolver solver = new BrentSolver(new SinFunction());
+    double result = solver.solve(0, 2*Math.PI);
+    assertEquals(0.0, result, 1e-12); 
+}

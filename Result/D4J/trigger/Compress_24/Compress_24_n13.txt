@@ -1,0 +1,11 @@
+public void testOctalParse() throws Exception{
+    byte[] data = "0001".getBytes();
+    assertEquals(1, TarUtils.parseOctal(data, 0, 4));
+    data = "0755".getBytes();
+    assertEquals(0755, TarUtils.parseOctal(data, 0, 4));
+    try {
+        data = "0800".getBytes();
+        TarUtils.parseOctal(data, 0, 4);
+        fail("parseOctal did not throw expected exception");
+    } catch (IllegalArgumentException expected) { }
+}

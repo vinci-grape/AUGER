@@ -1,0 +1,7 @@
+public void test52() throws Throwable  {
+    CategoryPlot categoryPlot0 = new CategoryPlot(null, null, null, null);
+    Marker marker0 = null;
+    Layer layer0 = Layer.FOREGROUND;
+    boolean boolean0 = categoryPlot0.removeDomainMarker(0, marker0, layer0, true);
+    assertFalse(boolean0);
+}

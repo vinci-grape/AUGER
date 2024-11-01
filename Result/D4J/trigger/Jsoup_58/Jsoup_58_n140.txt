@@ -1,0 +1,4 @@
+public void test33() {
+        String html = "<html><body><div></body></html>";
+        assertFalse(Jsoup.isValid(html, Whitelist.relaxed().addTags("body", "div")));
+    }

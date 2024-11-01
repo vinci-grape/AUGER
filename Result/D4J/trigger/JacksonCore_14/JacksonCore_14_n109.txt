@@ -1,0 +1,6 @@
+public void test91() throws Throwable  {
+    IOContext ioContext0 = new IOContext(null, null, false);
+    char[] charArray0 = new char[0];
+    char[] charArray1 = new char[0];
+    ioContext0._verifyRelease(charArray0, charArray1);
+}

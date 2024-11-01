@@ -1,0 +1,14 @@
+public void test45() {
+    TimeSeries timeSeries0 = new TimeSeries(new Comparable(){
+        public int compareTo(Object o) {
+            return 0;
+        }
+    });
+    try {
+        Object object0 = timeSeries0.clone();
+        assertTrue(object0 != timeSeries0);
+    }
+    catch (CloneNotSupportedException e) {
+        fail("Exception occurred: " + e);
+    }
+}

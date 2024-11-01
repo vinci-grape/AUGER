@@ -1,0 +1,13 @@
+public void test85() throws Throwable  {
+    int n1 = 5;
+    OpenMapRealVector vector1 = new OpenMapRealVector(n1);
+    OpenMapRealVector vector2 = new OpenMapRealVector(n1);
+    for (int i = 0; i < n1; i++) {
+        vector1.setEntry(i, i * 2.0);
+        vector2.setEntry(i, i * 3.0);
+    }
+    OpenMapRealVector result = vector1.ebeDivide(vector2);
+    for (int i = 0; i < n1; i++) {
+        assertEquals(vector1.getEntry(i) / vector2.getEntry(i), result.getEntry(i), 0);
+    }
+}

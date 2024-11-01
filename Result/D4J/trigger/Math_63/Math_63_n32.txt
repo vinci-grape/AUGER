@@ -1,0 +1,6 @@
+public void test84() throws Throwable  {
+    double double0 = Double.NaN;
+    double double1 = Double.NaN;
+    boolean boolean0 = MathUtils.equals(double0, double1);
+    assertFalse(boolean0);
+}

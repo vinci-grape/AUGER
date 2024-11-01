@@ -1,0 +1,7 @@
+public void testValue_NonLenientMode_NoException() throws IOException {
+    StringWriter writer = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(writer);
+    jsonWriter.setLenient(false);
+    jsonWriter.value(new BigDecimal("12345678901234567890"));
+    assertEquals("12345678901234567890", writer.toString());
+}

@@ -1,0 +1,9 @@
+public void test41() throws Throwable  {
+    UnivariateRealFunction univariateRealFunction0 = new UnivariateRealFunction() {
+        public double value(double v) {
+            return v - 1;
+        }
+    };
+    BrentSolver brentSolver0 = new BrentSolver(univariateRealFunction0);
+    brentSolver0.solve(-1, 1);
+}

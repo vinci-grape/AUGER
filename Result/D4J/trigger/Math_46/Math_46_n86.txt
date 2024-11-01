@@ -1,0 +1,10 @@
+public void test97() throws Throwable {
+    double real1 = 3.0;
+    double imaginary1 = 4.0;
+    Complex complex1 = new Complex(real1, imaginary1);
+    double real2 = 0.0;
+    Complex complex2 = new Complex(real2);
+    Complex complex3 = complex1.divide(complex2);
+    double d = complex3.getImaginary();
+    assertTrue(Double.isNaN(d));
+}

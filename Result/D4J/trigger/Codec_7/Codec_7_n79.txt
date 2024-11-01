@@ -1,0 +1,6 @@
+public void test83() throws Throwable {
+    byte[] binaryData = {1,2,3,4,5};
+    Base64 base64 = new Base64(76);
+    String string0 = base64.encodeBase64String(binaryData);
+    assertEquals("AQIDBAU=", string0);
+}

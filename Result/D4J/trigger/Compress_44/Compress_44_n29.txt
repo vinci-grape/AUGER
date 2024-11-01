@@ -1,0 +1,9 @@
+public void test55() throws Throwable  {
+    // Tests to trigger the bug by using an uninitialized object
+    try {
+        new ChecksumCalculatingInputStream(null, null);
+        fail();
+    } catch (NullPointerException ex) {
+        // Expected exception
+    }
+}

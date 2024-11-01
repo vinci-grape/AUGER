@@ -1,0 +1,8 @@
+public void test80() throws Throwable  {
+    try {
+        DateTimeZone dTZ0 = DateTimeZone.forOffsetHoursMinutes(24, 30); // Should throw IllegalArgumentException because 24 hours is too large
+        assertTrue(false);
+    } catch (IllegalArgumentException ex) {
+        assertTrue(true);
+    }
+}

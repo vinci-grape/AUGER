@@ -1,0 +1,19 @@
+public void test45() throws Throwable  {
+    ThreadUtils threadUtils0 = new ThreadUtils();
+    ThreadGroup threadGroup0 = new ThreadGroup("group");
+    Thread thread0 = new Thread(threadGroup0, new Runnable() {
+        public void run() {
+            try {
+                Thread.sleep(5000);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        }
+    });
+    thread0.start();
+    Predicate<Thread> predicate0 = (Thread t) -> {
+        return t.getName().equals("");
+    };
+    boolean boolean0 = threadUtils0.findThreads(threadGroup0, true, predicate0).size() > 0;
+    assertFalse(boolean0);
+}

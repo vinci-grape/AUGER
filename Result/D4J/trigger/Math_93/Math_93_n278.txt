@@ -1,0 +1,7 @@
+public void test85() {
+    try {
+        double res = MathUtils.factorialLog(5);
+    } catch(Throwable e) {
+        fail("Unexpected exception: " + e);
+    }
+}

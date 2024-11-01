@@ -1,0 +1,6 @@
+public void test41() throws Throwable  {
+    Appendable appendable0 = new StringBuilder();
+    CSVFormat cSVFormat0 = CSVFormat.DEFAULT.withHeader("Field1", "Field2");
+    new CSVPrinter(appendable0, cSVFormat0);
+    assertTrue(appendable0.toString().contains("Field1,Field2"));
+}

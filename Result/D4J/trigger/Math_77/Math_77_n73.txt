@@ -1,0 +1,9 @@
+public void test64() throws Throwable {
+        double[] doubleArray0 = new double[3];
+        doubleArray0[0] = 1.1365827311190702E-314;
+        doubleArray0[1] = 1.7976931348623157E308;
+        doubleArray0[2] = -1.7976931348623157E308;
+        ArrayRealVector arrayRealVector0 = new ArrayRealVector(doubleArray0);
+        double double0 = arrayRealVector0.getLInfNorm();
+        assertEquals(1.7976931348623157E308, double0, 0.0001);
+    }

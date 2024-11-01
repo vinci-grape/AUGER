@@ -1,0 +1,9 @@
+public void test81() throws Throwable  {
+    TimeSeries timeSeries0 = new TimeSeries(new Comparable() {
+        public int compareTo(Object o) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+    });
+    Object object0 = timeSeries0.clone();
+    assertEquals(timeSeries0, object0);
+}

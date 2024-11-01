@@ -1,0 +1,10 @@
+public void testPoissonDistributionImpl() throws Exception {
+        double mean = 5.0;
+        double epsilon = 0.1;
+        int maxIterations = 100;
+        try {
+            PoissonDistributionImpl poissonDistributionImpl = new PoissonDistributionImpl(mean, epsilon, maxIterations);
+        } catch (MathRuntimeException e) {
+            assertTrue(e.getMessage().contains("Poisson mean must be positive"));
+        }
+    }

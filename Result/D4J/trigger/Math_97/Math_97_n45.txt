@@ -1,0 +1,16 @@
+public void test82() throws Throwable {
+    UnivariateRealFunction func = new UnivariateRealFunction() {
+        @Override
+        public double value(double v) {
+            return 0;
+        }
+    };
+    BrentSolver brentSolver = new BrentSolver(func);
+    try{
+        brentSolver.solve(1, 2);
+    }catch(IllegalArgumentException e){
+        assertEquals(e.getMessage(), "Function values at endpoints do not have different signs." + 
+                "  Endpoints: [" + "1,2" + "]" + 
+                "  Values: [" + func.value(1) + "," + func.value(2) + "]");
+    }
+}

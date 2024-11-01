@@ -1,0 +1,20 @@
+public void test94() throws Throwable {
+        ThreadGroup threadGroup0 = new ThreadGroup("testGroup");
+        Thread thread0 = new Thread(threadGroup0, new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep((long) 1000);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread0.start();
+
+        Collection<Thread> collection0 = ThreadUtils.findThreads(threadGroup0, true, new Predicate<Thread>() {
+            public boolean test(Thread t) {
+                return "test".equals(t.getName());
+            }
+        });
+        assertTrue(collection0.isEmpty());
+    }

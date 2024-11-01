@@ -1,0 +1,7 @@
+public void test51() {
+    double[] array = { 1.1, 2.2, 3.3 };
+    ArrayRealVector v = new ArrayRealVector(array);
+    double actual = v.getLInfNorm();
+    double expected = 3.3;
+    assertEquals(expected, actual, 0.01);
+}

@@ -1,0 +1,7 @@
+public void test42() throws Throwable  {
+        BufferRecycler bufferRecycler0 = new BufferRecycler();
+        IOContext iOContext0 = new IOContext(bufferRecycler0, null, false);
+        char[] charArray0 = new char[1];
+        char[] charArray1 = new char[1];
+        iOContext0._verifyRelease(charArray0, charArray1); // Testing short src
+    }

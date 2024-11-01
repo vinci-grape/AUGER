@@ -1,0 +1,7 @@
+public void test93() {
+        HelpFormatter helpFormatter = new HelpFormatter();
+        StringBuffer stringBuffer = new StringBuffer();
+        String text = "This is a test of the emergency broadcast system. This is only a test.";
+        StringBuffer result = helpFormatter.renderWrappedText(stringBuffer, 20, 4, text);
+        System.out.println(result);
+    }

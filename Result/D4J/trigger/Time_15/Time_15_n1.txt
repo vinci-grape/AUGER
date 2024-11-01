@@ -1,0 +1,10 @@
+public void test28() {
+    long long0 = 9223372036854775807L;
+    int int0 = 2;
+    try {
+        FieldUtils.safeMultiply(long0, int0);
+        fail();
+    } catch (ArithmeticException e) {
+        assertEquals("Multiplication overflows a long: 9223372036854775807 * 2", e.getMessage());
+    }
+}

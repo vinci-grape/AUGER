@@ -1,0 +1,3 @@
+public void test123() {
+    assertEquals(TernaryValue.TRUE, NodeUtil.isStrWhiteSpaceChar('\n'));
+}

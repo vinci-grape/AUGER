@@ -1,0 +1,7 @@
+public void test91() throws Throwable  {
+        BufferRecycler bufferRecycler0 = new BufferRecycler();
+        IOContext ioContext0 = new IOContext(bufferRecycler0, null, false);
+        char[] charArray0 = new char[]{'t','h','i','s',' ','i','s',' ','a',' ','t','e','s','t'};
+        char[] charArray1 = new char[]{'t','h','i','s',' ','i','s',' ','a',' ','t','e','s','t'};
+        ioContext0._verifyRelease(charArray0, charArray1);
+    }

@@ -1,0 +1,7 @@
+public void test75() throws Throwable  {
+    Whitelist whitelist0 = new Whitelist();
+    Cleaner cleaner0 = new Cleaner(whitelist0);
+    Document document0 = new Document("http://example.com");
+    Document document1 = cleaner0.clean(document0);
+    assertTrue(document1.baseUri().equals("http://example.com"));
+}

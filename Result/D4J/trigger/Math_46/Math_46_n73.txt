@@ -1,0 +1,5 @@
+public void testDivide() {
+    Complex c = new Complex(1, 2);
+    Complex c1 = c.divide(0); // Expected: NaN
+    assertEquals(Double.NaN, c1.getReal(), 0);
+}

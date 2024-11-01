@@ -1,0 +1,9 @@
+public void test82() throws Throwable  {
+    double double0 = 1.0;
+    double double1 = 2.0;
+    RandomGenerator randomGenerator0 = new MersenneTwister();
+    double inverseCumAccuracy = 1e-14;
+    UniformRealDistribution uniformRealDistribution0 = new UniformRealDistribution(randomGenerator0, double0, double1, inverseCumAccuracy);
+    boolean boolean0 = uniformRealDistribution0.isSupportUpperBoundInclusive();
+    assertTrue(boolean0);
+}

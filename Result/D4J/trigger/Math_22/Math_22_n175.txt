@@ -1,0 +1,5 @@
+public void test2() {
+    UniformRealDistribution distribution = new UniformRealDistribution(0, 1);
+    boolean isSupportUpperBoundInclusive = distribution.isSupportUpperBoundInclusive();
+    assertTrue(isSupportUpperBoundInclusive);
+}

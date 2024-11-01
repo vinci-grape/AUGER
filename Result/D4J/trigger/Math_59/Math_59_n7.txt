@@ -1,0 +1,12 @@
+public void test36() throws Throwable  {
+    float a = 32768f;
+    float b = 32768f;
+    float c = 32767f;
+    float result = FastMath.max(a,b);
+    assertTrue((result==32768f) && (!Float.isNaN(result)));
+    result = FastMath.max(a,c);
+    assertTrue((result==32768f) && (!Float.isNaN(result)));
+    a = Float.NaN;
+    result = FastMath.max(a,b);
+    assertTrue(Float.isNaN(result));
+}

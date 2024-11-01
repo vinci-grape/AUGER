@@ -1,0 +1,11 @@
+public void test16() throws Throwable  {
+    double[] a = new double[1];
+    a[0] = Double.POSITIVE_INFINITY;
+    double[] b = new double[1];
+    b[0] = 2;
+    try {
+        MathArrays.linearCombination(a, b);
+    } catch (DimensionMismatchException e) {
+        assert(e.getMessage().equals("Array dimensions do not match"));
+    }
+}

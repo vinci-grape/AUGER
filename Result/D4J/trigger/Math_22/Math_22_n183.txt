@@ -1,0 +1,8 @@
+public void test9() {
+    double dNum1 = 0;
+    double dNum2 = 1;
+
+    UniformRealDistribution uniformRealDistribution1 = new UniformRealDistribution(dNum1, dNum2);
+
+    assertTrue(uniformRealDistribution1.isSupportUpperBoundInclusive());
+}

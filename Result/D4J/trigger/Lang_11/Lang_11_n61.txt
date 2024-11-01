@@ -1,0 +1,6 @@
+public void test47() throws Throwable  {
+    String string0 = RandomStringUtils.random(1, 0, 0, true, true, (char[]) null, new Random());
+    assertEquals(1, string0.length());
+    assertEquals(true, Character.isLetter(string0.charAt(0)));
+    assertEquals(true, Character.isLowerCase(string0.charAt(0)));
+}

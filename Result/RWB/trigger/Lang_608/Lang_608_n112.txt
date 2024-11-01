@@ -1,0 +1,7 @@
+public void test1() {
+     ThreadGroup root = new ThreadGroup("Root");
+     ThreadGroup group = new ThreadGroup(root, "Test");
+     Predicate<ThreadGroup> predicate = (ThreadGroup t) -> { return t.getName().equals("Test"); };
+     Collection<ThreadGroup> groups = ThreadUtils.findThreadGroups(root, true, predicate);
+     assertEquals(1, groups.size());
+}

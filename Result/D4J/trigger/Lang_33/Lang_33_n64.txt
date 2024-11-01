@@ -1,0 +1,10 @@
+public void testClassUtils() throws Exception {
+    Object[] objects = new Object[]{"a", 1, true, null};
+    Class<?>[] classes = ClassUtils.toClass(objects);
+    assertNotNull(classes);
+    assertEquals(4, classes.length);
+    assertTrue(classes[0] == String.class);
+    assertTrue(classes[1] == Integer.class);
+    assertTrue(classes[2] == Boolean.class);
+    assertTrue(classes[3] == null);
+}

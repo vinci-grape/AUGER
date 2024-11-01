@@ -1,0 +1,9 @@
+public void testJsonWriter() throws IOException {
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(stringWriter);
+
+    double doubleValue = 1.23;
+    jsonWriter.value(doubleValue);
+    String expectedOutput = "1.23";
+    assertEquals(expectedOutput, stringWriter.toString());
+}

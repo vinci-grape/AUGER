@@ -1,0 +1,5 @@
+public void testEquals() {
+        assertEquals(true, MathUtils.equals(0.0, 0.0));
+        assertEquals(true, MathUtils.equals(-1.0, -1.0));
+        assertEquals(false, MathUtils.equals(Double.NaN, Double.NaN)); // Buggy Line
+    }

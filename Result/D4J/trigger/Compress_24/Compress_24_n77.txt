@@ -1,0 +1,9 @@
+public void test103() throws Throwable  {
+    try {
+        byte[] buffer = "0755".getBytes();
+        long result = TarUtils.parseOctal(buffer, 0, buffer.length);
+        assertEquals(0755L, result);
+    } catch (Exception e) {
+        fail("Exception caught:" + e.getMessage());
+    }
+}

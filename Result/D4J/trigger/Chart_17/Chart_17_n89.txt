@@ -1,0 +1,12 @@
+public void test22() {
+        TimeSeries timeSeries = new TimeSeries("TimeSeries Test");
+        try {
+            Object clone = timeSeries.clone();
+            assertNotNull(clone);
+            assertTrue(clone instanceof TimeSeries);
+            assertNotSame(timeSeries, clone);
+            assertTrue(timeSeries.equals(clone));
+        } catch (CloneNotSupportedException e) {
+            fail("Cloneable interface not implemented");
+        }
+}

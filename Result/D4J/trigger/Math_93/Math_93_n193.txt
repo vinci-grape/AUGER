@@ -1,0 +1,4 @@
+public void test99() throws Throwable  {
+    double double0 = MathUtils.factorialDouble(10);
+    assertEquals(3628800.0, double0);
+}

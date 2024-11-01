@@ -1,0 +1,10 @@
+public void testEquals() {
+    ZipArchiveEntry e1 = new ZipArchiveEntry("file.txt");
+    ZipArchiveEntry e2 = new ZipArchiveEntry("file.txt");
+    ZipArchiveEntry e3 = new ZipArchiveEntry("file2.txt");
+    assertTrue(e1.equals(e2)); // Should be true
+    assertFalse(e1.equals(e3)); // Should be false
+    assertFalse(e2.equals(e3)); // Should be false
+    assertFalse(e1.equals(null)); // Should be false
+    assertFalse(e1.equals("file.txt")); // Should be false
+}

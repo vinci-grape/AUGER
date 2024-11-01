@@ -1,0 +1,9 @@
+public void test27() throws Throwable  {
+    StringWriter stringWriter0 = new StringWriter();
+    JsonWriter jsonWriter0 = new JsonWriter(stringWriter0);
+    jsonWriter0.setLenient(false);
+    Integer integer0 = new Integer(123456789);
+    jsonWriter0.value(integer0);
+    String string0 = stringWriter0.toString();
+    assertEquals("123456789", string0);
+}

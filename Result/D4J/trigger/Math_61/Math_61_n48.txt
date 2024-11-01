@@ -1,0 +1,4 @@
+public void test48() throws Throwable  {
+    PoissonDistributionImpl poissonDistributionImpl0 = new PoissonDistributionImpl(0.2, 0.1, 100);
+    assertTrue(true);
+}

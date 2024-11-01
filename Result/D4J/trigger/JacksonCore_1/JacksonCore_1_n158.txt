@@ -1,0 +1,8 @@
+public void test86() throws Throwable  {
+    TextBuffer textBuffer0 = new TextBuffer(new BufferRecycler());
+    try {
+        BigDecimal bigDecimal0 = textBuffer0.contentsAsDecimal();
+        fail("Expected exception " + NumberFormatException.class);
+    } catch (NumberFormatException numberFormatException0) {
+    }
+}

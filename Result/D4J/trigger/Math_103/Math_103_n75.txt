@@ -1,0 +1,5 @@
+public void test105() throws Throwable  {
+    NormalDistributionImpl normalDistributionImpl0 = new NormalDistributionImpl(0.0d, 1.0d);
+    double double0 = normalDistributionImpl0.cumulativeProbability(1.0E120d);
+    assertEquals(1.0, double0, 1.0E-12d);
+}

@@ -1,0 +1,8 @@
+public void test53() throws Throwable  {
+    Gson gson0 = new Gson();
+    JsonElement jsonElement0 = gson0.toJsonTree("1");
+    JsonTreeReader jsonTreeReader0 = new JsonTreeReader(jsonElement0);
+    jsonTreeReader0.skipValue();
+    jsonTreeReader0.hasNext();
+    assertEquals(JsonToken.END_DOCUMENT, jsonTreeReader0.peek());
+}

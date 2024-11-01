@@ -1,0 +1,4 @@
+public void test49() throws Throwable  {
+    double double0 = MathUtils.factorialLog(0);
+    assertEquals(double0, 0, 0);
+}

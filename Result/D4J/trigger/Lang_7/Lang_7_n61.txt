@@ -1,0 +1,9 @@
+public void test14() {
+    Exception exception0 = null;
+    try {
+      Number number0 = NumberUtils.createNumber("--0.12");
+    } catch (NumberFormatException ex) {
+      exception0 = ex;
+    }
+    assertNotNull(exception0);
+}

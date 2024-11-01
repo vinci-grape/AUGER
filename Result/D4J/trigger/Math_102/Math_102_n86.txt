@@ -1,0 +1,7 @@
+public void test44() throws Throwable  {
+    ChiSquareTestImpl chiSquareTestImpl0 = new ChiSquareTestImpl((ChiSquaredDistribution) null);
+    double[] doubleArray0 = {25.0d, 25.0d, 25.0d, 25.0d};
+    long[] longArray0 = {50L, 50L, 50L, 50L};
+    double double0 = chiSquareTestImpl0.chiSquare(doubleArray0, longArray0);
+    assertEquals(0.0d, double0, 0.01d);
+}

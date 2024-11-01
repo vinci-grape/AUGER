@@ -1,0 +1,6 @@
+public void test48()
+    {
+        HelpFormatter helpFormatter0 = new HelpFormatter();
+        int int0 = helpFormatter0.findWrapPos("abcdefg", 5, 0);
+        assertEquals(5, int0);
+    }

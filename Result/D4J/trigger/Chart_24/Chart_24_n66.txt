@@ -1,0 +1,5 @@
+public void test96() throws Throwable  {
+    GrayPaintScale grayPaintScale0 = new GrayPaintScale(0, 5);
+    Paint paint0 = grayPaintScale0.getPaint(10);
+    assertTrue(paint0 instanceof Color);
+}

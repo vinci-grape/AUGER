@@ -1,0 +1,6 @@
+public void test32() throws IOException {
+        StringWriter stringWriter = new StringWriter();
+        JsonWriter jsonWriter = new JsonWriter(stringWriter);
+        jsonWriter.nullValue();
+        assertEquals("null", stringWriter.toString());
+    }

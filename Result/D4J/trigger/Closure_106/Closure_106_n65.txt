@@ -1,0 +1,6 @@
+public void test46() throws Throwable  {
+    JSDocInfoBuilder jSDocInfoBuilder0 = new JSDocInfoBuilder(false);
+    boolean boolean0 = jSDocInfoBuilder0.recordBlockDescription("block_description");
+    assertEquals(true, boolean0);
+    assertEquals(true, jSDocInfoBuilder0.isPopulated());
+}

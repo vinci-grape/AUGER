@@ -1,0 +1,3519 @@
+bug_id,defective_method,fixed_method,class_name,class_constructor
+Cli_251,"private boolean isJavaProperty(final String token) {
+        final String opt = token.substring(0, 1);
+        final Option option = options.getOption(opt);
+
+        return option != null && (option.getArgs() >= 2 || option.getArgs() == Option.UNLIMITED_VALUES);
+    }","private boolean isJavaProperty(final String token) {
+        final String opt = token.isEmpty() ? null : token.substring(0, 1);
+        final Option option = options.getOption(opt);
+
+        return option != null && (option.getArgs() >= 2 || option.getArgs() == Option.UNLIMITED_VALUES);
+    }",DefaultParser,"public  DefaultParser();
+public  DefaultParser(final boolean allowPartialMatching);
+private  DefaultParser(final boolean allowPartialMatching,
+            final Boolean stripLeadingAndTrailingQuotes);
+"
+Cli_257,"private void checkRequiredArgs() throws ParseException {
+        if (currentOption != null && currentOption.requiresArg()) {
+            throw new MissingArgumentException(currentOption);
+        }
+    }","private void checkRequiredArgs() throws ParseException {
+        if (currentOption != null && currentOption.requiresArg()) {
+            if (isJavaProperty(currentOption.getKey()) && currentOption.getValuesList().size() == 1) {
+                return;
+            }
+            throw new MissingArgumentException(currentOption);
+        }
+    }",DefaultParser,"public  DefaultParser();
+public  DefaultParser(final boolean allowPartialMatching);
+private  DefaultParser(final boolean allowPartialMatching,
+            final Boolean stripLeadingAndTrailingQuotes);
+"
+Cli_261,"public Properties getOptionProperties(final Option option) {
+        final Properties props = new Properties();
+
+        for (final Option processedOption : options) {
+            if (processedOption.equals(option)) {
+                final List<String> values = processedOption.getValuesList();
+                if (values.size() >= 2) {
+                    // use the first 2 arguments as the key/value pair
+                    props.put(values.get(0), values.get(1));
+                } else if (values.size() == 1) {
+                    // no explicit value, handle it as a boolean
+                    props.put(values.get(0), ""true"");
+                }
+            }
+        }
+
+        return props;
+    }","public Properties getOptionProperties(final Option option) {
+        final Properties props = new Properties();
+        for (final Option processedOption : options) {
+            if (processedOption.equals(option)) {
+                processPropertiesFromValues(props, processedOption.getValuesList());
+            }
+        }
+
+        return props;
+    }",CommandLine,"protected  CommandLine();
+"
+Cli_261,"public Properties getOptionProperties(final String opt) {
+        final Properties props = new Properties();
+
+        for (final Option option : options) {
+            if (opt.equals(option.getOpt()) || opt.equals(option.getLongOpt())) {
+                final List<String> values = option.getValuesList();
+                if (values.size() >= 2) {
+                    // use the first 2 arguments as the key/value pair
+                    props.put(values.get(0), values.get(1));
+                } else if (values.size() == 1) {
+                    // no explicit value, handle it as a boolean
+                    props.put(values.get(0), ""true"");
+                }
+            }
+        }
+
+        return props;
+    }","public Properties getOptionProperties(final String opt) {
+        final Properties props = new Properties();
+        for (final Option option : options) {
+            if (opt.equals(option.getOpt()) || opt.equals(option.getLongOpt())) {
+                processPropertiesFromValues(props, option.getValuesList());
+            }
+        }
+
+        return props;
+    }",CommandLine,"protected  CommandLine();
+"
+Codec_161,"public String encode(String input, final Languages.LanguageSet languageSet) {
+        final Map<String, List<Rule>> rules = Rule.getInstanceMap(this.nameType, RuleType.RULES, languageSet);
+        // rules common across many (all) languages
+        final Map<String, List<Rule>> finalRules1 = Rule.getInstanceMap(this.nameType, this.ruleType, ""common"");
+        // rules that apply to a specific language that may be ambiguous or wrong if applied to other languages
+        final Map<String, List<Rule>> finalRules2 = Rule.getInstanceMap(this.nameType, this.ruleType, languageSet);
+
+        // tidy the input
+        // lower case is a locale-dependent operation
+        input = input.toLowerCase(Locale.ENGLISH).replace('-', ' ').trim();
+
+        if (this.nameType == NameType.GENERIC) {
+            if (input.startsWith(""d'"")) { // check for d'
+                final String remainder = input.substring(2);
+                final String combined = ""d"" + remainder;
+                return ""("" + encode(remainder) + "")-("" + encode(combined) + "")"";
+            }
+            for (final String l : NAME_PREFIXES.get(this.nameType)) {
+                // handle generic prefixes
+                if (input.startsWith(l + "" "")) {
+                    // check for any prefix in the words list
+                    final String remainder = input.substring(l.length() + 1); // input without the prefix
+                    final String combined = l + remainder; // input with prefix without space
+                    return ""("" + encode(remainder) + "")-("" + encode(combined) + "")"";
+                }
+            }
+        }
+
+        final List<String> words = Arrays.asList(input.split(""\\s+""));
+        final List<String> words2 = new ArrayList<>();
+
+        // special-case handling of word prefixes based upon the name type
+        switch (this.nameType) {
+        case SEPHARDIC:
+            words.forEach(aWord -> {
+                final String[] parts = aWord.split(""'"");
+                words2.add(parts[parts.length - 1]);
+            });
+            words2.removeAll(NAME_PREFIXES.get(this.nameType));
+            break;
+        case ASHKENAZI:
+            words2.addAll(words);
+            words2.removeAll(NAME_PREFIXES.get(this.nameType));
+            break;
+        case GENERIC:
+            words2.addAll(words);
+            break;
+        default:
+            throw new IllegalStateException(""Unreachable case: "" + this.nameType);
+        }
+
+        if (this.concat) {
+            // concat mode enabled
+            input = join(words2, "" "");
+        } else if (words2.size() == 1) {
+            // not a multi-word name
+            input = words.iterator().next();
+        } else {
+            // encode each word in a multi-word name separately (normally used for approx matches)
+            final StringBuilder result = new StringBuilder();
+            words2.forEach(word -> result.append(""-"").append(encode(word)));
+            // return the result without the leading ""-""
+            return result.substring(1);
+        }
+
+        PhonemeBuilder phonemeBuilder = PhonemeBuilder.empty(languageSet);
+
+        // loop over each char in the input - we will handle the increment manually
+        for (int i = 0; i < input.length();) {
+            final RulesApplication rulesApplication =
+                    new RulesApplication(rules, input, phonemeBuilder, i, maxPhonemes).invoke();
+            i = rulesApplication.getI();
+            phonemeBuilder = rulesApplication.getPhonemeBuilder();
+        }
+
+        // Apply the general rules
+        phonemeBuilder = applyFinalRules(phonemeBuilder, finalRules1);
+        // Apply the language-specific rules
+        phonemeBuilder = applyFinalRules(phonemeBuilder, finalRules2);
+
+        return phonemeBuilder.makeString();
+    }","public String encode(String input, final Languages.LanguageSet languageSet) {
+        final Map<String, List<Rule>> rules = Rule.getInstanceMap(this.nameType, RuleType.RULES, languageSet);
+        // rules common across many (all) languages
+        final Map<String, List<Rule>> finalRules1 = Rule.getInstanceMap(this.nameType, this.ruleType, ""common"");
+        // rules that apply to a specific language that may be ambiguous or wrong if applied to other languages
+        final Map<String, List<Rule>> finalRules2 = Rule.getInstanceMap(this.nameType, this.ruleType, languageSet);
+
+        // tidy the input
+        // lower case is a locale-dependent operation
+        input = input.toLowerCase(Locale.ENGLISH).replace('-', ' ').trim();
+
+        if (this.nameType == NameType.GENERIC) {
+            if (input.startsWith(""d'"")) { // check for d'
+                final String remainder = input.substring(2);
+                final String combined = ""d"" + remainder;
+                return ""("" + encode(remainder) + "")-("" + encode(combined) + "")"";
+            }
+            for (final String l : NAME_PREFIXES.get(this.nameType)) {
+                // handle generic prefixes
+                if (input.startsWith(l + "" "")) {
+                    // check for any prefix in the words list
+                    final String remainder = input.substring(l.length() + 1); // input without the prefix
+                    final String combined = l + remainder; // input with prefix without space
+                    return ""("" + encode(remainder) + "")-("" + encode(combined) + "")"";
+                }
+            }
+        }
+
+        final List<String> words = Arrays.asList(input.split(""\\s+""));
+        final List<String> words2 = new ArrayList<>();
+
+        // special-case handling of word prefixes based upon the name type
+        switch (this.nameType) {
+        case SEPHARDIC:
+            words.forEach(aWord -> {
+                final String[] parts = aWord.split(""'"", -1);
+                words2.add(parts[parts.length - 1]);
+            });
+            words2.removeAll(NAME_PREFIXES.get(this.nameType));
+            break;
+        case ASHKENAZI:
+            words2.addAll(words);
+            words2.removeAll(NAME_PREFIXES.get(this.nameType));
+            break;
+        case GENERIC:
+            words2.addAll(words);
+            break;
+        default:
+            throw new IllegalStateException(""Unreachable case: "" + this.nameType);
+        }
+
+        if (this.concat) {
+            // concat mode enabled
+            input = join(words2, "" "");
+        } else if (words2.size() == 1) {
+            // not a multi-word name
+            input = words.iterator().next();
+        } else if (!words2.isEmpty()) {
+            // encode each word in a multi-word name separately (normally used for approx matches)
+            final StringBuilder result = new StringBuilder();
+            words2.forEach(word -> result.append(""-"").append(encode(word)));
+            // return the result without the leading ""-""
+            return result.substring(1);
+        }
+
+        PhonemeBuilder phonemeBuilder = PhonemeBuilder.empty(languageSet);
+
+        // loop over each char in the input - we will handle the increment manually
+        for (int i = 0; i < input.length();) {
+            final RulesApplication rulesApplication =
+                    new RulesApplication(rules, input, phonemeBuilder, i, maxPhonemes).invoke();
+            i = rulesApplication.getI();
+            phonemeBuilder = rulesApplication.getPhonemeBuilder();
+        }
+
+        // Apply the general rules
+        phonemeBuilder = applyFinalRules(phonemeBuilder, finalRules1);
+        // Apply the language-specific rules
+        phonemeBuilder = applyFinalRules(phonemeBuilder, finalRules2);
+
+        return phonemeBuilder.makeString();
+    }",PhoneticEngine,"public  PhoneticEngine(final NameType nameType, final RuleType ruleType, final boolean concat);
+public  PhoneticEngine(final NameType nameType, final RuleType ruleType, final boolean concat,
+                          final int maxPhonemes);
+"
+Codec_163,"public static final byte[] encodeQuotedPrintable(BitSet printable, final byte[] bytes, final boolean strict) {
+        if (bytes == null) {
+            return null;
+        }
+        if (printable == null) {
+            printable = PRINTABLE_CHARS;
+        }
+        final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        final int bytesLength = bytes.length;
+
+        if (strict) {
+            int pos = 1;
+            // encode up to buffer.length - 3, the last three octets will be treated
+            // separately for simplification of note #3
+            for (int i = 0; i < bytesLength - 3; i++) {
+                final int b = getUnsignedOctet(i, bytes);
+                if (pos < SAFE_LENGTH) {
+                    // up to this length it is safe to add any byte, encoded or not
+                    pos += encodeByte(b, !printable.get(b), buffer);
+                } else {
+                    // rule #3: whitespace at the end of a line *must* be encoded
+                    encodeByte(b, !printable.get(b) || isWhitespace(b), buffer);
+
+                    // rule #5: soft line break
+                    buffer.write(ESCAPE_CHAR);
+                    buffer.write(CR);
+                    buffer.write(LF);
+                    pos = 1;
+                }
+            }
+
+            // rule #3: whitespace at the end of a line *must* be encoded
+            // if we would do a soft break line after this octet, encode whitespace
+            int b = getUnsignedOctet(bytesLength - 3, bytes);
+            boolean encode = !printable.get(b) || isWhitespace(b) && pos > SAFE_LENGTH - 5;
+            pos += encodeByte(b, encode, buffer);
+
+            // note #3: '=' *must not* be the ultimate or penultimate character
+            // simplification: if < 6 bytes left, do a soft line break as we may need
+            //                 exactly 6 bytes space for the last 2 bytes
+            if (pos > SAFE_LENGTH - 2) {
+                buffer.write(ESCAPE_CHAR);
+                buffer.write(CR);
+                buffer.write(LF);
+            }
+            for (int i = bytesLength - 2; i < bytesLength; i++) {
+                b = getUnsignedOctet(i, bytes);
+                // rule #3: trailing whitespace shall be encoded
+                encode = !printable.get(b) || i > bytesLength - 2 && isWhitespace(b);
+                encodeByte(b, encode, buffer);
+            }
+        } else {
+            for (final byte c : bytes) {
+                int b = c;
+                if (b < 0) {
+                    b = 256 + b;
+                }
+                if (printable.get(b)) {
+                    buffer.write(b);
+                } else {
+                    encodeQuotedPrintable(b, buffer);
+                }
+            }
+        }
+        return buffer.toByteArray();
+    }","public static final byte[] encodeQuotedPrintable(BitSet printable, final byte[] bytes, final boolean strict) {
+        if (bytes == null) {
+            return null;
+        }
+        if (printable == null) {
+            printable = PRINTABLE_CHARS;
+        }
+        final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        final int bytesLength = bytes.length;
+
+        if (strict) {
+            if (bytesLength < MIN_BYTES) {
+                return null;
+            }
+
+            int pos = 1;
+            // encode up to buffer.length - 3, the last three octets will be treated
+            // separately for simplification of note #3
+            for (int i = 0; i < bytesLength - 3; i++) {
+                final int b = getUnsignedOctet(i, bytes);
+                if (pos < SAFE_LENGTH) {
+                    // up to this length it is safe to add any byte, encoded or not
+                    pos += encodeByte(b, !printable.get(b), buffer);
+                } else {
+                    // rule #3: whitespace at the end of a line *must* be encoded
+                    encodeByte(b, !printable.get(b) || isWhitespace(b), buffer);
+
+                    // rule #5: soft line break
+                    buffer.write(ESCAPE_CHAR);
+                    buffer.write(CR);
+                    buffer.write(LF);
+                    pos = 1;
+                }
+            }
+
+            // rule #3: whitespace at the end of a line *must* be encoded
+            // if we would do a soft break line after this octet, encode whitespace
+            int b = getUnsignedOctet(bytesLength - 3, bytes);
+            boolean encode = !printable.get(b) || isWhitespace(b) && pos > SAFE_LENGTH - 5;
+            pos += encodeByte(b, encode, buffer);
+
+            // note #3: '=' *must not* be the ultimate or penultimate character
+            // simplification: if < 6 bytes left, do a soft line break as we may need
+            //                 exactly 6 bytes space for the last 2 bytes
+            if (pos > SAFE_LENGTH - 2) {
+                buffer.write(ESCAPE_CHAR);
+                buffer.write(CR);
+                buffer.write(LF);
+            }
+            for (int i = bytesLength - 2; i < bytesLength; i++) {
+                b = getUnsignedOctet(i, bytes);
+                // rule #3: trailing whitespace shall be encoded
+                encode = !printable.get(b) || i > bytesLength - 2 && isWhitespace(b);
+                encodeByte(b, encode, buffer);
+            }
+        } else {
+            for (final byte c : bytes) {
+                int b = c;
+                if (b < 0) {
+                    b = 256 + b;
+                }
+                if (printable.get(b)) {
+                    buffer.write(b);
+                } else {
+                    encodeQuotedPrintable(b, buffer);
+                }
+            }
+        }
+        return buffer.toByteArray();
+    }",QuotedPrintableCodec,"public  QuotedPrintableCodec();
+public  QuotedPrintableCodec(final boolean strict);
+public  QuotedPrintableCodec(final Charset charset);
+public  QuotedPrintableCodec(final Charset charset, final boolean strict);
+public  QuotedPrintableCodec(final String charsetName);
+"
+Codec_164,"@Override
+    public final String encode(String name) {
+        // Bulletproof for trivial input - NINO
+        if (name == null || EMPTY.equalsIgnoreCase(name) || SPACE.equalsIgnoreCase(name) || name.length() == 1) {
+            return EMPTY;
+        }
+
+        // Preprocessing
+        name = cleanName(name);
+
+        // BEGIN: Actual encoding part of the algorithm...
+        // 1. Delete all vowels unless the vowel begins the word
+        name = removeVowels(name);
+
+        // 2. Remove second consonant from any double consonant
+        name = removeDoubleConsonants(name);
+
+        // 3. Reduce codex to 6 letters by joining the first 3 and last 3 letters
+        name = getFirst3Last3(name);
+
+        return name;
+    }","@Override
+    public final String encode(String name) {
+        // Bulletproof for trivial input - NINO
+        if (name == null || EMPTY.equalsIgnoreCase(name) || SPACE.equalsIgnoreCase(name) || name.length() == 1) {
+            return EMPTY;
+        }
+
+        // Preprocessing
+        name = cleanName(name);
+
+        // Bulletproof if name becomes empty after cleanName(name)
+        if (SPACE.equals(name) || name.isEmpty()) {
+            return EMPTY;
+        }
+
+        // BEGIN: Actual encoding part of the algorithm...
+        // 1. Delete all vowels unless the vowel begins the word
+        name = removeVowels(name);
+
+        // Bulletproof if name becomes empty after removeVowels(name)
+        if (SPACE.equals(name) || name.isEmpty()) {
+            return EMPTY;
+        }
+
+        // 2. Remove second consonant from any double consonant
+        name = removeDoubleConsonants(name);
+
+        // 3. Reduce codex to 6 letters by joining the first 3 and last 3 letters
+        name = getFirst3Last3(name);
+
+        return name;
+    }",MatchRatingApproachEncoder,
+Codec_166,"char getMappingCode(final char c) {
+        if (!Character.isLetter(c)) {
+            return 0;
+        }
+        return this.soundexMapping[Character.toUpperCase(c) - 'A'];
+    }","char getMappingCode(final char c) {
+        if (!Character.isLetter(c)) {
+            return 0;
+        }
+        final int index = Character.toUpperCase(c) - 'A';
+        if (index < 0 || index >= this.soundexMapping.length) {
+            return 0;
+        }
+        return this.soundexMapping[index];
+    }",RefinedSoundex,"public  RefinedSoundex();
+public  RefinedSoundex(final char[] mapping);
+public  RefinedSoundex(final String mapping);
+"
+Compress_461,"private void pushback(final byte[] buf, final int offset, final int length) throws IOException {
+        ((PushbackInputStream) inputStream).unread(buf, offset, length);
+        pushedBackBytes(length);
+    }","private void pushback(final byte[] buf, final int offset, final int length) throws IOException {
+        if (offset < 0) {
+            // Instead of ArrayIndexOutOfBoundsException
+            throw new IOException(String.format(""Negative offset %,d into buffer"", offset));
+        }
+        ((PushbackInputStream) inputStream).unread(buf, offset, length);
+        pushedBackBytes(length);
+    }",ZipArchiveInputStream,"public  ZipArchiveInputStream(final InputStream inputStream);
+public  ZipArchiveInputStream(final InputStream inputStream, final String encoding);
+public  ZipArchiveInputStream(final InputStream inputStream, final String encoding, final boolean useUnicodeExtraFields);
+public  ZipArchiveInputStream(final InputStream inputStream,
+                                 final String encoding,
+                                 final boolean useUnicodeExtraFields,
+                                 final boolean allowStoredEntriesWithDataDescriptor);
+public  ZipArchiveInputStream(final InputStream inputStream,
+                                 final String encoding,
+                                 final boolean useUnicodeExtraFields,
+                                 final boolean allowStoredEntriesWithDataDescriptor,
+            final boolean skipSplitSig);
+"
+Compress_462,"public void finish() throws IOException {
+        if (!finished) {
+            writeTrailer();
+            finished = true;
+        }
+    }","public void finish() throws IOException {
+        if (!finished) {
+            flushBlock();
+            writeTrailer();
+            finished = true;
+        }
+    }",FramedLZ4CompressorOutputStream,"public  FramedLZ4CompressorOutputStream(final OutputStream out);
+public  FramedLZ4CompressorOutputStream(final OutputStream out, final Parameters params);
+"
+Compress_462,"@Override
+    public void write(final byte[] data, int off, int len) throws IOException {
+        if (params.withContentChecksum) {
+            contentHash.update(data, off, len);
+        }
+        final int blockDataLength = blockData.length;
+        while (len > 0) {
+            int copyLen = Math.min(len, blockDataLength);
+            System.arraycopy(data, off, blockData, 0, copyLen);
+            off += blockDataLength;
+            len -= copyLen;
+            flushBlock(copyLen);
+        }
+    }","@Override
+    public void write(final byte[] data, int off, int len) throws IOException {
+        if (params.withContentChecksum) {
+            contentHash.update(data, off, len);
+        }
+        int blockDataRemaining = blockData.length - currentIndex;
+        while (len > 0) {
+            int copyLen = Math.min(len, blockDataRemaining);
+            System.arraycopy(data, off, blockData, currentIndex, copyLen);
+            off += copyLen;
+            blockDataRemaining -= copyLen;
+            len -= copyLen;
+            currentIndex += copyLen;
+            if (blockDataRemaining == 0) {
+                flushBlock();
+                blockDataRemaining = blockData.length;
+            }
+        }
+    }",FramedLZ4CompressorOutputStream,"public  FramedLZ4CompressorOutputStream(final OutputStream out);
+public  FramedLZ4CompressorOutputStream(final OutputStream out, final Parameters params);
+"
+Compress_463,"public void finish() throws IOException {
+        if (currentIndex > 0) {
+            flushBuffer();
+        }
+    }","public void finish() throws IOException {
+        flushBuffer();
+    }",FramedSnappyCompressorOutputStream,"public  FramedSnappyCompressorOutputStream(final OutputStream out);
+public  FramedSnappyCompressorOutputStream(final OutputStream out, final Parameters params);
+"
+Compress_463,"private void flushBuffer() throws IOException {
+        out.write(FramedSnappyCompressorInputStream.COMPRESSED_CHUNK_TYPE);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (OutputStream o = new SnappyCompressorOutputStream(baos, currentIndex, params)) {
+            o.write(buffer, 0, currentIndex);
+        }
+        final byte[] b = baos.toByteArray();
+        writeLittleEndian(3, b.length + 4L /* CRC */);
+        writeCrc();
+        out.write(b);
+        currentIndex = 0;
+    }","private void flushBuffer() throws IOException {
+        if (currentIndex == 0) {
+            return;
+        }
+        out.write(FramedSnappyCompressorInputStream.COMPRESSED_CHUNK_TYPE);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (OutputStream o = new SnappyCompressorOutputStream(baos, currentIndex, params)) {
+            o.write(buffer, 0, currentIndex);
+        }
+        final byte[] b = baos.toByteArray();
+        writeLittleEndian(3, b.length + 4L /* CRC */);
+        writeCrc();
+        out.write(b);
+        currentIndex = 0;
+    }",FramedSnappyCompressorOutputStream,"public  FramedSnappyCompressorOutputStream(final OutputStream out);
+public  FramedSnappyCompressorOutputStream(final OutputStream out, final Parameters params);
+"
+Compress_463,"@Override
+    public void write(final byte[] data, int off, int len) throws IOException {
+        if (currentIndex + len > MAX_COMPRESSED_BUFFER_SIZE) {
+            flushBuffer();
+            while (len > MAX_COMPRESSED_BUFFER_SIZE) {
+                System.arraycopy(data, off, buffer, 0, MAX_COMPRESSED_BUFFER_SIZE);
+                off += MAX_COMPRESSED_BUFFER_SIZE;
+                len -= MAX_COMPRESSED_BUFFER_SIZE;
+                currentIndex = MAX_COMPRESSED_BUFFER_SIZE;
+                flushBuffer();
+            }
+        }
+        System.arraycopy(data, off, buffer, currentIndex, len);
+        currentIndex += len;
+    }","@Override
+    public void write(final byte[] data, int off, int len) throws IOException {
+        int blockDataRemaining = buffer.length - currentIndex;
+        while (len > 0) {
+            final int copyLen = Math.min(len, blockDataRemaining);
+            System.arraycopy(data, off, buffer, currentIndex, copyLen);
+            off += copyLen;
+            blockDataRemaining -= copyLen;
+            len -= copyLen;
+            currentIndex += copyLen;
+            if (blockDataRemaining == 0) {
+                flushBuffer();
+                blockDataRemaining = buffer.length;
+            }
+        }
+    }",FramedSnappyCompressorOutputStream,"public  FramedSnappyCompressorOutputStream(final OutputStream out);
+public  FramedSnappyCompressorOutputStream(final OutputStream out, final Parameters params);
+"
+Compress_465,"public boolean isFile() {
+        if (file != null) {
+            return Files.isRegularFile(file, linkOptions);
+        }
+        if (linkFlag == LF_OLDNORM || linkFlag == LF_NORMAL) {
+            return true;
+        }
+        return !getName().endsWith(""/"");
+    }","public boolean isFile() {
+        if (file != null) {
+            return Files.isRegularFile(file, linkOptions);
+        }
+        if (linkFlag == LF_OLDNORM || linkFlag == LF_NORMAL) {
+            return true;
+        }
+        return linkFlag != LF_DIR && !getName().endsWith(""/"");
+    }",TarArchiveEntry,"private  TarArchiveEntry(final boolean preserveAbsolutePath);
+public  TarArchiveEntry(final byte[] headerBuf);
+public  TarArchiveEntry(final byte[] headerBuf, final ZipEncoding encoding);
+public  TarArchiveEntry(final byte[] headerBuf, final ZipEncoding encoding, final boolean lenient);
+public  TarArchiveEntry(final byte[] headerBuf, final ZipEncoding encoding, final boolean lenient, final long dataOffset);
+public  TarArchiveEntry(final File file);
+public  TarArchiveEntry(final File file, final String fileName);
+public  TarArchiveEntry(final Map<String, String> globalPaxHeaders, final byte[] headerBuf, final ZipEncoding encoding, final boolean lenient);
+public  TarArchiveEntry(final Map<String, String> globalPaxHeaders, final byte[] headerBuf, final ZipEncoding encoding, final boolean lenient,
+            final long dataOffset);
+public  TarArchiveEntry(final Path file);
+public  TarArchiveEntry(final Path file, final String fileName, final LinkOption... linkOptions);
+public  TarArchiveEntry(final String name);
+public  TarArchiveEntry(String name, final boolean preserveAbsolutePath);
+public  TarArchiveEntry(final String name, final byte linkFlag);
+public  TarArchiveEntry(final String name, final byte linkFlag, final boolean preserveAbsolutePath);
+"
+Compress_467,"public ZipArchiveOutputStream(final OutputStream out) {
+        this.outputStream = out;
+        this.channel = null;
+        def = new Deflater(level, true);
+        streamCompressor = StreamCompressor.create(out, def);
+        isSplitZip = false;
+    }","public ZipArchiveOutputStream(final OutputStream out) {
+        this.outputStream = out;
+        def = new Deflater(level, true);
+        streamCompressor = StreamCompressor.create(out, def);
+        isSplitZip = false;
+    }",ZipArchiveOutputStream,"public  ZipArchiveOutputStream(final File file);
+public  ZipArchiveOutputStream(final File file, final long zipSplitSize);
+public  ZipArchiveOutputStream(final OutputStream out);
+public  ZipArchiveOutputStream(final Path path, final long zipSplitSize);
+public  ZipArchiveOutputStream(final Path file, final OpenOption... options);
+public  ZipArchiveOutputStream(final SeekableByteChannel channel);
+"
+Compress_467,"public ZipArchiveOutputStream(final Path path, final long zipSplitSize) throws IOException {
+        def = new Deflater(level, true);
+        this.outputStream = new ZipSplitOutputStream(path, zipSplitSize);
+        streamCompressor = StreamCompressor.create(this.outputStream, def);
+        channel = null;
+        isSplitZip = true;
+    }","public ZipArchiveOutputStream(final Path path, final long zipSplitSize) throws IOException {
+        def = new Deflater(level, true);
+        this.outputStream = new ZipSplitOutputStream(path, zipSplitSize);
+        streamCompressor = StreamCompressor.create(this.outputStream, def);
+        isSplitZip = true;
+    }",ZipArchiveOutputStream,"public  ZipArchiveOutputStream(final File file);
+public  ZipArchiveOutputStream(final File file, final long zipSplitSize);
+public  ZipArchiveOutputStream(final OutputStream out);
+public  ZipArchiveOutputStream(final Path path, final long zipSplitSize);
+public  ZipArchiveOutputStream(final Path file, final OpenOption... options);
+public  ZipArchiveOutputStream(final SeekableByteChannel channel);
+"
+Compress_467,"public ZipArchiveOutputStream(final Path file, final OpenOption... options) throws IOException {
+        def = new Deflater(level, true);
+        OutputStream outputStream = null;
+        SeekableByteChannel channel = null;
+        StreamCompressor streamCompressor;
+        try {
+            channel = Files.newByteChannel(file,
+                    EnumSet.of(StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.READ, StandardOpenOption.TRUNCATE_EXISTING));
+            // will never get opened properly when an exception is thrown so doesn't need to get closed
+            streamCompressor = StreamCompressor.create(channel, def); // NOSONAR
+        } catch (final IOException e) { // NOSONAR
+            final Closeable c = channel;
+            org.apache.commons.io.IOUtils.closeQuietly(c);
+            channel = null;
+            outputStream = Files.newOutputStream(file, options);
+            streamCompressor = StreamCompressor.create(outputStream, def);
+        }
+        this.outputStream = outputStream;
+        this.channel = channel;
+        this.streamCompressor = streamCompressor;
+        this.isSplitZip = false;
+    }","public ZipArchiveOutputStream(final Path file, final OpenOption... options) throws IOException {
+        def = new Deflater(level, true);
+        this.outputStream = options.length == 0 ? new FileRandomAccessOutputStream(file) : new FileRandomAccessOutputStream(file, options);
+        this.streamCompressor = StreamCompressor.create(outputStream, def);
+        this.isSplitZip = false;
+    }",ZipArchiveOutputStream,"public  ZipArchiveOutputStream(final File file);
+public  ZipArchiveOutputStream(final File file, final long zipSplitSize);
+public  ZipArchiveOutputStream(final OutputStream out);
+public  ZipArchiveOutputStream(final Path path, final long zipSplitSize);
+public  ZipArchiveOutputStream(final Path file, final OpenOption... options);
+public  ZipArchiveOutputStream(final SeekableByteChannel channel);
+"
+Compress_467,"public ZipArchiveOutputStream(final SeekableByteChannel channel) {
+        this.channel = channel;
+        def = new Deflater(level, true);
+        streamCompressor = StreamCompressor.create(channel, def);
+        outputStream = null;
+        isSplitZip = false;
+    }","public ZipArchiveOutputStream(final SeekableByteChannel channel) {
+        this.outputStream = new SeekableChannelRandomAccessOutputStream(channel);
+        def = new Deflater(level, true);
+        streamCompressor = StreamCompressor.create(outputStream, def);
+        isSplitZip = false;
+    }",ZipArchiveOutputStream,"public  ZipArchiveOutputStream(final File file);
+public  ZipArchiveOutputStream(final File file, final long zipSplitSize);
+public  ZipArchiveOutputStream(final OutputStream out);
+public  ZipArchiveOutputStream(final Path path, final long zipSplitSize);
+public  ZipArchiveOutputStream(final Path file, final OpenOption... options);
+public  ZipArchiveOutputStream(final SeekableByteChannel channel);
+"
+Compress_467,"private void closeEntry(final boolean actuallyNeedsZip64, final boolean phased) throws IOException {
+        if (!phased && channel != null) {
+            rewriteSizesAndCrc(actuallyNeedsZip64);
+        }
+
+        if (!phased) {
+            writeDataDescriptor(entry.entry);
+        }
+        entry = null;
+    }","private void closeEntry(final boolean actuallyNeedsZip64, final boolean phased) throws IOException {
+        if (!phased && outputStream instanceof RandomAccessOutputStream) {
+            rewriteSizesAndCrc(actuallyNeedsZip64);
+        }
+
+        if (!phased) {
+            writeDataDescriptor(entry.entry);
+        }
+        entry = null;
+    }",ZipArchiveOutputStream,"public  ZipArchiveOutputStream(final File file);
+public  ZipArchiveOutputStream(final File file, final long zipSplitSize);
+public  ZipArchiveOutputStream(final OutputStream out);
+public  ZipArchiveOutputStream(final Path path, final long zipSplitSize);
+public  ZipArchiveOutputStream(final Path file, final OpenOption... options);
+public  ZipArchiveOutputStream(final SeekableByteChannel channel);
+"
+Compress_467,"private byte[] createLocalFileHeader(final ZipArchiveEntry ze, final ByteBuffer name, final boolean encodable, final boolean phased,
+            final long archiveOffset) {
+        final ZipExtraField oldEx = ze.getExtraField(ResourceAlignmentExtraField.ID);
+        if (oldEx != null) {
+            ze.removeExtraField(ResourceAlignmentExtraField.ID);
+        }
+        final ResourceAlignmentExtraField oldAlignmentEx = oldEx instanceof ResourceAlignmentExtraField ? (ResourceAlignmentExtraField) oldEx : null;
+
+        int alignment = ze.getAlignment();
+        if (alignment <= 0 && oldAlignmentEx != null) {
+            alignment = oldAlignmentEx.getAlignment();
+        }
+
+        if (alignment > 1 || oldAlignmentEx != null && !oldAlignmentEx.allowMethodChange()) {
+            final int oldLength = LFH_FILENAME_OFFSET + name.limit() - name.position() + ze.getLocalFileDataExtra().length;
+
+            final int padding = (int) (-archiveOffset - oldLength - ZipExtraField.EXTRAFIELD_HEADER_SIZE - ResourceAlignmentExtraField.BASE_SIZE
+                    & alignment - 1);
+            ze.addExtraField(new ResourceAlignmentExtraField(alignment, oldAlignmentEx != null && oldAlignmentEx.allowMethodChange(), padding));
+        }
+
+        final byte[] extra = ze.getLocalFileDataExtra();
+        final int nameLen = name.limit() - name.position();
+        final int len = LFH_FILENAME_OFFSET + nameLen + extra.length;
+        final byte[] buf = new byte[len];
+
+        System.arraycopy(LFH_SIG, 0, buf, LFH_SIG_OFFSET, ZipConstants.WORD);
+
+        // store method in local variable to prevent multiple method calls
+        final int zipMethod = ze.getMethod();
+        final boolean dataDescriptor = usesDataDescriptor(zipMethod, phased);
+
+        ZipShort.putShort(versionNeededToExtract(zipMethod, hasZip64Extra(ze), dataDescriptor), buf, LFH_VERSION_NEEDED_OFFSET);
+
+        final GeneralPurposeBit generalPurposeBit = getGeneralPurposeBits(!encodable && fallbackToUTF8, dataDescriptor);
+        generalPurposeBit.encode(buf, LFH_GPB_OFFSET);
+
+        // compression method
+        ZipShort.putShort(zipMethod, buf, LFH_METHOD_OFFSET);
+
+        ZipUtil.toDosTime(ze.getTime(), buf, LFH_TIME_OFFSET);
+
+        // CRC
+        if (phased || !(zipMethod == DEFLATED || channel != null)) {
+            ZipLong.putLong(ze.getCrc(), buf, LFH_CRC_OFFSET);
+        } else {
+            System.arraycopy(LZERO, 0, buf, LFH_CRC_OFFSET, ZipConstants.WORD);
+        }
+
+        // compressed length
+        // uncompressed length
+        if (hasZip64Extra(entry.entry)) {
+            // point to ZIP64 extended information extra field for
+            // sizes, may get rewritten once sizes are known if
+            // stream is seekable
+            ZipLong.ZIP64_MAGIC.putLong(buf, LFH_COMPRESSED_SIZE_OFFSET);
+            ZipLong.ZIP64_MAGIC.putLong(buf, LFH_ORIGINAL_SIZE_OFFSET);
+        } else if (phased) {
+            ZipLong.putLong(ze.getCompressedSize(), buf, LFH_COMPRESSED_SIZE_OFFSET);
+            ZipLong.putLong(ze.getSize(), buf, LFH_ORIGINAL_SIZE_OFFSET);
+        } else if (zipMethod == DEFLATED || channel != null) {
+            System.arraycopy(LZERO, 0, buf, LFH_COMPRESSED_SIZE_OFFSET, ZipConstants.WORD);
+            System.arraycopy(LZERO, 0, buf, LFH_ORIGINAL_SIZE_OFFSET, ZipConstants.WORD);
+        } else { // Stored
+            ZipLong.putLong(ze.getSize(), buf, LFH_COMPRESSED_SIZE_OFFSET);
+            ZipLong.putLong(ze.getSize(), buf, LFH_ORIGINAL_SIZE_OFFSET);
+        }
+        // file name length
+        ZipShort.putShort(nameLen, buf, LFH_FILENAME_LENGTH_OFFSET);
+
+        // extra field length
+        ZipShort.putShort(extra.length, buf, LFH_EXTRA_LENGTH_OFFSET);
+
+        // file name
+        System.arraycopy(name.array(), name.arrayOffset(), buf, LFH_FILENAME_OFFSET, nameLen);
+
+        // extra fields
+        System.arraycopy(extra, 0, buf, LFH_FILENAME_OFFSET + nameLen, extra.length);
+
+        return buf;
+    }","private byte[] createLocalFileHeader(final ZipArchiveEntry ze, final ByteBuffer name, final boolean encodable, final boolean phased,
+            final long archiveOffset) {
+        final ZipExtraField oldEx = ze.getExtraField(ResourceAlignmentExtraField.ID);
+        if (oldEx != null) {
+            ze.removeExtraField(ResourceAlignmentExtraField.ID);
+        }
+        final ResourceAlignmentExtraField oldAlignmentEx = oldEx instanceof ResourceAlignmentExtraField ? (ResourceAlignmentExtraField) oldEx : null;
+
+        int alignment = ze.getAlignment();
+        if (alignment <= 0 && oldAlignmentEx != null) {
+            alignment = oldAlignmentEx.getAlignment();
+        }
+
+        if (alignment > 1 || oldAlignmentEx != null && !oldAlignmentEx.allowMethodChange()) {
+            final int oldLength = LFH_FILENAME_OFFSET + name.limit() - name.position() + ze.getLocalFileDataExtra().length;
+
+            final int padding = (int) (-archiveOffset - oldLength - ZipExtraField.EXTRAFIELD_HEADER_SIZE - ResourceAlignmentExtraField.BASE_SIZE
+                    & alignment - 1);
+            ze.addExtraField(new ResourceAlignmentExtraField(alignment, oldAlignmentEx != null && oldAlignmentEx.allowMethodChange(), padding));
+        }
+
+        final byte[] extra = ze.getLocalFileDataExtra();
+        final int nameLen = name.limit() - name.position();
+        final int len = LFH_FILENAME_OFFSET + nameLen + extra.length;
+        final byte[] buf = new byte[len];
+
+        System.arraycopy(LFH_SIG, 0, buf, LFH_SIG_OFFSET, ZipConstants.WORD);
+
+        // store method in local variable to prevent multiple method calls
+        final int zipMethod = ze.getMethod();
+        final boolean dataDescriptor = usesDataDescriptor(zipMethod, phased);
+
+        ZipShort.putShort(versionNeededToExtract(zipMethod, hasZip64Extra(ze), dataDescriptor), buf, LFH_VERSION_NEEDED_OFFSET);
+
+        final GeneralPurposeBit generalPurposeBit = getGeneralPurposeBits(!encodable && fallbackToUTF8, dataDescriptor);
+        generalPurposeBit.encode(buf, LFH_GPB_OFFSET);
+
+        // compression method
+        ZipShort.putShort(zipMethod, buf, LFH_METHOD_OFFSET);
+
+        ZipUtil.toDosTime(ze.getTime(), buf, LFH_TIME_OFFSET);
+
+        // CRC
+        if (phased || !(zipMethod == DEFLATED || outputStream instanceof RandomAccessOutputStream)) {
+            ZipLong.putLong(ze.getCrc(), buf, LFH_CRC_OFFSET);
+        } else {
+            System.arraycopy(LZERO, 0, buf, LFH_CRC_OFFSET, ZipConstants.WORD);
+        }
+
+        // compressed length
+        // uncompressed length
+        if (hasZip64Extra(entry.entry)) {
+            // point to ZIP64 extended information extra field for
+            // sizes, may get rewritten once sizes are known if
+            // stream is seekable
+            ZipLong.ZIP64_MAGIC.putLong(buf, LFH_COMPRESSED_SIZE_OFFSET);
+            ZipLong.ZIP64_MAGIC.putLong(buf, LFH_ORIGINAL_SIZE_OFFSET);
+        } else if (phased) {
+            ZipLong.putLong(ze.getCompressedSize(), buf, LFH_COMPRESSED_SIZE_OFFSET);
+            ZipLong.putLong(ze.getSize(), buf, LFH_ORIGINAL_SIZE_OFFSET);
+        } else if (zipMethod == DEFLATED || outputStream instanceof RandomAccessOutputStream) {
+            System.arraycopy(LZERO, 0, buf, LFH_COMPRESSED_SIZE_OFFSET, ZipConstants.WORD);
+            System.arraycopy(LZERO, 0, buf, LFH_ORIGINAL_SIZE_OFFSET, ZipConstants.WORD);
+        } else { // Stored
+            ZipLong.putLong(ze.getSize(), buf, LFH_COMPRESSED_SIZE_OFFSET);
+            ZipLong.putLong(ze.getSize(), buf, LFH_ORIGINAL_SIZE_OFFSET);
+        }
+        // file name length
+        ZipShort.putShort(nameLen, buf, LFH_FILENAME_LENGTH_OFFSET);
+
+        // extra field length
+        ZipShort.putShort(extra.length, buf, LFH_EXTRA_LENGTH_OFFSET);
+
+        // file name
+        System.arraycopy(name.array(), name.arrayOffset(), buf, LFH_FILENAME_OFFSET, nameLen);
+
+        // extra fields
+        System.arraycopy(extra, 0, buf, LFH_FILENAME_OFFSET + nameLen, extra.length);
+
+        return buf;
+    }",ZipArchiveOutputStream,"public  ZipArchiveOutputStream(final File file);
+public  ZipArchiveOutputStream(final File file, final long zipSplitSize);
+public  ZipArchiveOutputStream(final OutputStream out);
+public  ZipArchiveOutputStream(final Path path, final long zipSplitSize);
+public  ZipArchiveOutputStream(final Path file, final OpenOption... options);
+public  ZipArchiveOutputStream(final SeekableByteChannel channel);
+"
+Compress_467,"void destroy() throws IOException {
+        try {
+            if (channel != null) {
+                channel.close();
+            }
+        } finally {
+            if (outputStream != null) {
+                outputStream.close();
+            }
+        }
+    }","void destroy() throws IOException {
+        if (outputStream != null) {
+            outputStream.close();
+        }
+    }",ZipArchiveOutputStream,"public  ZipArchiveOutputStream(final File file);
+public  ZipArchiveOutputStream(final File file, final long zipSplitSize);
+public  ZipArchiveOutputStream(final OutputStream out);
+public  ZipArchiveOutputStream(final Path path, final long zipSplitSize);
+public  ZipArchiveOutputStream(final Path file, final OpenOption... options);
+public  ZipArchiveOutputStream(final SeekableByteChannel channel);
+"
+Compress_467,"private Zip64Mode getEffectiveZip64Mode(final ZipArchiveEntry ze) {
+        if (zip64Mode != Zip64Mode.AsNeeded || channel != null || ze.getMethod() != DEFLATED || ze.getSize() != ArchiveEntry.SIZE_UNKNOWN) {
+            return zip64Mode;
+        }
+        return Zip64Mode.Never;
+    }","private Zip64Mode getEffectiveZip64Mode(final ZipArchiveEntry ze) {
+        if (zip64Mode != Zip64Mode.AsNeeded || outputStream instanceof RandomAccessOutputStream ||
+                ze.getMethod() != DEFLATED || ze.getSize() != ArchiveEntry.SIZE_UNKNOWN) {
+            return zip64Mode;
+        }
+        return Zip64Mode.Never;
+    }",ZipArchiveOutputStream,"public  ZipArchiveOutputStream(final File file);
+public  ZipArchiveOutputStream(final File file, final long zipSplitSize);
+public  ZipArchiveOutputStream(final OutputStream out);
+public  ZipArchiveOutputStream(final Path path, final long zipSplitSize);
+public  ZipArchiveOutputStream(final Path file, final OpenOption... options);
+public  ZipArchiveOutputStream(final SeekableByteChannel channel);
+"
+Compress_467,"private boolean handleSizesAndCrc(final long bytesWritten, final long crc, final Zip64Mode effectiveMode) throws ZipException {
+        if (entry.entry.getMethod() == DEFLATED) {
+            /*
+             * It turns out def.getBytesRead() returns wrong values if the size exceeds 4 GB on Java < Java7 entry.entry.setSize(def.getBytesRead());
+             */
+            entry.entry.setSize(entry.bytesRead);
+            entry.entry.setCompressedSize(bytesWritten);
+            entry.entry.setCrc(crc);
+
+        } else if (channel == null) {
+            if (entry.entry.getCrc() != crc) {
+                throw new ZipException(""Bad CRC checksum for entry "" + entry.entry.getName() + "": "" + Long.toHexString(entry.entry.getCrc()) + "" instead of ""
+                        + Long.toHexString(crc));
+            }
+
+            if (entry.entry.getSize() != bytesWritten) {
+                throw new ZipException(""Bad size for entry "" + entry.entry.getName() + "": "" + entry.entry.getSize() + "" instead of "" + bytesWritten);
+            }
+        } else { /* method is STORED and we used SeekableByteChannel */
+            entry.entry.setSize(bytesWritten);
+            entry.entry.setCompressedSize(bytesWritten);
+            entry.entry.setCrc(crc);
+        }
+
+        return checkIfNeedsZip64(effectiveMode);
+    }","private boolean handleSizesAndCrc(final long bytesWritten, final long crc, final Zip64Mode effectiveMode) throws ZipException {
+        if (entry.entry.getMethod() == DEFLATED) {
+            /*
+             * It turns out def.getBytesRead() returns wrong values if the size exceeds 4 GB on Java < Java7 entry.entry.setSize(def.getBytesRead());
+             */
+            entry.entry.setSize(entry.bytesRead);
+            entry.entry.setCompressedSize(bytesWritten);
+            entry.entry.setCrc(crc);
+
+        } else if (!(outputStream instanceof RandomAccessOutputStream)) {
+            if (entry.entry.getCrc() != crc) {
+                throw new ZipException(""Bad CRC checksum for entry "" + entry.entry.getName() + "": "" + Long.toHexString(entry.entry.getCrc()) + "" instead of ""
+                        + Long.toHexString(crc));
+            }
+
+            if (entry.entry.getSize() != bytesWritten) {
+                throw new ZipException(""Bad size for entry "" + entry.entry.getName() + "": "" + entry.entry.getSize() + "" instead of "" + bytesWritten);
+            }
+        } else { /* method is STORED and we used SeekableByteChannel */
+            entry.entry.setSize(bytesWritten);
+            entry.entry.setCompressedSize(bytesWritten);
+            entry.entry.setCrc(crc);
+        }
+
+        return checkIfNeedsZip64(effectiveMode);
+    }",ZipArchiveOutputStream,"public  ZipArchiveOutputStream(final File file);
+public  ZipArchiveOutputStream(final File file, final long zipSplitSize);
+public  ZipArchiveOutputStream(final OutputStream out);
+public  ZipArchiveOutputStream(final Path path, final long zipSplitSize);
+public  ZipArchiveOutputStream(final Path file, final OpenOption... options);
+public  ZipArchiveOutputStream(final SeekableByteChannel channel);
+"
+Compress_467,"public boolean isSeekable() {
+        return channel != null;
+    }","public boolean isSeekable() {
+        return outputStream instanceof RandomAccessOutputStream;
+    }",ZipArchiveOutputStream,"public  ZipArchiveOutputStream(final File file);
+public  ZipArchiveOutputStream(final File file, final long zipSplitSize);
+public  ZipArchiveOutputStream(final OutputStream out);
+public  ZipArchiveOutputStream(final Path path, final long zipSplitSize);
+public  ZipArchiveOutputStream(final Path file, final OpenOption... options);
+public  ZipArchiveOutputStream(final SeekableByteChannel channel);
+"
+Compress_467,"private void rewriteSizesAndCrc(final boolean actuallyNeedsZip64) throws IOException {
+        final long save = channel.position();
+
+        channel.position(entry.localDataStart);
+        writeOut(ZipLong.getBytes(entry.entry.getCrc()));
+        if (!hasZip64Extra(entry.entry) || !actuallyNeedsZip64) {
+            writeOut(ZipLong.getBytes(entry.entry.getCompressedSize()));
+            writeOut(ZipLong.getBytes(entry.entry.getSize()));
+        } else {
+            writeOut(ZipLong.ZIP64_MAGIC.getBytes());
+            writeOut(ZipLong.ZIP64_MAGIC.getBytes());
+        }
+
+        if (hasZip64Extra(entry.entry)) {
+            final ByteBuffer name = getName(entry.entry);
+            final int nameLen = name.limit() - name.position();
+            // seek to ZIP64 extra, skip header and size information
+            channel.position(entry.localDataStart + 3 * ZipConstants.WORD + 2 * ZipConstants.SHORT + nameLen + 2 * ZipConstants.SHORT);
+            // inside the ZIP64 extra uncompressed size comes
+            // first, unlike the LFH, CD or data descriptor
+            writeOut(ZipEightByteInteger.getBytes(entry.entry.getSize()));
+            writeOut(ZipEightByteInteger.getBytes(entry.entry.getCompressedSize()));
+
+            if (!actuallyNeedsZip64) {
+                // do some cleanup:
+                // * rewrite version needed to extract
+                channel.position(entry.localDataStart - 5 * ZipConstants.SHORT);
+                writeOut(ZipShort.getBytes(versionNeededToExtract(entry.entry.getMethod(), false, false)));
+
+                // * remove ZIP64 extra, so it doesn't get written
+                // to the central directory
+                entry.entry.removeExtraField(Zip64ExtendedInformationExtraField.HEADER_ID);
+                entry.entry.setExtra();
+
+                // * reset hasUsedZip64 if it has been set because
+                // of this entry
+                if (entry.causedUseOfZip64) {
+                    hasUsedZip64 = false;
+                }
+            }
+        }
+        channel.position(save);
+    }","private void rewriteSizesAndCrc(final boolean actuallyNeedsZip64) throws IOException {
+        RandomAccessOutputStream randomStream = (RandomAccessOutputStream) outputStream;
+        long dataStart = entry.localDataStart;
+        if (randomStream instanceof ZipSplitOutputStream) {
+            dataStart = ((ZipSplitOutputStream) randomStream).calculateDiskPosition(entry.entry.getDiskNumberStart(), dataStart);
+        }
+
+        long position = dataStart;
+        randomStream.writeFullyAt(ZipLong.getBytes(entry.entry.getCrc()), position); position += ZipConstants.WORD;
+        if (!hasZip64Extra(entry.entry) || !actuallyNeedsZip64) {
+            randomStream.writeFullyAt(ZipLong.getBytes(entry.entry.getCompressedSize()), position); position += ZipConstants.WORD;
+            randomStream.writeFullyAt(ZipLong.getBytes(entry.entry.getSize()), position); position += ZipConstants.WORD;
+        } else {
+            randomStream.writeFullyAt(ZipLong.ZIP64_MAGIC.getBytes(), position); position += ZipConstants.WORD;
+            randomStream.writeFullyAt(ZipLong.ZIP64_MAGIC.getBytes(), position); position += ZipConstants.WORD;
+        }
+
+        if (hasZip64Extra(entry.entry)) {
+            final ByteBuffer name = getName(entry.entry);
+            final int nameLen = name.limit() - name.position();
+            // seek to ZIP64 extra, skip header and size information
+            position = dataStart + 3 * ZipConstants.WORD + 2 * ZipConstants.SHORT + nameLen + 2 * ZipConstants.SHORT;
+            // inside the ZIP64 extra uncompressed size comes
+            // first, unlike the LFH, CD or data descriptor
+            randomStream.writeFullyAt(ZipEightByteInteger.getBytes(entry.entry.getSize()), position); position += ZipConstants.DWORD;
+            randomStream.writeFullyAt(ZipEightByteInteger.getBytes(entry.entry.getCompressedSize()), position); position += ZipConstants.DWORD;
+
+            if (!actuallyNeedsZip64) {
+                // do some cleanup:
+                // * rewrite version needed to extract
+                position = dataStart - 5 * ZipConstants.SHORT;
+                randomStream.writeFullyAt(ZipShort.getBytes(versionNeededToExtract(entry.entry.getMethod(), false, false)), position);
+                position += ZipConstants.SHORT;
+
+                // * remove ZIP64 extra, so it doesn't get written
+                // to the central directory
+                entry.entry.removeExtraField(Zip64ExtendedInformationExtraField.HEADER_ID);
+                entry.entry.setExtra();
+
+                // * reset hasUsedZip64 if it has been set because
+                // of this entry
+                if (entry.causedUseOfZip64) {
+                    hasUsedZip64 = false;
+                }
+            }
+        }
+    }",ZipArchiveOutputStream,"public  ZipArchiveOutputStream(final File file);
+public  ZipArchiveOutputStream(final File file, final long zipSplitSize);
+public  ZipArchiveOutputStream(final OutputStream out);
+public  ZipArchiveOutputStream(final Path path, final long zipSplitSize);
+public  ZipArchiveOutputStream(final Path file, final OpenOption... options);
+public  ZipArchiveOutputStream(final SeekableByteChannel channel);
+"
+Compress_467,"private boolean shouldAddZip64Extra(final ZipArchiveEntry entry, final Zip64Mode mode) {
+        return mode == Zip64Mode.Always || mode == Zip64Mode.AlwaysWithCompatibility || entry.getSize() >= ZipConstants.ZIP64_MAGIC
+                || entry.getCompressedSize() >= ZipConstants.ZIP64_MAGIC
+                || entry.getSize() == ArchiveEntry.SIZE_UNKNOWN && channel != null && mode != Zip64Mode.Never;
+    }","private boolean shouldAddZip64Extra(final ZipArchiveEntry entry, final Zip64Mode mode) {
+        return mode == Zip64Mode.Always || mode == Zip64Mode.AlwaysWithCompatibility || entry.getSize() >= ZipConstants.ZIP64_MAGIC
+                || entry.getCompressedSize() >= ZipConstants.ZIP64_MAGIC
+                || entry.getSize() == ArchiveEntry.SIZE_UNKNOWN && outputStream instanceof RandomAccessOutputStream && mode != Zip64Mode.Never;
+    }",ZipArchiveOutputStream,"public  ZipArchiveOutputStream(final File file);
+public  ZipArchiveOutputStream(final File file, final long zipSplitSize);
+public  ZipArchiveOutputStream(final OutputStream out);
+public  ZipArchiveOutputStream(final Path path, final long zipSplitSize);
+public  ZipArchiveOutputStream(final Path file, final OpenOption... options);
+public  ZipArchiveOutputStream(final SeekableByteChannel channel);
+"
+Compress_467,"private boolean usesDataDescriptor(final int zipMethod, final boolean phased) {
+        return !phased && zipMethod == DEFLATED && channel == null;
+    }","private boolean usesDataDescriptor(final int zipMethod, final boolean phased) {
+        return !phased && zipMethod == DEFLATED && !(outputStream instanceof RandomAccessOutputStream);
+    }",ZipArchiveOutputStream,"public  ZipArchiveOutputStream(final File file);
+public  ZipArchiveOutputStream(final File file, final long zipSplitSize);
+public  ZipArchiveOutputStream(final OutputStream out);
+public  ZipArchiveOutputStream(final Path path, final long zipSplitSize);
+public  ZipArchiveOutputStream(final Path file, final OpenOption... options);
+public  ZipArchiveOutputStream(final SeekableByteChannel channel);
+"
+Compress_467,"private void validateSizeInformation(final Zip64Mode effectiveMode) throws ZipException {
+        // Size/CRC not required if SeekableByteChannel is used
+        if (entry.entry.getMethod() == STORED && channel == null) {
+            if (entry.entry.getSize() == ArchiveEntry.SIZE_UNKNOWN) {
+                throw new ZipException(""Uncompressed size is required for"" + "" STORED method when not writing to a"" + "" file"");
+            }
+            if (entry.entry.getCrc() == ZipArchiveEntry.CRC_UNKNOWN) {
+                throw new ZipException(""CRC checksum is required for STORED"" + "" method when not writing to a file"");
+            }
+            entry.entry.setCompressedSize(entry.entry.getSize());
+        }
+
+        if ((entry.entry.getSize() >= ZipConstants.ZIP64_MAGIC || entry.entry.getCompressedSize() >= ZipConstants.ZIP64_MAGIC)
+                && effectiveMode == Zip64Mode.Never) {
+            throw new Zip64RequiredException(Zip64RequiredException.getEntryTooBigMessage(entry.entry));
+        }
+    }","private void validateSizeInformation(final Zip64Mode effectiveMode) throws ZipException {
+        // Size/CRC not required if SeekableByteChannel is used
+        if (entry.entry.getMethod() == STORED && !(outputStream instanceof RandomAccessOutputStream)) {
+            if (entry.entry.getSize() == ArchiveEntry.SIZE_UNKNOWN) {
+                throw new ZipException(""Uncompressed size is required for"" + "" STORED method when not writing to a"" + "" file"");
+            }
+            if (entry.entry.getCrc() == ZipArchiveEntry.CRC_UNKNOWN) {
+                throw new ZipException(""CRC checksum is required for STORED"" + "" method when not writing to a file"");
+            }
+            entry.entry.setCompressedSize(entry.entry.getSize());
+        }
+
+        if ((entry.entry.getSize() >= ZipConstants.ZIP64_MAGIC || entry.entry.getCompressedSize() >= ZipConstants.ZIP64_MAGIC)
+                && effectiveMode == Zip64Mode.Never) {
+            throw new Zip64RequiredException(Zip64RequiredException.getEntryTooBigMessage(entry.entry));
+        }
+    }",ZipArchiveOutputStream,"public  ZipArchiveOutputStream(final File file);
+public  ZipArchiveOutputStream(final File file, final long zipSplitSize);
+public  ZipArchiveOutputStream(final OutputStream out);
+public  ZipArchiveOutputStream(final Path path, final long zipSplitSize);
+public  ZipArchiveOutputStream(final Path file, final OpenOption... options);
+public  ZipArchiveOutputStream(final SeekableByteChannel channel);
+"
+Compress_467,"private void positionAtCentralDirectory() throws IOException {
+        positionAtEndOfCentralDirectoryRecord();
+        boolean found = false;
+        final boolean searchedForZip64EOCD = archive.position() > ZIP64_EOCDL_LENGTH;
+        if (searchedForZip64EOCD) {
+            archive.position(archive.position() - ZIP64_EOCDL_LENGTH);
+            wordBbuf.rewind();
+            IOUtils.readFully(archive, wordBbuf);
+            found = Arrays.equals(ZipArchiveOutputStream.ZIP64_EOCD_LOC_SIG, wordBuf);
+        }
+        if (!found) {
+            // not a ZIP64 archive
+            if (searchedForZip64EOCD) {
+                skipBytes(ZIP64_EOCDL_LENGTH - ZipConstants.WORD);
+            }
+            positionAtCentralDirectory32();
+        } else {
+            positionAtCentralDirectory64();
+        }
+    }","private void positionAtCentralDirectory() throws IOException {
+        boolean is64 = positionAtEndOfCentralDirectoryRecord(archive);
+        if (!is64) {
+            positionAtCentralDirectory32();
+        } else {
+            positionAtCentralDirectory64();
+        }
+    }",ZipFile,"@Deprecated public  ZipFile(final File file);
+@Deprecated public  ZipFile(final File file, final String encoding);
+@Deprecated public  ZipFile(final File file, final String encoding, final boolean useUnicodeExtraFields);
+@Deprecated @SuppressWarnings(""resource"") // Caller closes public  ZipFile(final File file, final String encoding, final boolean useUnicodeExtraFields, final boolean ignoreLocalFileHeader);
+@Deprecated public  ZipFile(final Path path);
+@Deprecated public  ZipFile(final Path path, final String encoding);
+@Deprecated public  ZipFile(final Path path, final String encoding, final boolean useUnicodeExtraFields);
+@SuppressWarnings(""resource"") // Caller closes @Deprecated public  ZipFile(final Path path, final String encoding, final boolean useUnicodeExtraFields, final boolean ignoreLocalFileHeader);
+@Deprecated public  ZipFile(final SeekableByteChannel channel);
+@Deprecated public  ZipFile(final SeekableByteChannel channel, final String encoding);
+private  ZipFile(final SeekableByteChannel channel, final String channelDescription, final Charset encoding, final boolean useUnicodeExtraFields,
+            final boolean closeOnError, final boolean ignoreLocalFileHeader);
+@Deprecated public  ZipFile(final SeekableByteChannel channel, final String channelDescription, final String encoding, final boolean useUnicodeExtraFields);
+@Deprecated public  ZipFile(final SeekableByteChannel channel, final String channelDescription, final String encoding, final boolean useUnicodeExtraFields,
+            final boolean ignoreLocalFileHeader);
+private  ZipFile(final SeekableByteChannel channel, final String channelDescription, final String encoding, final boolean useUnicodeExtraFields,
+            final boolean closeOnError, final boolean ignoreLocalFileHeader);
+@Deprecated public  ZipFile(final String name);
+@Deprecated public  ZipFile(final String name, final String encoding);
+"
+Compress_467,"private void positionAtCentralDirectory64() throws IOException {
+        if (isSplitZipArchive) {
+            wordBbuf.rewind();
+            IOUtils.readFully(archive, wordBbuf);
+            final long diskNumberOfEOCD = ZipLong.getValue(wordBuf);
+
+            dwordBbuf.rewind();
+            IOUtils.readFully(archive, dwordBbuf);
+            final long relativeOffsetOfEOCD = ZipEightByteInteger.getLongValue(dwordBuf);
+            ((ZipSplitReadOnlySeekableByteChannel) archive).position(diskNumberOfEOCD, relativeOffsetOfEOCD);
+        } else {
+            skipBytes(ZIP64_EOCDL_LOCATOR_OFFSET - ZipConstants.WORD /* signature has already been read */);
+            dwordBbuf.rewind();
+            IOUtils.readFully(archive, dwordBbuf);
+            archive.position(ZipEightByteInteger.getLongValue(dwordBuf));
+        }
+
+        wordBbuf.rewind();
+        IOUtils.readFully(archive, wordBbuf);
+        if (!Arrays.equals(wordBuf, ZipArchiveOutputStream.ZIP64_EOCD_SIG)) {
+            throw new ZipException(""Archive's ZIP64 end of central directory locator is corrupt."");
+        }
+
+        if (isSplitZipArchive) {
+            skipBytes(ZIP64_EOCD_CFD_DISK_OFFSET - ZipConstants.WORD /* signature has already been read */);
+            wordBbuf.rewind();
+            IOUtils.readFully(archive, wordBbuf);
+            centralDirectoryStartDiskNumber = ZipLong.getValue(wordBuf);
+
+            skipBytes(ZIP64_EOCD_CFD_LOCATOR_RELATIVE_OFFSET);
+
+            dwordBbuf.rewind();
+            IOUtils.readFully(archive, dwordBbuf);
+            centralDirectoryStartRelativeOffset = ZipEightByteInteger.getLongValue(dwordBuf);
+            ((ZipSplitReadOnlySeekableByteChannel) archive).position(centralDirectoryStartDiskNumber, centralDirectoryStartRelativeOffset);
+        } else {
+            skipBytes(ZIP64_EOCD_CFD_LOCATOR_OFFSET - ZipConstants.WORD /* signature has already been read */);
+            dwordBbuf.rewind();
+            IOUtils.readFully(archive, dwordBbuf);
+            centralDirectoryStartDiskNumber = 0;
+            centralDirectoryStartRelativeOffset = ZipEightByteInteger.getLongValue(dwordBuf);
+            archive.position(centralDirectoryStartRelativeOffset);
+        }
+    }","private void positionAtCentralDirectory64() throws IOException {
+        skipBytes(ZipConstants.WORD);
+        if (isSplitZipArchive) {
+            wordBbuf.rewind();
+            IOUtils.readFully(archive, wordBbuf);
+            final long diskNumberOfEOCD = ZipLong.getValue(wordBuf);
+
+            dwordBbuf.rewind();
+            IOUtils.readFully(archive, dwordBbuf);
+            final long relativeOffsetOfEOCD = ZipEightByteInteger.getLongValue(dwordBuf);
+            ((ZipSplitReadOnlySeekableByteChannel) archive).position(diskNumberOfEOCD, relativeOffsetOfEOCD);
+        } else {
+            skipBytes(ZIP64_EOCDL_LOCATOR_OFFSET - ZipConstants.WORD /* signature has already been read */);
+            dwordBbuf.rewind();
+            IOUtils.readFully(archive, dwordBbuf);
+            archive.position(ZipEightByteInteger.getLongValue(dwordBuf));
+        }
+
+        wordBbuf.rewind();
+        IOUtils.readFully(archive, wordBbuf);
+        if (!Arrays.equals(wordBuf, ZipArchiveOutputStream.ZIP64_EOCD_SIG)) {
+            throw new ZipException(""Archive's ZIP64 end of central directory locator is corrupt."");
+        }
+
+        if (isSplitZipArchive) {
+            skipBytes(ZIP64_EOCD_CFD_DISK_OFFSET - ZipConstants.WORD /* signature has already been read */);
+            wordBbuf.rewind();
+            IOUtils.readFully(archive, wordBbuf);
+            centralDirectoryStartDiskNumber = ZipLong.getValue(wordBuf);
+
+            skipBytes(ZIP64_EOCD_CFD_LOCATOR_RELATIVE_OFFSET);
+
+            dwordBbuf.rewind();
+            IOUtils.readFully(archive, dwordBbuf);
+            centralDirectoryStartRelativeOffset = ZipEightByteInteger.getLongValue(dwordBuf);
+            ((ZipSplitReadOnlySeekableByteChannel) archive).position(centralDirectoryStartDiskNumber, centralDirectoryStartRelativeOffset);
+        } else {
+            skipBytes(ZIP64_EOCD_CFD_LOCATOR_OFFSET - ZipConstants.WORD /* signature has already been read */);
+            dwordBbuf.rewind();
+            IOUtils.readFully(archive, dwordBbuf);
+            centralDirectoryStartDiskNumber = 0;
+            centralDirectoryStartRelativeOffset = ZipEightByteInteger.getLongValue(dwordBuf);
+            archive.position(centralDirectoryStartRelativeOffset);
+        }
+    }",ZipFile,"@Deprecated public  ZipFile(final File file);
+@Deprecated public  ZipFile(final File file, final String encoding);
+@Deprecated public  ZipFile(final File file, final String encoding, final boolean useUnicodeExtraFields);
+@Deprecated @SuppressWarnings(""resource"") // Caller closes public  ZipFile(final File file, final String encoding, final boolean useUnicodeExtraFields, final boolean ignoreLocalFileHeader);
+@Deprecated public  ZipFile(final Path path);
+@Deprecated public  ZipFile(final Path path, final String encoding);
+@Deprecated public  ZipFile(final Path path, final String encoding, final boolean useUnicodeExtraFields);
+@SuppressWarnings(""resource"") // Caller closes @Deprecated public  ZipFile(final Path path, final String encoding, final boolean useUnicodeExtraFields, final boolean ignoreLocalFileHeader);
+@Deprecated public  ZipFile(final SeekableByteChannel channel);
+@Deprecated public  ZipFile(final SeekableByteChannel channel, final String encoding);
+private  ZipFile(final SeekableByteChannel channel, final String channelDescription, final Charset encoding, final boolean useUnicodeExtraFields,
+            final boolean closeOnError, final boolean ignoreLocalFileHeader);
+@Deprecated public  ZipFile(final SeekableByteChannel channel, final String channelDescription, final String encoding, final boolean useUnicodeExtraFields);
+@Deprecated public  ZipFile(final SeekableByteChannel channel, final String channelDescription, final String encoding, final boolean useUnicodeExtraFields,
+            final boolean ignoreLocalFileHeader);
+private  ZipFile(final SeekableByteChannel channel, final String channelDescription, final String encoding, final boolean useUnicodeExtraFields,
+            final boolean closeOnError, final boolean ignoreLocalFileHeader);
+@Deprecated public  ZipFile(final String name);
+@Deprecated public  ZipFile(final String name, final String encoding);
+"
+Compress_467,"ZipSplitOutputStream(final Path zipFile, final long splitSize) throws IllegalArgumentException, IOException {
+        if (splitSize < ZIP_SEGMENT_MIN_SIZE || splitSize > ZIP_SEGMENT_MAX_SIZE) {
+            throw new IllegalArgumentException(""Zip split segment size should between 64K and 4,294,967,295"");
+        }
+        this.zipFile = zipFile;
+        this.splitSize = splitSize;
+        this.outputStream = Files.newOutputStream(zipFile);
+        // write the ZIP split signature 0x08074B50 to the ZIP file
+        writeZipSplitSignature();
+    }","ZipSplitOutputStream(final Path zipFile, final long splitSize) throws IllegalArgumentException, IOException {
+        if (splitSize < ZIP_SEGMENT_MIN_SIZE || splitSize > ZIP_SEGMENT_MAX_SIZE) {
+            throw new IllegalArgumentException(""Zip split segment size should between 64K and 4,294,967,295"");
+        }
+        this.zipFile = zipFile;
+        this.splitSize = splitSize;
+        this.outputStream = new FileRandomAccessOutputStream(zipFile);
+        this.currentChannel = this.outputStream.channel();
+        this.positionToFiles.put(0L, this.zipFile);
+        this.diskToPosition.add(0L);
+        // write the ZIP split signature 0x08074B50 to the ZIP file
+        writeZipSplitSignature();
+    }",ZipSplitOutputStream,"ZipSplitOutputStream(final File zipFile, final long splitSize);
+ZipSplitOutputStream(final Path zipFile, final long splitSize);
+"
+Compress_467,"private Path createNewSplitSegmentFile(final Integer zipSplitSegmentSuffixIndex) throws IOException {
+        final int newZipSplitSegmentSuffixIndex = zipSplitSegmentSuffixIndex == null ? currentSplitSegmentIndex + 2 : zipSplitSegmentSuffixIndex;
+        final String baseName = FileNameUtils.getBaseName(zipFile);
+        String extension = "".z"";
+        if (newZipSplitSegmentSuffixIndex <= 9) {
+            extension += ""0"" + newZipSplitSegmentSuffixIndex;
+        } else {
+            extension += newZipSplitSegmentSuffixIndex;
+        }
+
+        final Path parent = zipFile.getParent();
+        final String dir = Objects.nonNull(parent) ? parent.toAbsolutePath().toString() : ""."";
+        final Path newFile = zipFile.getFileSystem().getPath(dir, baseName + extension);
+
+        if (Files.exists(newFile)) {
+            throw new IOException(""split ZIP segment "" + baseName + extension + "" already exists"");
+        }
+        return newFile;
+    }","private Path createNewSplitSegmentFile(final Integer zipSplitSegmentSuffixIndex) throws IOException {
+        Path newFile = getSplitSegmentFilename(zipSplitSegmentSuffixIndex);
+
+        if (Files.exists(newFile)) {
+            throw new IOException(""split ZIP segment "" + newFile + "" already exists"");
+        }
+        return newFile;
+    }",ZipSplitOutputStream,"ZipSplitOutputStream(final File zipFile, final long splitSize);
+ZipSplitOutputStream(final Path zipFile, final long splitSize);
+"
+Compress_467,"private void openNewSplitSegment() throws IOException {
+        Path newFile;
+        if (currentSplitSegmentIndex == 0) {
+            outputStream.close();
+            newFile = createNewSplitSegmentFile(1);
+            Files.move(zipFile, newFile, StandardCopyOption.ATOMIC_MOVE);
+        }
+
+        newFile = createNewSplitSegmentFile(null);
+
+        outputStream.close();
+        outputStream = Files.newOutputStream(newFile);
+        currentSplitSegmentBytesWritten = 0;
+        zipFile = newFile;
+        currentSplitSegmentIndex++;
+
+    }","private void openNewSplitSegment() throws IOException {
+        Path newFile;
+        if (currentSplitSegmentIndex == 0) {
+            outputStream.close();
+            newFile = createNewSplitSegmentFile(1);
+            Files.move(zipFile, newFile, StandardCopyOption.ATOMIC_MOVE);
+            this.positionToFiles.put(0L, newFile);
+        }
+
+        newFile = createNewSplitSegmentFile(null);
+
+        outputStream.close();
+        outputStream = new FileRandomAccessOutputStream(newFile);
+        currentChannel = outputStream.channel();
+        currentSplitSegmentBytesWritten = 0;
+        zipFile = newFile;
+        currentSplitSegmentIndex++;
+        this.diskToPosition.add(this.totalPosition);
+        this.positionToFiles.put(this.totalPosition, newFile);
+    }",ZipSplitOutputStream,"ZipSplitOutputStream(final File zipFile, final long splitSize);
+ZipSplitOutputStream(final Path zipFile, final long splitSize);
+"
+Compress_467,"@Override
+    public void write(final byte[] b, final int off, final int len) throws IOException {
+        if (len <= 0) {
+            return;
+        }
+
+        if (currentSplitSegmentBytesWritten >= splitSize) {
+            openNewSplitSegment();
+            write(b, off, len);
+        } else if (currentSplitSegmentBytesWritten + len > splitSize) {
+            final int bytesToWriteForThisSegment = (int) splitSize - (int) currentSplitSegmentBytesWritten;
+            write(b, off, bytesToWriteForThisSegment);
+            openNewSplitSegment();
+            write(b, off + bytesToWriteForThisSegment, len - bytesToWriteForThisSegment);
+        } else {
+            outputStream.write(b, off, len);
+            currentSplitSegmentBytesWritten += len;
+        }
+    }","@Override
+    public void write(final byte[] b, final int off, final int len) throws IOException {
+        if (len <= 0) {
+            return;
+        }
+
+        if (currentSplitSegmentBytesWritten >= splitSize) {
+            openNewSplitSegment();
+            write(b, off, len);
+        } else if (currentSplitSegmentBytesWritten + len > splitSize) {
+            final int bytesToWriteForThisSegment = (int) splitSize - (int) currentSplitSegmentBytesWritten;
+            write(b, off, bytesToWriteForThisSegment);
+            openNewSplitSegment();
+            write(b, off + bytesToWriteForThisSegment, len - bytesToWriteForThisSegment);
+        } else {
+            outputStream.write(b, off, len);
+            currentSplitSegmentBytesWritten += len;
+            totalPosition += len;
+        }
+    }",ZipSplitOutputStream,"ZipSplitOutputStream(final File zipFile, final long splitSize);
+ZipSplitOutputStream(final Path zipFile, final long splitSize);
+"
+Compress_467,"private void writeZipSplitSignature() throws IOException {
+        outputStream.write(ZipArchiveOutputStream.DD_SIG);
+        currentSplitSegmentBytesWritten += ZipArchiveOutputStream.DD_SIG.length;
+    }","private void writeZipSplitSignature() throws IOException {
+        outputStream.write(ZipArchiveOutputStream.DD_SIG);
+        currentSplitSegmentBytesWritten += ZipArchiveOutputStream.DD_SIG.length;
+        totalPosition += ZipArchiveOutputStream.DD_SIG.length;
+    }",ZipSplitOutputStream,"ZipSplitOutputStream(final File zipFile, final long splitSize);
+ZipSplitOutputStream(final Path zipFile, final long splitSize);
+"
+Compress_467,"public static SeekableByteChannel forPaths(final Path... paths) throws IOException {
+        final List<SeekableByteChannel> channels = new ArrayList<>();
+        for (final Path path : Objects.requireNonNull(paths, ""paths must not be null"")) {
+            channels.add(Files.newByteChannel(path, StandardOpenOption.READ));
+        }
+        if (channels.size() == 1) {
+            return channels.get(0);
+        }
+        return new ZipSplitReadOnlySeekableByteChannel(channels);
+    }","public static SeekableByteChannel forPaths(final Path... paths) throws IOException {
+        return forPaths(Arrays.asList(paths), new OpenOption[]{ StandardOpenOption.READ });
+    }",ZipSplitReadOnlySeekableByteChannel,"public  ZipSplitReadOnlySeekableByteChannel(final List<SeekableByteChannel> channels);
+"
+Compress_469,"public static boolean isDosTime(final long time) {
+        return time <= UPPER_DOSTIME_BOUND && javaToDosTime(time) != DOSTIME_BEFORE_1980;
+    }","public static boolean isDosTime(final long time) {
+        return time <= UPPER_DOSTIME_BOUND &&
+                (time == DOSTIME_BEFORE_1980_AS_JAVA_TIME || javaToDosTime(time) != DOSTIME_BEFORE_1980);
+    }",ZipUtil,
+Compress_476,"private boolean readFirstLocalFileHeader() throws IOException {
+        try {
+            // for empty archive, we may get only EOCD size:
+            final byte[] header = new byte[Math.min(LFH_LEN, ZipFile.MIN_EOCD_SIZE)];
+            readFully(header);
+            READ_LOOP: for (int i = 0; ; ) {
+                for (int j = 0; i <= PREAMBLE_GARBAGE_MAX_SIZE - 4 && j <= header.length - 4; ++j, ++i) {
+                    final ZipLong sig = new ZipLong(header, j);
+                    if (
+                            sig.equals(ZipLong.LFH_SIG) ||
+                            sig.equals(ZipLong.SINGLE_SEGMENT_SPLIT_MARKER) ||
+                            sig.equals(ZipLong.DD_SIG)) {
+                        // regular archive containing at least one entry:
+                        System.arraycopy(header, j, header, 0, header.length - j);
+                        readFully(header, header.length - j);
+                        break READ_LOOP;
+                    }
+                    if (
+                            sig.equals(new ZipLong(ZipArchiveOutputStream.EOCD_SIG))
+                    ) {
+                        // empty archive:
+                        pushback(header, j, header.length - j);
+                        return false;
+                    }
+                }
+                if (i >= PREAMBLE_GARBAGE_MAX_SIZE - 4) {
+                    throw new ZipException(""Cannot find zip signature within the first "" + PREAMBLE_GARBAGE_MAX_SIZE + "" bytes"");
+                }
+                System.arraycopy(header, header.length - 3, header, 0, 3);
+                readFully(header, 3);
+            }
+            System.arraycopy(header, 0, lfhBuf, 0, header.length);
+            readFully(lfhBuf, header.length);
+        } catch (final EOFException ex) {
+            throw new ZipException(""Cannot find zip signature within the file"");
+        }
+        final ZipLong sig = new ZipLong(lfhBuf);
+
+        if (!skipSplitSig && sig.equals(ZipLong.DD_SIG)) {
+            throw new UnsupportedZipFeatureException(UnsupportedZipFeatureException.Feature.SPLITTING);
+        }
+
+        // the split ZIP signature(08074B50) should only be skipped when the skipSplitSig is set
+        if (sig.equals(ZipLong.SINGLE_SEGMENT_SPLIT_MARKER) || sig.equals(ZipLong.DD_SIG)) {
+            // Just skip over the marker.
+            System.arraycopy(lfhBuf, 4, lfhBuf, 0, lfhBuf.length - 4);
+            readFully(lfhBuf, lfhBuf.length - 4);
+        }
+        return true;
+    }","private boolean readFirstLocalFileHeader() throws IOException {
+        // for empty archive, we may get only EOCD size:
+        final byte[] header = new byte[Math.min(LFH_LEN, ZipFile.MIN_EOCD_SIZE)];
+        readFully(header);
+        try {
+            READ_LOOP: for (int i = 0; ; ) {
+                for (int j = 0; i <= PREAMBLE_GARBAGE_MAX_SIZE - 4 && j <= header.length - 4; ++j, ++i) {
+                    final ZipLong sig = new ZipLong(header, j);
+                    if (
+                            sig.equals(ZipLong.LFH_SIG) ||
+                            sig.equals(ZipLong.SINGLE_SEGMENT_SPLIT_MARKER) ||
+                            sig.equals(ZipLong.DD_SIG)) {
+                        // regular archive containing at least one entry:
+                        System.arraycopy(header, j, header, 0, header.length - j);
+                        readFully(header, header.length - j);
+                        break READ_LOOP;
+                    }
+                    if (
+                            sig.equals(new ZipLong(ZipArchiveOutputStream.EOCD_SIG))
+                    ) {
+                        // empty archive:
+                        pushback(header, j, header.length - j);
+                        return false;
+                    }
+                }
+                if (i >= PREAMBLE_GARBAGE_MAX_SIZE - 4) {
+                    throw new ZipException(""Cannot find zip signature within the first "" + PREAMBLE_GARBAGE_MAX_SIZE + "" bytes"");
+                }
+                System.arraycopy(header, header.length - 3, header, 0, 3);
+                readFully(header, 3);
+            }
+            System.arraycopy(header, 0, lfhBuf, 0, header.length);
+            readFully(lfhBuf, header.length);
+        } catch (final EOFException ex) {
+            throw new ZipException(""Cannot find zip signature within the file"");
+        }
+        final ZipLong sig = new ZipLong(lfhBuf);
+
+        if (!skipSplitSig && sig.equals(ZipLong.DD_SIG)) {
+            throw new UnsupportedZipFeatureException(UnsupportedZipFeatureException.Feature.SPLITTING);
+        }
+
+        // the split ZIP signature(08074B50) should only be skipped when the skipSplitSig is set
+        if (sig.equals(ZipLong.SINGLE_SEGMENT_SPLIT_MARKER) || sig.equals(ZipLong.DD_SIG)) {
+            // Just skip over the marker.
+            System.arraycopy(lfhBuf, 4, lfhBuf, 0, lfhBuf.length - 4);
+            readFully(lfhBuf, lfhBuf.length - 4);
+        }
+        return true;
+    }",ZipArchiveInputStream,"public  ZipArchiveInputStream(final InputStream inputStream);
+public  ZipArchiveInputStream(final InputStream inputStream, final String encoding);
+public  ZipArchiveInputStream(final InputStream inputStream, final String encoding, final boolean useUnicodeExtraFields);
+public  ZipArchiveInputStream(final InputStream inputStream, final String encoding, final boolean useUnicodeExtraFields,
+            final boolean allowStoredEntriesWithDataDescriptor);
+public  ZipArchiveInputStream(final InputStream inputStream, final String encoding, final boolean useUnicodeExtraFields,
+            final boolean allowStoredEntriesWithDataDescriptor, final boolean skipSplitSig);
+"
+Compress_481,"private void consumeRemainderOfLastBlock() throws IOException {
+        final long bytesReadOfLastBlock = getBytesRead() % blockSize;
+        if (bytesReadOfLastBlock > 0) {
+            count(org.apache.commons.io.IOUtils.skip(in, blockSize - bytesReadOfLastBlock));
+        }
+    }","private void consumeRemainderOfLastBlock() throws IOException {
+        final long bytesReadOfLastBlock = getBytesRead() % blockSize;
+        if (bytesReadOfLastBlock > 0) {
+            count(IOUtils.skip(in, blockSize - bytesReadOfLastBlock));
+        }
+    }",TarArchiveInputStream,"public  TarArchiveInputStream(final InputStream inputStream);
+public  TarArchiveInputStream(final InputStream inputStream, final boolean lenient);
+public  TarArchiveInputStream(final InputStream inputStream, final int blockSize);
+public  TarArchiveInputStream(final InputStream inputStream, final int blockSize, final int recordSize);
+public  TarArchiveInputStream(final InputStream inputStream, final int blockSize, final int recordSize, final String encoding);
+public  TarArchiveInputStream(final InputStream inputStream, final int blockSize, final int recordSize, final String encoding, final boolean lenient);
+public  TarArchiveInputStream(final InputStream inputStream, final int blockSize, final String encoding);
+public  TarArchiveInputStream(final InputStream inputStream, final String encoding);
+"
+Compress_481,"@Deprecated
+    public TarArchiveEntry getNextTarEntry() throws IOException {
+        if (isAtEOF()) {
+            return null;
+        }
+
+        if (currEntry != null) {
+            /* Skip will only go to the end of the current entry */
+            org.apache.commons.io.IOUtils.skip(this, Long.MAX_VALUE);
+
+            /* skip to the end of the last record */
+            skipRecordPadding();
+        }
+
+        final byte[] headerBuf = getRecord();
+
+        if (headerBuf == null) {
+            /* hit EOF */
+            currEntry = null;
+            return null;
+        }
+
+        try {
+            currEntry = new TarArchiveEntry(globalPaxHeaders, headerBuf, zipEncoding, lenient);
+        } catch (final IllegalArgumentException e) {
+            throw new IOException(""Error detected parsing the header"", e);
+        }
+
+        entryOffset = 0;
+        entrySize = currEntry.getSize();
+
+        if (currEntry.isGNULongLinkEntry()) {
+            final byte[] longLinkData = getLongNameData();
+            if (longLinkData == null) {
+                // Bugzilla: 40334
+                // Malformed tar file - long link entry name not followed by entry
+                return null;
+            }
+            currEntry.setLinkName(zipEncoding.decode(longLinkData));
+        }
+
+        if (currEntry.isGNULongNameEntry()) {
+            final byte[] longNameData = getLongNameData();
+            if (longNameData == null) {
+                // Bugzilla: 40334
+                // Malformed tar file - long entry name not followed by entry
+                return null;
+            }
+
+            // COMPRESS-509 : the name of directories should end with '/'
+            final String name = zipEncoding.decode(longNameData);
+            currEntry.setName(name);
+            if (currEntry.isDirectory() && !name.endsWith(""/"")) {
+                currEntry.setName(name + ""/"");
+            }
+        }
+
+        if (currEntry.isGlobalPaxHeader()) { // Process Global Pax headers
+            readGlobalPaxHeaders();
+        }
+
+        try {
+            if (currEntry.isPaxHeader()) { // Process Pax headers
+                paxHeaders();
+            } else if (!globalPaxHeaders.isEmpty()) {
+                applyPaxHeadersToCurrentEntry(globalPaxHeaders, globalSparseHeaders);
+            }
+        } catch (final NumberFormatException e) {
+            throw new IOException(""Error detected parsing the pax header"", e);
+        }
+
+        if (currEntry.isOldGNUSparse()) { // Process sparse files
+            readOldGNUSparse();
+        }
+
+        // If the size of the next element in the archive has changed
+        // due to a new size being reported in the POSIX header
+        // information, we update entrySize here so that it contains
+        // the correct value.
+        entrySize = currEntry.getSize();
+
+        return currEntry;
+    }","@Deprecated
+    public TarArchiveEntry getNextTarEntry() throws IOException {
+        if (isAtEOF()) {
+            return null;
+        }
+
+        if (currEntry != null) {
+            /* Skip will only go to the end of the current entry */
+            IOUtils.skip(this, Long.MAX_VALUE);
+
+            /* skip to the end of the last record */
+            skipRecordPadding();
+        }
+
+        final byte[] headerBuf = getRecord();
+
+        if (headerBuf == null) {
+            /* hit EOF */
+            currEntry = null;
+            return null;
+        }
+
+        try {
+            currEntry = new TarArchiveEntry(globalPaxHeaders, headerBuf, zipEncoding, lenient);
+        } catch (final IllegalArgumentException e) {
+            throw new IOException(""Error detected parsing the header"", e);
+        }
+
+        entryOffset = 0;
+        entrySize = currEntry.getSize();
+
+        if (currEntry.isGNULongLinkEntry()) {
+            final byte[] longLinkData = getLongNameData();
+            if (longLinkData == null) {
+                // Bugzilla: 40334
+                // Malformed tar file - long link entry name not followed by entry
+                return null;
+            }
+            currEntry.setLinkName(zipEncoding.decode(longLinkData));
+        }
+
+        if (currEntry.isGNULongNameEntry()) {
+            final byte[] longNameData = getLongNameData();
+            if (longNameData == null) {
+                // Bugzilla: 40334
+                // Malformed tar file - long entry name not followed by entry
+                return null;
+            }
+
+            // COMPRESS-509 : the name of directories should end with '/'
+            final String name = zipEncoding.decode(longNameData);
+            currEntry.setName(name);
+            if (currEntry.isDirectory() && !name.endsWith(""/"")) {
+                currEntry.setName(name + ""/"");
+            }
+        }
+
+        if (currEntry.isGlobalPaxHeader()) { // Process Global Pax headers
+            readGlobalPaxHeaders();
+        }
+
+        try {
+            if (currEntry.isPaxHeader()) { // Process Pax headers
+                paxHeaders();
+            } else if (!globalPaxHeaders.isEmpty()) {
+                applyPaxHeadersToCurrentEntry(globalPaxHeaders, globalSparseHeaders);
+            }
+        } catch (final NumberFormatException e) {
+            throw new IOException(""Error detected parsing the pax header"", e);
+        }
+
+        if (currEntry.isOldGNUSparse()) { // Process sparse files
+            readOldGNUSparse();
+        }
+
+        // If the size of the next element in the archive has changed
+        // due to a new size being reported in the POSIX header
+        // information, we update entrySize here so that it contains
+        // the correct value.
+        entrySize = currEntry.getSize();
+
+        return currEntry;
+    }",TarArchiveInputStream,"public  TarArchiveInputStream(final InputStream inputStream);
+public  TarArchiveInputStream(final InputStream inputStream, final boolean lenient);
+public  TarArchiveInputStream(final InputStream inputStream, final int blockSize);
+public  TarArchiveInputStream(final InputStream inputStream, final int blockSize, final int recordSize);
+public  TarArchiveInputStream(final InputStream inputStream, final int blockSize, final int recordSize, final String encoding);
+public  TarArchiveInputStream(final InputStream inputStream, final int blockSize, final int recordSize, final String encoding, final boolean lenient);
+public  TarArchiveInputStream(final InputStream inputStream, final int blockSize, final String encoding);
+public  TarArchiveInputStream(final InputStream inputStream, final String encoding);
+"
+Compress_481,"@Override
+    public long skip(final long n) throws IOException {
+        if (n <= 0 || isDirectory()) {
+            return 0;
+        }
+
+        final long availableOfInputStream = in.available();
+        final long available = currEntry.getRealSize() - entryOffset;
+        final long numToSkip = Math.min(n, available);
+        long skipped;
+
+        if (!currEntry.isSparse()) {
+            skipped = org.apache.commons.io.IOUtils.skip(in, numToSkip);
+            // for non-sparse entry, we should get the bytes actually skipped bytes along with
+            // inputStream.available() if inputStream is instance of FileInputStream
+            skipped = getActuallySkipped(availableOfInputStream, skipped, numToSkip);
+        } else {
+            skipped = skipSparse(numToSkip);
+        }
+
+        count(skipped);
+        entryOffset += skipped;
+        return skipped;
+    }","@Override
+    public long skip(final long n) throws IOException {
+        if (n <= 0 || isDirectory()) {
+            return 0;
+        }
+
+        final long availableOfInputStream = in.available();
+        final long available = currEntry.getRealSize() - entryOffset;
+        final long numToSkip = Math.min(n, available);
+        long skipped;
+
+        if (!currEntry.isSparse()) {
+            skipped = IOUtils.skip(in, numToSkip);
+            // for non-sparse entry, we should get the bytes actually skipped bytes along with
+            // inputStream.available() if inputStream is instance of FileInputStream
+            skipped = getActuallySkipped(availableOfInputStream, skipped, numToSkip);
+        } else {
+            skipped = skipSparse(numToSkip);
+        }
+
+        count(skipped);
+        entryOffset += skipped;
+        return skipped;
+    }",TarArchiveInputStream,"public  TarArchiveInputStream(final InputStream inputStream);
+public  TarArchiveInputStream(final InputStream inputStream, final boolean lenient);
+public  TarArchiveInputStream(final InputStream inputStream, final int blockSize);
+public  TarArchiveInputStream(final InputStream inputStream, final int blockSize, final int recordSize);
+public  TarArchiveInputStream(final InputStream inputStream, final int blockSize, final int recordSize, final String encoding);
+public  TarArchiveInputStream(final InputStream inputStream, final int blockSize, final int recordSize, final String encoding, final boolean lenient);
+public  TarArchiveInputStream(final InputStream inputStream, final int blockSize, final String encoding);
+public  TarArchiveInputStream(final InputStream inputStream, final String encoding);
+"
+Compress_481,"private void skipRecordPadding() throws IOException {
+        if (!isDirectory() && this.entrySize > 0 && this.entrySize % getRecordSize() != 0) {
+            final long available = in.available();
+            final long numRecords = this.entrySize / getRecordSize() + 1;
+            final long padding = numRecords * getRecordSize() - this.entrySize;
+            long skipped = org.apache.commons.io.IOUtils.skip(in, padding);
+
+            skipped = getActuallySkipped(available, skipped, padding);
+
+            count(skipped);
+        }
+    }","private void skipRecordPadding() throws IOException {
+        if (!isDirectory() && this.entrySize > 0 && this.entrySize % getRecordSize() != 0) {
+            final long available = in.available();
+            final long numRecords = this.entrySize / getRecordSize() + 1;
+            final long padding = numRecords * getRecordSize() - this.entrySize;
+            long skipped = IOUtils.skip(in, padding);
+
+            skipped = getActuallySkipped(available, skipped, padding);
+
+            count(skipped);
+        }
+    }",TarArchiveInputStream,"public  TarArchiveInputStream(final InputStream inputStream);
+public  TarArchiveInputStream(final InputStream inputStream, final boolean lenient);
+public  TarArchiveInputStream(final InputStream inputStream, final int blockSize);
+public  TarArchiveInputStream(final InputStream inputStream, final int blockSize, final int recordSize);
+public  TarArchiveInputStream(final InputStream inputStream, final int blockSize, final int recordSize, final String encoding);
+public  TarArchiveInputStream(final InputStream inputStream, final int blockSize, final int recordSize, final String encoding, final boolean lenient);
+public  TarArchiveInputStream(final InputStream inputStream, final int blockSize, final String encoding);
+public  TarArchiveInputStream(final InputStream inputStream, final String encoding);
+"
+Jsoup_98,"public static String escape(String string) {
+        return escape(string, DefaultOutput);
+    }","public static String escape(String string) {
+        if (DefaultOutput == null)
+            DefaultOutput = new OutputSettings();
+        return escape(string, DefaultOutput);
+    }",Entities,"private  Entities();
+"
+Jsoup_99,"boolean shouldIndent(final Document.OutputSettings out) {
+        return out.prettyPrint() && isFormatAsBlock(out) && !isInlineable(out);
+    }","boolean shouldIndent(final Document.OutputSettings out) {
+        return out.prettyPrint() && isFormatAsBlock(out) && !isInlineable(out) && !preserveWhitespace(parentNode);
+    }",Element,"public  Element(String tag);
+public  Element(Tag tag, @Nullable String baseUri, @Nullable Attributes attributes);
+public  Element(Tag tag, @Nullable String baseUri);
+"
+Jsoup_99,"@Override
+    void outerHtmlTail(Appendable accum, int depth, Document.OutputSettings out) throws IOException {
+        if (!(childNodes.isEmpty() && tag.isSelfClosing())) {
+            if (out.prettyPrint() && (!childNodes.isEmpty() && (
+                    tag.formatAsBlock() || (out.outline() && (childNodes.size()>1 || (childNodes.size()==1 && (childNodes.get(0) instanceof Element))))
+            )))
+                indent(accum, depth, out);
+            accum.append(""</"").append(tagName()).append('>');
+        }
+    }","@Override
+    void outerHtmlTail(Appendable accum, int depth, Document.OutputSettings out) throws IOException {
+        if (!(childNodes.isEmpty() && tag.isSelfClosing())) {
+            if (out.prettyPrint() && (!childNodes.isEmpty() && (
+                (tag.formatAsBlock() && !preserveWhitespace(parentNode)) ||
+                    (out.outline() && (childNodes.size()>1 || (childNodes.size()==1 && (childNodes.get(0) instanceof Element))))
+            )))
+                indent(accum, depth, out);
+            accum.append(""</"").append(tagName()).append('>');
+        }
+    }",Element,"public  Element(String tag);
+public  Element(Tag tag, @Nullable String baseUri, @Nullable Attributes attributes);
+public  Element(Tag tag, @Nullable String baseUri);
+"
+Jsoup_100,"@Override
+	void outerHtmlHead(Appendable accum, int depth, Document.OutputSettings out) throws IOException {
+        if (out.prettyPrint() && ((siblingIndex() == 0 && parentNode instanceof Element && ((Element) parentNode).tag().formatAsBlock()) || (out.outline() )))
+            indent(accum, depth, out);
+        accum
+                .append(""<!--"")
+                .append(getData())
+                .append(""-->"");
+    }","@Override
+	void outerHtmlHead(Appendable accum, int depth, Document.OutputSettings out) throws IOException {
+        if (out.prettyPrint() && ((isEffectivelyFirst() && parentNode instanceof Element && ((Element) parentNode).tag().formatAsBlock()) || (out.outline() )))
+            indent(accum, depth, out);
+        accum
+                .append(""<!--"")
+                .append(getData())
+                .append(""-->"");
+    }",Comment,"public  Comment(String data);
+"
+Jsoup_100,"private boolean isInlineable(Document.OutputSettings out) {
+        if (!tag.isInline())
+            return false;
+
+        final Node prev = previousSibling();
+        boolean isFirst = siblingIndex == 0;
+        if (siblingIndex == 1 && prev instanceof TextNode && (((TextNode) prev).isBlank()))
+            isFirst = true;
+        return (parent() == null || parent().isBlock())
+            && !isFirst
+            && !out.outline();
+    }","private boolean isInlineable(Document.OutputSettings out) {
+        if (!tag.isInline())
+            return false;
+        return (parent() == null || parent().isBlock())
+            && !isEffectivelyFirst()
+            && !out.outline();
+    }",Element,"public  Element(String tag);
+public  Element(Tag tag, @Nullable String baseUri, @Nullable Attributes attributes);
+public  Element(Tag tag, @Nullable String baseUri);
+"
+Jsoup_101,"private boolean isInlineable(Document.OutputSettings out) {
+        if (!tag.isInline())
+            return false;
+        return (parent() == null || parent().isBlock())
+            && !isEffectivelyFirst()
+            && !out.outline();
+    }","private boolean isInlineable(Document.OutputSettings out) {
+        if (!tag.isInline())
+            return false;
+        return (parent() == null || parent().isBlock())
+            && !isEffectivelyFirst()
+            && !out.outline()
+            && !isNode(""br"");
+    }",Element,"public  Element(String tag);
+public  Element(Tag tag, @Nullable String baseUri, @Nullable Attributes attributes);
+public  Element(Tag tag, @Nullable String baseUri);
+"
+Jsoup_102,"public Connection url(String url) {
+        Validate.notEmptyParam(url, ""url"");
+        try {
+            req.url(new URL(encodeUrl(url)));
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(String.format(""The supplied URL, '%s', is malformed. Make sure it is an absolute URL, and starts with 'http://' or 'https://'. See https://jsoup.org/cookbook/extracting-data/working-with-urls"", url), e);
+        }
+        return this;
+    }","public Connection url(String url) {
+        Validate.notEmptyParam(url, ""url"");
+        try {
+            req.url(new URL(url));
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(String.format(""The supplied URL, '%s', is malformed. Make sure it is an absolute URL, and starts with 'http://' or 'https://'. See https://jsoup.org/cookbook/extracting-data/working-with-urls"", url), e);
+        }
+        return this;
+    }",HttpConnection,"public  HttpConnection();
+HttpConnection(Request copy);
+private  HttpConnection(Request req, Response res);
+"
+Jsoup_105,"private boolean isFormatAsBlock(Document.OutputSettings out) {
+        return tag.formatAsBlock() || (parent() != null && parent().tag().formatAsBlock()) || out.outline();
+    }","private boolean isFormatAsBlock(Document.OutputSettings out) {
+        return tag.isBlock() || (parent() != null && parent().tag().formatAsBlock()) || out.outline();
+    }",Element,"public  Element(String tag);
+public  Element(Tag tag, @Nullable String baseUri, @Nullable Attributes attributes);
+public  Element(Tag tag, @Nullable String baseUri);
+"
+Jsoup_106,"Element insert(final Token.StartTag startTag) {
+        // cleanup duplicate attributes:
+        if (startTag.hasAttributes() && !startTag.attributes.isEmpty()) {
+            int dupes = startTag.attributes.deduplicate(settings);
+            if (dupes > 0) {
+                error(""Dropped duplicate attribute(s) in tag [%s]"", startTag.normalName);
+            }
+        }
+
+        // handle empty unknown tags
+        // when the spec expects an empty tag, will directly hit insertEmpty, so won't generate this fake end tag.
+        if (startTag.isSelfClosing()) {
+            Element el = insertEmpty(startTag);
+            stack.add(el);
+            tokeniser.transition(TokeniserState.Data); // handles <script />, otherwise needs breakout steps from script data
+            tokeniser.emit(emptyEnd.reset().name(el.tagName()));  // ensure we get out of whatever state we are in. emitted for yielded processing
+            return el;
+        }
+
+        Element el = new Element(tagFor(startTag.name(), settings), null, settings.normalizeAttributes(startTag.attributes));
+        insert(el, startTag);
+        return el;
+    }","Element insert(final Token.StartTag startTag) {
+        dedupeAttributes(startTag);
+
+        // handle empty unknown tags
+        // when the spec expects an empty tag, will directly hit insertEmpty, so won't generate this fake end tag.
+        if (startTag.isSelfClosing()) {
+            Element el = insertEmpty(startTag);
+            stack.add(el);
+            tokeniser.transition(TokeniserState.Data); // handles <script />, otherwise needs breakout steps from script data
+            tokeniser.emit(emptyEnd.reset().name(el.tagName()));  // ensure we get out of whatever state we are in. emitted for yielded processing
+            return el;
+        }
+
+        Element el = new Element(tagFor(startTag.name(), settings), null, settings.normalizeAttributes(startTag.attributes));
+        insert(el, startTag);
+        return el;
+    }",HtmlTreeBuilder,
+Jsoup_106,"Element insertEmpty(Token.StartTag startTag) {
+        Tag tag = tagFor(startTag.name(), settings);
+        Element el = new Element(tag, null, settings.normalizeAttributes(startTag.attributes));
+        insertNode(el, startTag);
+        if (startTag.isSelfClosing()) {
+            if (tag.isKnownTag()) {
+                if (!tag.isEmpty())
+                    tokeniser.error(""Tag [%s] cannot be self closing; not a void tag"", tag.normalName());
+            }
+            else // unknown tag, remember this is self closing for output
+                tag.setSelfClosing();
+        }
+        return el;
+    }","Element insertEmpty(Token.StartTag startTag) {
+        dedupeAttributes(startTag);
+
+        Tag tag = tagFor(startTag.name(), settings);
+        Element el = new Element(tag, null, settings.normalizeAttributes(startTag.attributes));
+        insertNode(el, startTag);
+        if (startTag.isSelfClosing()) {
+            if (tag.isKnownTag()) {
+                if (!tag.isEmpty())
+                    tokeniser.error(""Tag [%s] cannot be self closing; not a void tag"", tag.normalName());
+            }
+            else // unknown tag, remember this is self closing for output
+                tag.setSelfClosing();
+        }
+        return el;
+    }",HtmlTreeBuilder,
+Jsoup_106,"FormElement insertForm(Token.StartTag startTag, boolean onStack, boolean checkTemplateStack) {
+        Tag tag = tagFor(startTag.name(), settings);
+        FormElement el = new FormElement(tag, null, settings.normalizeAttributes(startTag.attributes));
+        if (checkTemplateStack) {
+            if(!onStack(""template""))
+                setFormElement(el);
+        } else
+            setFormElement(el);
+
+        insertNode(el, startTag);
+        if (onStack)
+            stack.add(el);
+        return el;
+    }","FormElement insertForm(Token.StartTag startTag, boolean onStack, boolean checkTemplateStack) {
+        dedupeAttributes(startTag);
+
+        Tag tag = tagFor(startTag.name(), settings);
+        FormElement el = new FormElement(tag, null, settings.normalizeAttributes(startTag.attributes));
+        if (checkTemplateStack) {
+            if(!onStack(""template""))
+                setFormElement(el);
+        } else
+            setFormElement(el);
+
+        insertNode(el, startTag);
+        if (onStack)
+            stack.add(el);
+        return el;
+    }",HtmlTreeBuilder,
+Jsoup_107,"URL build() {
+        try {
+            // use the URI class to encode non-ascii in path
+            URI uri = new URI(
+                u.getProtocol(),
+                u.getUserInfo(),
+                IDN.toASCII(decodePart(u.getHost())), // puny-code
+                u.getPort(),
+                decodePart(u.getPath()),
+                null, null // query and fragment appended later so as not to encode
+            );
+
+            String normUrl = uri.toASCIIString();
+            if (q != null || u.getRef() != null) {
+                StringBuilder sb = StringUtil.borrowBuilder().append(normUrl);
+                if (q != null) {
+                    sb.append('?');
+                    appendToAscii(StringUtil.releaseBuilder(q), true, sb);
+                }
+                if (u.getRef() != null) {
+                    sb.append('#');
+                    appendToAscii(u.getRef(), false, sb);
+                }
+                normUrl = StringUtil.releaseBuilder(sb);
+            }
+            u =  new URL(normUrl);
+            return u;
+        } catch (MalformedURLException | URISyntaxException | UnsupportedEncodingException e) {
+            // we assert here so that any incomplete normalization issues can be caught in devel. but in practise,
+            // the remote end will be able to handle it, so in prod we just pass the original URL.
+            // The UnsupportedEncodingException would never happen as always UTF8
+            assert Validate.assertFail(e.toString());
+            return u;
+        }
+    }","URL build() {
+        try {
+            // use the URI class to encode non-ascii in path
+            URI uri = new URI(
+                u.getProtocol(),
+                u.getUserInfo(),
+                IDN.toASCII(decodePart(u.getHost())), // puny-code
+                u.getPort(),
+                null, null, null // path, query and fragment appended later so as not to encode
+            );
+
+            StringBuilder normUrl = StringUtil.borrowBuilder().append(uri.toASCIIString());
+            appendToAscii(u.getPath(), false, normUrl);
+            if (q != null) {
+                normUrl.append('?');
+                appendToAscii(StringUtil.releaseBuilder(q), true, normUrl);
+            }
+            if (u.getRef() != null) {
+                normUrl.append('#');
+                appendToAscii(u.getRef(), false, normUrl);
+            }
+            u = new URL(StringUtil.releaseBuilder(normUrl));
+            return u;
+        } catch (MalformedURLException | URISyntaxException | UnsupportedEncodingException e) {
+            // we assert here so that any incomplete normalization issues can be caught in devel. but in practise,
+            // the remote end will be able to handle it, so in prod we just pass the original URL.
+            // The UnsupportedEncodingException would never happen as always UTF8
+            assert Validate.assertFail(e.toString());
+            return u;
+        }
+    }",UrlBuilder,"UrlBuilder(URL inputUrl);
+"
+Jsoup_109,"void popStackToClose(String... elNames) {
+        for (int pos = stack.size() -1; pos >= 0; pos--) {
+            Element next = stack.get(pos);
+            stack.remove(pos);
+            if (inSorted(next.normalName(), elNames))
+                break;
+        }
+    }","void popStackToClose(String... elNames) {
+        for (int pos = stack.size() -1; pos >= 0; pos--) {
+            Element el = stack.get(pos);
+            stack.remove(pos);
+            if (inSorted(el.normalName(), elNames)) {
+                if (currentToken instanceof Token.EndTag)
+                    onNodeClosed(el, currentToken);
+                break;
+            }
+        }
+    }",HtmlTreeBuilder,
+Jsoup_111,"public String cssSelector() {
+        if (id().length() > 0) {
+            // prefer to return the ID - but check that it's actually unique first!
+            String idSel = ""#"" + escapeCssIdentifier(id());
+            Document doc = ownerDocument();
+            if (doc != null) {
+                Elements els = doc.select(idSel);
+                if (els.size() == 1 && els.get(0) == this) // otherwise, continue to the nth-child impl
+                    return idSel;
+            } else {
+                return idSel; // no ownerdoc, return the ID selector
+            }
+        }
+
+        // Escape tagname, and translate HTML namespace ns:tag to CSS namespace syntax ns|tag
+        String tagName = escapeCssIdentifier(tagName()).replace(""\\:"", ""|"");
+        StringBuilder selector = StringUtil.borrowBuilder().append(tagName);
+        // String classes = StringUtil.join(classNames().stream().map(TokenQueue::escapeCssIdentifier).iterator(), ""."");
+        // todo - replace with ^^ in 1.16.1 when we enable Android support for stream etc
+        StringUtil.StringJoiner escapedClasses = new StringUtil.StringJoiner(""."");
+        for (String name : classNames()) escapedClasses.add(escapeCssIdentifier(name));
+        String classes = escapedClasses.complete();
+        if (classes.length() > 0)
+            selector.append('.').append(classes);
+
+        if (parent() == null || parent() instanceof Document) // don't add Document to selector, as will always have a html node
+            return StringUtil.releaseBuilder(selector);
+
+        selector.insert(0, "" > "");
+        if (parent().select(selector.toString()).size() > 1)
+            selector.append(String.format(
+                "":nth-child(%d)"", elementSiblingIndex() + 1));
+
+        return parent().cssSelector() + StringUtil.releaseBuilder(selector);
+    }","public String cssSelector() {
+        if (id().length() > 0) {
+            // prefer to return the ID - but check that it's actually unique first!
+            String idSel = ""#"" + escapeCssIdentifier(id());
+            Document doc = ownerDocument();
+            if (doc != null) {
+                Elements els = doc.select(idSel);
+                if (els.size() == 1 && els.get(0) == this) // otherwise, continue to the nth-child impl
+                    return idSel;
+            } else {
+                return idSel; // no ownerdoc, return the ID selector
+            }
+        }
+
+        StringBuilder selector = StringUtil.borrowBuilder();
+        Element el = this;
+        while (el != null && !(el instanceof Document)) {
+            selector.insert(0, el.cssSelectorComponent());
+            el = el.parent();
+        }
+        return StringUtil.releaseBuilder(selector);
+    }",Element,"public  Element(String tag);
+public  Element(Tag tag, @Nullable String baseUri, @Nullable Attributes attributes);
+public  Element(Tag tag, @Nullable String baseUri);
+"
+Jsoup_111,"private void combinator(char combinator) {
+        tq.consumeWhitespace();
+        String subQuery = consumeSubQuery(); // support multi > childs
+
+        Evaluator rootEval; // the new topmost evaluator
+        Evaluator currentEval; // the evaluator the new eval will be combined to. could be root, or rightmost or.
+        Evaluator newEval = parse(subQuery); // the evaluator to add into target evaluator
+        boolean replaceRightMost = false;
+
+        if (evals.size() == 1) {
+            rootEval = currentEval = evals.get(0);
+            // make sure OR (,) has precedence:
+            if (rootEval instanceof CombiningEvaluator.Or && combinator != ',') {
+                currentEval = ((CombiningEvaluator.Or) currentEval).rightMostEvaluator();
+                assert currentEval != null; // rightMost signature can return null (if none set), but always will have one by this point
+                replaceRightMost = true;
+            }
+        }
+        else {
+            rootEval = currentEval = new CombiningEvaluator.And(evals);
+        }
+        evals.clear();
+
+        // for most combinators: change the current eval into an AND of the current eval and the new eval
+        switch (combinator) {
+            case '>':
+                currentEval = new CombiningEvaluator.And(new StructuralEvaluator.ImmediateParent(currentEval), newEval);
+                break;
+            case ' ':
+                currentEval = new CombiningEvaluator.And(new StructuralEvaluator.Parent(currentEval), newEval);
+                break;
+            case '+':
+                currentEval = new CombiningEvaluator.And(new StructuralEvaluator.ImmediatePreviousSibling(currentEval), newEval);
+                break;
+            case '~':
+                currentEval = new CombiningEvaluator.And(new StructuralEvaluator.PreviousSibling(currentEval), newEval);
+                break;
+            case ',':
+                CombiningEvaluator.Or or;
+                if (currentEval instanceof CombiningEvaluator.Or) {
+                    or = (CombiningEvaluator.Or) currentEval;
+                } else {
+                    or = new CombiningEvaluator.Or();
+                    or.add(currentEval);
+                }
+                or.add(newEval);
+                currentEval = or;
+                break;
+            default:
+                throw new Selector.SelectorParseException(""Unknown combinator '%s'"", combinator);
+        }
+
+        if (replaceRightMost)
+            ((CombiningEvaluator.Or) rootEval).replaceRightMostEvaluator(currentEval);
+        else rootEval = currentEval;
+        evals.add(rootEval);
+    }","private void combinator(char combinator) {
+        tq.consumeWhitespace();
+        String subQuery = consumeSubQuery(); // support multi > childs
+
+        Evaluator rootEval; // the new topmost evaluator
+        Evaluator currentEval; // the evaluator the new eval will be combined to. could be root, or rightmost or.
+        Evaluator newEval = parse(subQuery); // the evaluator to add into target evaluator
+        boolean replaceRightMost = false;
+
+        if (evals.size() == 1) {
+            rootEval = currentEval = evals.get(0);
+            // make sure OR (,) has precedence:
+            if (rootEval instanceof CombiningEvaluator.Or && combinator != ',') {
+                currentEval = ((CombiningEvaluator.Or) currentEval).rightMostEvaluator();
+                assert currentEval != null; // rightMost signature can return null (if none set), but always will have one by this point
+                replaceRightMost = true;
+            }
+        }
+        else {
+            rootEval = currentEval = new CombiningEvaluator.And(evals);
+        }
+        evals.clear();
+
+        // for most combinators: change the current eval into an AND of the current eval and the new eval
+        switch (combinator) {
+            case '>':
+                ImmediateParentRun run = currentEval instanceof ImmediateParentRun ?
+                        (ImmediateParentRun) currentEval : new ImmediateParentRun(currentEval);
+                run.add(newEval);
+                currentEval = run;
+                break;
+            case ' ':
+                currentEval = new CombiningEvaluator.And(new StructuralEvaluator.Parent(currentEval), newEval);
+                break;
+            case '+':
+                currentEval = new CombiningEvaluator.And(new StructuralEvaluator.ImmediatePreviousSibling(currentEval), newEval);
+                break;
+            case '~':
+                currentEval = new CombiningEvaluator.And(new StructuralEvaluator.PreviousSibling(currentEval), newEval);
+                break;
+            case ',':
+                CombiningEvaluator.Or or;
+                if (currentEval instanceof CombiningEvaluator.Or) {
+                    or = (CombiningEvaluator.Or) currentEval;
+                } else {
+                    or = new CombiningEvaluator.Or();
+                    or.add(currentEval);
+                }
+                or.add(newEval);
+                currentEval = or;
+                break;
+            default:
+                throw new Selector.SelectorParseException(""Unknown combinator '%s'"", combinator);
+        }
+
+        if (replaceRightMost)
+            ((CombiningEvaluator.Or) rootEval).replaceRightMostEvaluator(currentEval);
+        else rootEval = currentEval;
+        evals.add(rootEval);
+    }",QueryParser,"private  QueryParser(String query);
+"
+Jsoup_112,"@Override
+    public Element empty() {
+        childNodes.clear();
+        return this;
+    }","@Override
+    public Element empty() {
+        // Detach each of the children -> parent links:
+        for (Node child : childNodes) {
+            child.parentNode = null;
+        }
+        childNodes.clear();
+        return this;
+    }",Element,"public  Element(String tag, String namespace);
+public  Element(String tag);
+public  Element(Tag tag, @Nullable String baseUri, @Nullable Attributes attributes);
+public  Element(Tag tag, @Nullable String baseUri);
+"
+Jsoup_114,"private String consumeSubQuery() {
+        StringBuilder sq = StringUtil.borrowBuilder();
+        while (!tq.isEmpty()) {
+            if (tq.matches(""(""))
+                sq.append(""("").append(tq.chompBalanced('(', ')')).append("")"");
+            else if (tq.matches(""[""))
+                sq.append(""["").append(tq.chompBalanced('[', ']')).append(""]"");
+            else if (tq.matchesAny(Combinators))
+                if (sq.length() > 0)
+                    break;
+                else
+                    tq.consume();
+            else
+                sq.append(tq.consume());
+        }
+        return StringUtil.releaseBuilder(sq);
+    }","private String consumeSubQuery() {
+        StringBuilder sq = StringUtil.borrowBuilder();
+        boolean seenNonCombinator = false; // eat until we hit a combinator after eating something else
+        while (!tq.isEmpty()) {
+            if (tq.matches(""(""))
+                sq.append(""("").append(tq.chompBalanced('(', ')')).append("")"");
+            else if (tq.matches(""[""))
+                sq.append(""["").append(tq.chompBalanced('[', ']')).append(""]"");
+            else if (tq.matchesAny(Combinators))
+                if (seenNonCombinator)
+                    break;
+                else
+                    sq.append(tq.consume());
+            else {
+                seenNonCombinator = true;
+                sq.append(tq.consume());
+            }
+        }
+        return StringUtil.releaseBuilder(sq);
+    }",QueryParser,"private  QueryParser(String query);
+"
+Jsoup_115,"private ElementMeta createSafeElement(Element sourceEl) {
+        String sourceTag = sourceEl.tagName();
+        Attributes destAttrs = new Attributes();
+        Element dest = new Element(Tag.valueOf(sourceTag, sourceEl.tag().namespace(), ParseSettings.preserveCase), sourceEl.baseUri(), destAttrs);
+        int numDiscarded = 0;
+
+        Attributes sourceAttrs = sourceEl.attributes();
+        for (Attribute sourceAttr : sourceAttrs) {
+            if (safelist.isSafeAttribute(sourceTag, sourceEl, sourceAttr))
+                destAttrs.put(sourceAttr);
+            else
+                numDiscarded++;
+        }
+        Attributes enforcedAttrs = safelist.getEnforcedAttributes(sourceTag);
+        destAttrs.addAll(enforcedAttrs);
+
+        // Copy the original start and end range, if set
+        // TODO - might be good to make a generic Element#userData set type interface, and copy those all over
+        if (sourceEl.sourceRange().isTracked())
+            sourceEl.sourceRange().track(dest, true);
+        if (sourceEl.endSourceRange().isTracked())
+            sourceEl.endSourceRange().track(dest, false);
+
+        return new ElementMeta(dest, numDiscarded);
+    }","private ElementMeta createSafeElement(Element sourceEl) {
+        String sourceTag = sourceEl.tagName();
+        Attributes destAttrs = new Attributes();
+        Element dest = new Element(sourceEl.tag(), sourceEl.baseUri(), destAttrs);
+        int numDiscarded = 0;
+
+        Attributes sourceAttrs = sourceEl.attributes();
+        for (Attribute sourceAttr : sourceAttrs) {
+            if (safelist.isSafeAttribute(sourceTag, sourceEl, sourceAttr))
+                destAttrs.put(sourceAttr);
+            else
+                numDiscarded++;
+        }
+        Attributes enforcedAttrs = safelist.getEnforcedAttributes(sourceTag);
+        destAttrs.addAll(enforcedAttrs);
+
+        // Copy the original start and end range, if set
+        // TODO - might be good to make a generic Element#userData set type interface, and copy those all over
+        if (sourceEl.sourceRange().isTracked())
+            sourceEl.sourceRange().track(dest, true);
+        if (sourceEl.endSourceRange().isTracked())
+            sourceEl.endSourceRange().track(dest, false);
+
+        return new ElementMeta(dest, numDiscarded);
+    }",Cleaner,"public  Cleaner(Safelist safelist);
+"
+Jsoup_115,"public Safelist addAttributes(String tag, String... attributes) {
+        Validate.notEmpty(tag);
+        Validate.notNull(attributes);
+        Validate.isTrue(attributes.length > 0, ""No attribute names supplied."");
+
+        TagName tagName = TagName.valueOf(tag);
+        tagNames.add(tagName);
+        Set<AttributeKey> attributeSet = new HashSet<>();
+        for (String key : attributes) {
+            Validate.notEmpty(key);
+            attributeSet.add(AttributeKey.valueOf(key));
+        }
+        if (this.attributes.containsKey(tagName)) {
+            Set<AttributeKey> currentSet = this.attributes.get(tagName);
+            currentSet.addAll(attributeSet);
+        } else {
+            this.attributes.put(tagName, attributeSet);
+        }
+        return this;
+    }","public Safelist addAttributes(String tag, String... attributes) {
+        Validate.notEmpty(tag);
+        Validate.notNull(attributes);
+        Validate.isTrue(attributes.length > 0, ""No attribute names supplied."");
+
+        addTags(tag);
+        TagName tagName = TagName.valueOf(tag);
+        Set<AttributeKey> attributeSet = new HashSet<>();
+        for (String key : attributes) {
+            Validate.notEmpty(key);
+            attributeSet.add(AttributeKey.valueOf(key));
+        }
+        if (this.attributes.containsKey(tagName)) {
+            Set<AttributeKey> currentSet = this.attributes.get(tagName);
+            currentSet.addAll(attributeSet);
+        } else {
+            this.attributes.put(tagName, attributeSet);
+        }
+        return this;
+    }",Safelist,"public  Safelist();
+public  Safelist(Safelist copy);
+"
+Jsoup_116,"public void normalize() {
+        for (int i = 0; i < size; i++) {
+            if (!isInternalKey(keys[i]))
+                keys[i] = lowerCase(keys[i]);
+        }
+    }","public void normalize() {
+        for (int i = 0; i < size; i++) {
+            if (!isInternalKey(keys[i]))
+                keys[i] = lowerCase(keys[i]);
+        }
+
+        // if we are tracking attribute source ranges, normalize those keys also
+        //noinspection unchecked
+        Map<String, Range.AttributeRange> ranges = (Map<String, Range.AttributeRange>) userData(AttrRangeKey);
+        if (ranges != null) {
+            Object[] names = ranges.keySet().toArray(); // copy to array to avoid CMEs during put
+            for (Object name : names) {
+                String normal = lowerCase((String) name);
+                if (normal.equals(name)) continue;
+                if (ranges.containsKey(normal)) {
+                    ranges.remove(name); // dedupe now that we have normalized
+                } else {
+                    Range.AttributeRange range = ranges.remove(name);
+                    ranges.put(normal, range);
+                }
+            }
+        }
+    }",Attributes,
+Jsoup_117,"public void normalize() {
+        for (int i = 0; i < size; i++) {
+            if (!isInternalKey(keys[i]))
+                keys[i] = lowerCase(keys[i]);
+        }
+
+        // if we are tracking attribute source ranges, normalize those keys also
+        //noinspection unchecked
+        Map<String, Range.AttributeRange> ranges = (Map<String, Range.AttributeRange>) userData(AttrRangeKey);
+        if (ranges != null) {
+            Object[] names = ranges.keySet().toArray(); // copy to array to avoid CMEs during put
+            for (Object name : names) {
+                String normal = lowerCase((String) name);
+                if (normal.equals(name)) continue;
+                if (ranges.containsKey(normal)) {
+                    ranges.remove(name); // dedupe now that we have normalized
+                } else {
+                    Range.AttributeRange range = ranges.remove(name);
+                    ranges.put(normal, range);
+                }
+            }
+        }
+    }","public void normalize() {
+        for (int i = 0; i < size; i++) {
+            if (!isInternalKey(keys[i]))
+                keys[i] = lowerCase(keys[i]);
+        }
+    }",Attributes,
+Jsoup_117,"@Override
+    protected void initialiseParse(Reader input, String baseUri, Parser parser) {
+        super.initialiseParse(input, baseUri, parser);
+
+        // this is a bit mucky. todo - probably just create new parser objects to ensure all reset.
+        state = HtmlTreeBuilderState.Initial;
+        originalState = null;
+        baseUriSetFromDoc = false;
+        headElement = null;
+        formElement = null;
+        contextElement = null;
+        formattingElements = new ArrayList<>();
+        tmplInsertMode = new ArrayList<>();
+        pendingTableCharacters = new ArrayList<>();
+        emptyEnd = new Token.EndTag();
+        framesetOk = true;
+        fosterInserts = false;
+        fragmentParsing = false;
+    }","@Override
+    protected void initialiseParse(Reader input, String baseUri, Parser parser) {
+        super.initialiseParse(input, baseUri, parser);
+
+        // this is a bit mucky. todo - probably just create new parser objects to ensure all reset.
+        state = HtmlTreeBuilderState.Initial;
+        originalState = null;
+        baseUriSetFromDoc = false;
+        headElement = null;
+        formElement = null;
+        contextElement = null;
+        formattingElements = new ArrayList<>();
+        tmplInsertMode = new ArrayList<>();
+        pendingTableCharacters = new ArrayList<>();
+        emptyEnd = new Token.EndTag(this);
+        framesetOk = true;
+        fosterInserts = false;
+        fragmentParsing = false;
+    }",HtmlTreeBuilder,
+Jsoup_117,"public static String unescapeEntities(String string, boolean inAttribute) {
+        Tokeniser tokeniser = new Tokeniser(new CharacterReader(string), ParseErrorList.noTracking(), false);
+        return tokeniser.unescapeEntities(inAttribute);
+    }","public static String unescapeEntities(String string, boolean inAttribute) {
+        Parser parser = Parser.htmlParser();
+        parser.treeBuilder.initialiseParse(new StringReader(string), """", parser);
+        Tokeniser tokeniser = new Tokeniser(parser.treeBuilder);
+        return tokeniser.unescapeEntities(inAttribute);
+    }",Parser,"public  Parser(TreeBuilder treeBuilder);
+private  Parser(Parser copy);
+"
+Jsoup_117,"void initialiseParse(Reader input, String baseUri, Parser parser) {
+        Validate.notNullParam(input, ""input"");
+        Validate.notNullParam(baseUri, ""baseUri"");
+        Validate.notNull(parser);
+
+        doc = new Document(parser.defaultNamespace(), baseUri);
+        doc.parser(parser);
+        this.parser = parser;
+        settings = parser.settings();
+        reader = new CharacterReader(input);
+        trackSourceRange = parser.isTrackPosition();
+        reader.trackNewlines(parser.isTrackErrors() || trackSourceRange); // when tracking errors or source ranges, enable newline tracking for better legibility
+        currentToken = null;
+        tokeniser = new Tokeniser(reader, parser.getErrors(), trackSourceRange);
+        stack = new ArrayList<>(32);
+        seenTags = new HashMap<>();
+        start = new Token.StartTag(trackSourceRange, reader);
+        this.baseUri = baseUri;
+    }","void initialiseParse(Reader input, String baseUri, Parser parser) {
+        Validate.notNullParam(input, ""input"");
+        Validate.notNullParam(baseUri, ""baseUri"");
+        Validate.notNull(parser);
+
+        doc = new Document(parser.defaultNamespace(), baseUri);
+        doc.parser(parser);
+        this.parser = parser;
+        settings = parser.settings();
+        reader = new CharacterReader(input);
+        trackSourceRange = parser.isTrackPosition();
+        reader.trackNewlines(parser.isTrackErrors() || trackSourceRange); // when tracking errors or source ranges, enable newline tracking for better legibility
+        currentToken = null;
+        tokeniser = new Tokeniser(this);
+        stack = new ArrayList<>(32);
+        seenTags = new HashMap<>();
+        start = new Token.StartTag(this);
+        this.baseUri = baseUri;
+    }",TreeBuilder,
+Jsoup_117,"boolean processStartTag(String name) {
+        // these are ""virtual"" start tags (auto-created by the treebuilder), so not tracking the start position
+        final Token.StartTag start = this.start;
+        if (currentToken == start) { // don't recycle an in-use token
+            return process(new Token.StartTag(trackSourceRange, reader).name(name));
+        }
+        return process(start.reset().name(name));
+    }","boolean processStartTag(String name) {
+        // these are ""virtual"" start tags (auto-created by the treebuilder), so not tracking the start position
+        final Token.StartTag start = this.start;
+        if (currentToken == start) { // don't recycle an in-use token
+            return process(new Token.StartTag(this).name(name));
+        }
+        return process(start.reset().name(name));
+    }",TreeBuilder,
+Jsoup_117,"boolean processStartTag(String name, Attributes attrs) {
+        final Token.StartTag start = this.start;
+        if (currentToken == start) { // don't recycle an in-use token
+            return process(new Token.StartTag(trackSourceRange, reader).nameAttr(name, attrs));
+        }
+        start.reset();
+        start.nameAttr(name, attrs);
+        return process(start);
+    }","boolean processStartTag(String name, Attributes attrs) {
+        final Token.StartTag start = this.start;
+        if (currentToken == start) { // don't recycle an in-use token
+            return process(new Token.StartTag(this).nameAttr(name, attrs));
+        }
+        start.reset();
+        start.nameAttr(name, attrs);
+        return process(start);
+    }",TreeBuilder,
+Jsoup_117,"boolean processEndTag(String name) {
+        if (currentToken == end) { // don't recycle an in-use token
+            return process(new Token.EndTag().name(name));
+        }
+        return process(end.reset().name(name));
+    }","boolean processEndTag(String name) {
+        if (currentToken == end) { // don't recycle an in-use token
+            return process(new Token.EndTag(this).name(name));
+        }
+        return process(end.reset().name(name));
+    }",TreeBuilder,
+Jsoup_118,"void initialiseParse(Reader input, String baseUri, Parser parser) {
+        Validate.notNullParam(input, ""input"");
+        Validate.notNullParam(baseUri, ""baseUri"");
+        Validate.notNull(parser);
+
+        doc = new Document(parser.defaultNamespace(), baseUri);
+        doc.parser(parser);
+        this.parser = parser;
+        settings = parser.settings();
+        reader = new CharacterReader(input);
+        trackSourceRange = parser.isTrackPosition();
+        reader.trackNewlines(parser.isTrackErrors() || trackSourceRange); // when tracking errors or source ranges, enable newline tracking for better legibility
+        currentToken = null;
+        tokeniser = new Tokeniser(this);
+        stack = new ArrayList<>(32);
+        seenTags = new HashMap<>();
+        start = new Token.StartTag(this);
+        this.baseUri = baseUri;
+    }","void initialiseParse(Reader input, String baseUri, Parser parser) {
+        Validate.notNullParam(input, ""input"");
+        Validate.notNullParam(baseUri, ""baseUri"");
+        Validate.notNull(parser);
+
+        doc = new Document(parser.defaultNamespace(), baseUri);
+        doc.parser(parser);
+        this.parser = parser;
+        settings = parser.settings();
+        reader = new CharacterReader(input);
+        trackSourceRange = parser.isTrackPosition();
+        reader.trackNewlines(parser.isTrackErrors() || trackSourceRange); // when tracking errors or source ranges, enable newline tracking for better legibility
+        tokeniser = new Tokeniser(this);
+        stack = new ArrayList<>(32);
+        seenTags = new HashMap<>();
+        start = new Token.StartTag(this);
+        currentToken = start; // init current token to the virtual start token.
+        this.baseUri = baseUri;
+    }",TreeBuilder,
+Jsoup_120,"private String consumeSubQuery() {
+        StringBuilder sq = StringUtil.borrowBuilder();
+        boolean seenNonCombinator = false; // eat until we hit a combinator after eating something else
+        while (!tq.isEmpty()) {
+            if (tq.matches(""(""))
+                sq.append(""("").append(tq.chompBalanced('(', ')')).append("")"");
+            else if (tq.matches(""[""))
+                sq.append(""["").append(tq.chompBalanced('[', ']')).append(""]"");
+            else if (tq.matchesAny(Combinators))
+                if (seenNonCombinator)
+                    break;
+                else
+                    sq.append(tq.consume());
+            else {
+                seenNonCombinator = true;
+                sq.append(tq.consume());
+            }
+        }
+        return StringUtil.releaseBuilder(sq);
+    }","private String consumeSubQuery() {
+        StringBuilder sq = StringUtil.borrowBuilder();
+        boolean seenClause = false; // eat until we hit a combinator after eating something else
+        while (!tq.isEmpty()) {
+            if (tq.matchesAny(Combinators)) {
+                if (seenClause)
+                    break;
+                sq.append(tq.consume());
+                continue;
+            }
+            seenClause = true;
+            if (tq.matches(""(""))
+                sq.append(""("").append(tq.chompBalanced('(', ')')).append("")"");
+            else if (tq.matches(""[""))
+                sq.append(""["").append(tq.chompBalanced('[', ']')).append(""]"");
+            else
+                sq.append(tq.consume());
+        }
+        return StringUtil.releaseBuilder(sq);
+    }",QueryParser,"private  QueryParser(String query);
+"
+Jsoup_121,"@Override
+    void outerHtmlHead(Appendable accum, int depth, Document.OutputSettings out) throws IOException {
+        if (out.syntax() == Document.OutputSettings.Syntax.xml) {
+            // In XML mode, output data nodes as CDATA, so can parse as XML
+            accum
+                .append(""<![CDATA["")
+                .append(getWholeData())
+                .append(""]]>"");
+        } else {
+            // In HTML, data is not escaped in return from data nodes, so "" in script, style is plain
+            accum.append(getWholeData());
+        }
+    }","@Override
+    void outerHtmlHead(Appendable accum, int depth, Document.OutputSettings out) throws IOException {
+        /* For XML output, escape the DataNode in a CData section. The data may contain pseudo-CData content if it was
+        parsed as HTML, so don't double up Cdata. Output in polygot HTML / XHTML / XML format. */
+        final String data = getWholeData();
+        if (out.syntax() == Document.OutputSettings.Syntax.xml && !data.contains(""<![CDATA["")) {
+            if (hasParent() && parentNode.normalName().equals(""script""))
+                accum.append(""//<![CDATA[\n"").append(data).append(""\n//]]>"");
+            else if (hasParent() && parentNode.normalName().equals(""style""))
+                accum.append(""/*<![CDATA[*/\n"").append(data).append(""\n/*]]>*/"");
+            else
+                accum.append(""<![CDATA["").append(data).append(""]]>"");
+        } else {
+            // In HTML, data is not escaped in the output of data nodes, so < and & in script, style is OK
+            accum.append(getWholeData());
+        }
+    }",DataNode,"public  DataNode(String data);
+"
+Lang_600,"public static Method getMatchingMethod(final Class<?> cls, final String methodName,
+            final Class<?>... parameterTypes) {
+        Objects.requireNonNull(cls, ""cls"");
+        Validate.notEmpty(methodName, ""methodName"");
+
+        final List<Method> methods = Stream.of(cls.getDeclaredMethods())
+                .filter(method -> method.getName().equals(methodName))
+                .collect(Collectors.toList());
+
+        ClassUtils.getAllSuperclasses(cls).stream()
+                .map(Class::getDeclaredMethods)
+                .flatMap(Stream::of)
+                .filter(method -> method.getName().equals(methodName))
+                .forEach(methods::add);
+
+        for (final Method method : methods) {
+            if (Arrays.deepEquals(method.getParameterTypes(), parameterTypes)) {
+                return method;
+            }
+        }
+
+        final TreeMap<Integer, List<Method>> candidates = new TreeMap<>();
+
+        methods.stream()
+                .filter(method -> ClassUtils.isAssignable(parameterTypes, method.getParameterTypes(), true))
+                .forEach(method -> {
+                    final int distance = distance(parameterTypes, method.getParameterTypes());
+                    final List<Method> candidatesAtDistance = candidates.computeIfAbsent(distance, k -> new ArrayList<>());
+                    candidatesAtDistance.add(method);
+                });
+
+        if (candidates.isEmpty()) {
+            return null;
+        }
+
+        final List<Method> bestCandidates = candidates.values().iterator().next();
+        if (bestCandidates.size() == 1) {
+            return bestCandidates.get(0);
+        }
+
+        throw new IllegalStateException(
+                String.format(""Found multiple candidates for method %s on class %s : %s"",
+                        methodName + Stream.of(parameterTypes).map(String::valueOf).collect(Collectors.joining("","", ""("", "")"")),
+                        cls.getName(),
+                        bestCandidates.stream().map(Method::toString).collect(Collectors.joining("","", ""["", ""]"")))
+        );
+    }","public static Method getMatchingMethod(final Class<?> cls, final String methodName,
+            final Class<?>... parameterTypes) {
+        Objects.requireNonNull(cls, ""cls"");
+        Validate.notEmpty(methodName, ""methodName"");
+
+        final List<Method> methods = Stream.of(cls.getDeclaredMethods())
+                .filter(method -> method.getName().equals(methodName))
+                .collect(Collectors.toList());
+
+        ClassUtils.getAllSuperclasses(cls).stream()
+                .map(Class::getDeclaredMethods)
+                .flatMap(Stream::of)
+                .filter(method -> method.getName().equals(methodName))
+                .forEach(methods::add);
+
+        for (final Method method : methods) {
+            if (Arrays.deepEquals(method.getParameterTypes(), parameterTypes)) {
+                return method;
+            }
+        }
+
+        final TreeMap<Integer, List<Method>> candidates = new TreeMap<>();
+
+        methods.stream()
+                .filter(method -> ClassUtils.isAssignable(parameterTypes, method.getParameterTypes(), true))
+                .forEach(method -> {
+                    final int distance = distance(parameterTypes, method.getParameterTypes());
+                    final List<Method> candidatesAtDistance = candidates.computeIfAbsent(distance, k -> new ArrayList<>());
+                    candidatesAtDistance.add(method);
+                });
+
+        if (candidates.isEmpty()) {
+            return null;
+        }
+
+        final List<Method> bestCandidates = candidates.values().iterator().next();
+        if (bestCandidates.size() == 1 || !Objects.equals(bestCandidates.get(0).getDeclaringClass(),
+                bestCandidates.get(1).getDeclaringClass())) {
+            return bestCandidates.get(0);
+        }
+
+        throw new IllegalStateException(
+                String.format(""Found multiple candidates for method %s on class %s : %s"",
+                        methodName + Stream.of(parameterTypes).map(String::valueOf).collect(Collectors.joining("","", ""("", "")"")),
+                        cls.getName(),
+                        bestCandidates.stream().map(Method::toString).collect(Collectors.joining("","", ""["", ""]"")))
+        );
+    }",MethodUtils,"public  MethodUtils();
+"
+Lang_606,"public static Class<?> getRawType(final Type type, final Type assigningType) {
+        if (type instanceof Class<?>) {
+            // it is raw, no problem
+            return (Class<?>) type;
+        }
+
+        if (type instanceof ParameterizedType) {
+            // simple enough to get the raw type of a ParameterizedType
+            return getRawType((ParameterizedType) type);
+        }
+
+        if (type instanceof TypeVariable<?>) {
+            if (assigningType == null) {
+                return null;
+            }
+
+            // get the entity declaring this type variable
+            final Object genericDeclaration = ((TypeVariable<?>) type).getGenericDeclaration();
+
+            // can't get the raw type of a method- or constructor-declared type
+            // variable
+            if (!(genericDeclaration instanceof Class<?>)) {
+                return null;
+            }
+
+            // get the type arguments for the declaring class/interface based
+            // on the enclosing type
+            final Map<TypeVariable<?>, Type> typeVarAssigns = getTypeArguments(assigningType,
+                    (Class<?>) genericDeclaration);
+
+            // enclosingType has to be a subclass (or subinterface) of the
+            // declaring type
+            if (typeVarAssigns == null) {
+                return null;
+            }
+
+            // get the argument assigned to this type variable
+            final Type typeArgument = typeVarAssigns.get(type);
+
+            if (typeArgument == null) {
+                return null;
+            }
+
+            // get the argument for this type variable
+            return getRawType(typeArgument, assigningType);
+        }
+
+        if (type instanceof GenericArrayType) {
+            // get raw component type
+            final Class<?> rawComponentType = getRawType(((GenericArrayType) type)
+                    .getGenericComponentType(), assigningType);
+
+            // create array type from raw component type and return its class
+            return Array.newInstance(rawComponentType, 0).getClass();
+        }
+
+        // (hand-waving) this is not the method you're looking for
+        if (type instanceof WildcardType) {
+            return null;
+        }
+
+        throw new IllegalArgumentException(""unknown type: "" + type);
+    }","public static Class<?> getRawType(final Type type, final Type assigningType) {
+        if (type instanceof Class<?>) {
+            // it is raw, no problem
+            return (Class<?>) type;
+        }
+
+        if (type instanceof ParameterizedType) {
+            // simple enough to get the raw type of a ParameterizedType
+            return getRawType((ParameterizedType) type);
+        }
+
+        if (type instanceof TypeVariable<?>) {
+            if (assigningType == null) {
+                return null;
+            }
+
+            // get the entity declaring this type variable
+            final Object genericDeclaration = ((TypeVariable<?>) type).getGenericDeclaration();
+
+            // can't get the raw type of a method- or constructor-declared type
+            // variable
+            if (!(genericDeclaration instanceof Class<?>)) {
+                return null;
+            }
+
+            // get the type arguments for the declaring class/interface based
+            // on the enclosing type
+            final Map<TypeVariable<?>, Type> typeVarAssigns = getTypeArguments(assigningType,
+                    (Class<?>) genericDeclaration);
+
+            // enclosingType has to be a subclass (or subinterface) of the
+            // declaring type
+            if (typeVarAssigns == null) {
+                return null;
+            }
+
+            // get the argument assigned to this type variable
+            final Type typeArgument = typeVarAssigns.get(type);
+
+            if (typeArgument == null) {
+                return null;
+            }
+
+            // get the argument for this type variable
+            return getRawType(typeArgument, assigningType);
+        }
+
+        if (type instanceof GenericArrayType) {
+            // get raw component type
+            final Class<?> rawComponentType = getRawType(((GenericArrayType) type)
+                    .getGenericComponentType(), assigningType);
+
+            // create array type from raw component type and return its class
+            return rawComponentType != null ? Array.newInstance(rawComponentType, 0).getClass() : null;
+        }
+
+        // (hand-waving) this is not the method you're looking for
+        if (type instanceof WildcardType) {
+            return null;
+        }
+
+        throw new IllegalArgumentException(""unknown type: "" + type);
+    }",TypeUtils,"public  TypeUtils();
+"
+Lang_608,"public static Collection<ThreadGroup> findThreadGroups(final ThreadGroup threadGroup, final boolean recurse, final Predicate<ThreadGroup> predicate) {
+        Objects.requireNonNull(threadGroup, ""threadGroup"");
+        Objects.requireNonNull(predicate, ""predicate"");
+
+        int count = threadGroup.activeGroupCount();
+        ThreadGroup[] threadGroups;
+        do {
+            threadGroups = new ThreadGroup[count + count / 2 + 1]; //slightly grow the array size
+            count = threadGroup.enumerate(threadGroups, recurse);
+            //return value of enumerate() must be strictly less than the array size according to Javadoc
+        } while (count >= threadGroups.length);
+        return Collections.unmodifiableCollection(Stream.of(threadGroups).filter(predicate).collect(Collectors.toList()));
+    }","public static Collection<ThreadGroup> findThreadGroups(final ThreadGroup threadGroup, final boolean recurse, final Predicate<ThreadGroup> predicate) {
+        Objects.requireNonNull(threadGroup, ""threadGroup"");
+        Objects.requireNonNull(predicate, ""predicate"");
+
+        int count = threadGroup.activeGroupCount();
+        ThreadGroup[] threadGroups;
+        do {
+            threadGroups = new ThreadGroup[count + count / 2 + 1]; //slightly grow the array size
+            count = threadGroup.enumerate(threadGroups, recurse);
+            //return value of enumerate() must be strictly less than the array size according to Javadoc
+        } while (count >= threadGroups.length);
+        return Collections.unmodifiableCollection(Stream.of(threadGroups).limit(count).filter(predicate).collect(Collectors.toList()));
+    }",ThreadUtils,"public  ThreadUtils();
+"
+Lang_608,"public static Collection<Thread> findThreads(final ThreadGroup threadGroup, final boolean recurse, final Predicate<Thread> predicate) {
+        Objects.requireNonNull(threadGroup, ""The group must not be null"");
+        Objects.requireNonNull(predicate, ""The predicate must not be null"");
+        int count = threadGroup.activeCount();
+        Thread[] threads;
+        do {
+            threads = new Thread[count + count / 2 + 1]; //slightly grow the array size
+            count = threadGroup.enumerate(threads, recurse);
+            //return value of enumerate() must be strictly less than the array size according to javadoc
+        } while (count >= threads.length);
+        return Collections.unmodifiableCollection(Stream.of(threads).filter(predicate).collect(Collectors.toList()));
+    }","public static Collection<Thread> findThreads(final ThreadGroup threadGroup, final boolean recurse, final Predicate<Thread> predicate) {
+        Objects.requireNonNull(threadGroup, ""The group must not be null"");
+        Objects.requireNonNull(predicate, ""The predicate must not be null"");
+        int count = threadGroup.activeCount();
+        Thread[] threads;
+        do {
+            threads = new Thread[count + count / 2 + 1]; //slightly grow the array size
+            count = threadGroup.enumerate(threads, recurse);
+            //return value of enumerate() must be strictly less than the array size according to javadoc
+        } while (count >= threads.length);
+        return Collections.unmodifiableCollection(Stream.of(threads).limit(count).filter(predicate).collect(Collectors.toList()));
+    }",ThreadUtils,"public  ThreadUtils();
+"
+Lang_609,"protected void appendFieldsIn(final Class<?> clazz) {
+        if (clazz.isArray()) {
+            this.reflectionAppendArray(this.getObject());
+            return;
+        }
+        // The elements in the returned array are not sorted and are not in any particular order.
+        final Field[] fields = ArraySorter.sort(clazz.getDeclaredFields(), Comparator.comparing(Field::getName));
+        AccessibleObject.setAccessible(fields, true);
+        for (final Field field : fields) {
+            final String fieldName = field.getName();
+            if (this.accept(field)) {
+                // Warning: Field.get(Object) creates wrappers objects for primitive types.
+                final Object fieldValue = Reflection.getUnchecked(field, getObject());
+                if (!excludeNullValues || fieldValue != null) {
+                    this.append(fieldName, fieldValue, !field.isAnnotationPresent(ToStringSummary.class));
+                }
+            }
+        }
+    }","protected void appendFieldsIn(final Class<?> clazz) {
+        if (clazz.isArray()) {
+            this.reflectionAppendArray(this.getObject());
+            return;
+        }
+        // The elements in the returned array are not sorted and are not in any particular order.
+        final Field[] fields = ArraySorter.sort(clazz.getDeclaredFields(), Comparator.comparing(Field::getName));
+        AccessibleObject.setAccessible(fields, true);
+        for (final Field field : fields) {
+            final String fieldName = field.getName();
+            if (this.accept(field)) {
+                try {
+                    // Warning: Field.get(Object) creates wrappers objects
+                    // for primitive types.
+                    final Object fieldValue = this.getValue(field);
+                    if (!excludeNullValues || fieldValue != null) {
+                        this.append(fieldName, fieldValue, !field.isAnnotationPresent(ToStringSummary.class));
+                    }
+                } catch (final IllegalAccessException e) {
+                    // this can't happen. Would get a Security exception instead throw a runtime exception in case the
+                    // impossible happens.
+                    throw new IllegalStateException(e);
+                }
+            }
+        }
+    }",ReflectionToStringBuilder,"public  ReflectionToStringBuilder(final Object object);
+public  ReflectionToStringBuilder(final Object object, final ToStringStyle style);
+public  ReflectionToStringBuilder(final Object object, final ToStringStyle style, final StringBuffer buffer);
+public <T> ReflectionToStringBuilder(
+            final T object, final ToStringStyle style, final StringBuffer buffer,
+            final Class<? super T> reflectUpToClass, final boolean outputTransients, final boolean outputStatics);
+public <T> ReflectionToStringBuilder(
+            final T object, final ToStringStyle style, final StringBuffer buffer,
+            final Class<? super T> reflectUpToClass, final boolean outputTransients, final boolean outputStatics,
+            final boolean excludeNullValues);
+"
+Lang_610,"private static void init() {
+        init_X86_32Bit();
+        init_X86_64Bit();
+        init_IA64_32Bit();
+        init_IA64_64Bit();
+        init_PPC_32Bit();
+        init_PPC_64Bit();
+        init_Aarch_64Bit();
+    }","private static void init() {
+        init_X86_32Bit();
+        init_X86_64Bit();
+        init_IA64_32Bit();
+        init_IA64_64Bit();
+        init_PPC_32Bit();
+        init_PPC_64Bit();
+        init_Aarch_64Bit();
+        init_RISCV_32Bit();
+        init_RISCV_64Bit();
+    }",ArchUtils,
+Lang_611,"public static Number createNumber(final String str) {
+        if (str == null) {
+            return null;
+        }
+        if (StringUtils.isBlank(str)) {
+            throw new NumberFormatException(""A blank string is not a valid number"");
+        }
+        // Need to deal with all possible hex prefixes here
+        final String[] hexPrefixes = {""0x"", ""0X"", ""#""};
+        final int length = str.length();
+        final int offset = str.charAt(0) == '+' || str.charAt(0) == '-' ? 1 : 0;
+        int pfxLen = 0;
+        for (final String pfx : hexPrefixes) {
+            if (str.startsWith(pfx, offset)) {
+                pfxLen += pfx.length() + offset;
+                break;
+            }
+        }
+        if (pfxLen > 0) { // we have a hex number
+            char firstSigDigit = 0; // strip leading zeroes
+            for (int i = pfxLen; i < length; i++) {
+                firstSigDigit = str.charAt(i);
+                if (firstSigDigit != '0') {
+                    break;
+                }
+                pfxLen++;
+            }
+            final int hexDigits = length - pfxLen;
+            if (hexDigits > 16 || hexDigits == 16 && firstSigDigit > '7') { // too many for Long
+                return createBigInteger(str);
+            }
+            if (hexDigits > 8 || hexDigits == 8 && firstSigDigit > '7') { // too many for an int
+                return createLong(str);
+            }
+            return createInteger(str);
+        }
+        final char lastChar = str.charAt(length - 1);
+        final String mant;
+        final String dec;
+        final String exp;
+        final int decPos = str.indexOf('.');
+        final int expPos = str.indexOf('e') + str.indexOf('E') + 1; // assumes both not present
+        // if both e and E are present, this is caught by the checks on expPos (which prevent IOOBE)
+        // and the parsing which will detect if e or E appear in a number due to using the wrong offset
+
+        // Detect if the return type has been requested
+        final boolean requestType = !Character.isDigit(lastChar) && lastChar != '.';
+        if (decPos > -1) { // there is a decimal point
+            if (expPos > -1) { // there is an exponent
+                if (expPos < decPos || expPos > length) { // prevents double exponent causing IOOBE
+                    throw new NumberFormatException(str + "" is not a valid number."");
+                }
+                dec = str.substring(decPos + 1, expPos);
+            } else {
+                // No exponent, but there may be a type character to remove
+                dec = str.substring(decPos + 1, requestType ? length - 1 : length);
+            }
+            mant = getMantissa(str, decPos);
+        } else {
+            if (expPos > -1) {
+                if (expPos > length) { // prevents double exponent causing IOOBE
+                    throw new NumberFormatException(str + "" is not a valid number."");
+                }
+                mant = getMantissa(str, expPos);
+            } else {
+                // No decimal, no exponent, but there may be a type character to remove
+                mant = getMantissa(str, requestType ? length - 1 : length);
+            }
+            dec = null;
+        }
+        if (requestType) {
+            if (expPos > -1 && expPos < length - 1) {
+                exp = str.substring(expPos + 1, length - 1);
+            } else {
+                exp = null;
+            }
+            //Requesting a specific type.
+            final String numeric = str.substring(0, length - 1);
+            switch (lastChar) {
+                case 'l' :
+                case 'L' :
+                    if (dec == null
+                        && exp == null
+                        && (!numeric.isEmpty() && numeric.charAt(0) == '-' && isDigits(numeric.substring(1)) || isDigits(numeric))) {
+                        try {
+                            return createLong(numeric);
+                        } catch (final NumberFormatException ignored) {
+                            // Too big for a long
+                        }
+                        return createBigInteger(numeric);
+
+                    }
+                    throw new NumberFormatException(str + "" is not a valid number."");
+                case 'f' :
+                case 'F' :
+                    try {
+                        final Float f = createFloat(str);
+                        if (!(f.isInfinite() || f.floatValue() == 0.0F && !isZero(mant, dec))) {
+                            //If it's too big for a float or the float value = 0 and the string
+                            //has non-zeros in it, then float does not have the precision we want
+                            return f;
+                        }
+
+                    } catch (final NumberFormatException ignored) {
+                        // ignore the bad number
+                    }
+                    //$FALL-THROUGH$
+                case 'd' :
+                case 'D' :
+                    try {
+                        final Double d = createDouble(str);
+                        if (!(d.isInfinite() || d.doubleValue() == 0.0D && !isZero(mant, dec))) {
+                            return d;
+                        }
+                    } catch (final NumberFormatException ignored) {
+                        // ignore the bad number
+                    }
+                    try {
+                        return createBigDecimal(numeric);
+                    } catch (final NumberFormatException ignored) {
+                        // ignore the bad number
+                    }
+                    //$FALL-THROUGH$
+                default :
+                    throw new NumberFormatException(str + "" is not a valid number."");
+
+            }
+        }
+        //User doesn't have a preference on the return type, so let's start
+        //small and go from there...
+        if (expPos > -1 && expPos < length - 1) {
+            exp = str.substring(expPos + 1);
+        } else {
+            exp = null;
+        }
+        if (dec == null && exp == null) { // no decimal point and no exponent
+            //Must be an Integer, Long, Biginteger
+            try {
+                return createInteger(str);
+            } catch (final NumberFormatException ignored) {
+                // ignore the bad number
+            }
+            try {
+                return createLong(str);
+            } catch (final NumberFormatException ignored) {
+                // ignore the bad number
+            }
+            return createBigInteger(str);
+        }
+
+        //Must be a Float, Double, BigDecimal
+        try {
+            final Float f = createFloat(str);
+            final Double d = createDouble(str);
+            if (!f.isInfinite()
+                    && !(f.floatValue() == 0.0F && !isZero(mant, dec))
+                    && f.toString().equals(d.toString())) {
+                return f;
+            }
+            if (!d.isInfinite() && !(d.doubleValue() == 0.0D && !isZero(mant, dec))) {
+                final BigDecimal b = createBigDecimal(str);
+                if (b.compareTo(BigDecimal.valueOf(d.doubleValue())) == 0) {
+                    return d;
+                }
+                return b;
+            }
+        } catch (final NumberFormatException ignored) {
+            // ignore the bad number
+        }
+        return createBigDecimal(str);
+    }","public static Number createNumber(final String str) {
+        if (str == null) {
+            return null;
+        }
+        if (StringUtils.isBlank(str)) {
+            throw new NumberFormatException(""A blank string is not a valid number"");
+        }
+        // Need to deal with all possible hex prefixes here
+        final String[] hexPrefixes = {""0x"", ""0X"", ""#""};
+        final int length = str.length();
+        final int offset = str.charAt(0) == '+' || str.charAt(0) == '-' ? 1 : 0;
+        int pfxLen = 0;
+        for (final String pfx : hexPrefixes) {
+            if (str.startsWith(pfx, offset)) {
+                pfxLen += pfx.length() + offset;
+                break;
+            }
+        }
+        if (pfxLen > 0) { // we have a hex number
+            char firstSigDigit = 0; // strip leading zeroes
+            for (int i = pfxLen; i < length; i++) {
+                firstSigDigit = str.charAt(i);
+                if (firstSigDigit != '0') {
+                    break;
+                }
+                pfxLen++;
+            }
+            final int hexDigits = length - pfxLen;
+            if (hexDigits > 16 || hexDigits == 16 && firstSigDigit > '7') { // too many for Long
+                return createBigInteger(str);
+            }
+            if (hexDigits > 8 || hexDigits == 8 && firstSigDigit > '7') { // too many for an int
+                return createLong(str);
+            }
+            return createInteger(str);
+        }
+        final char lastChar = str.charAt(length - 1);
+        final String mant;
+        final String dec;
+        final String exp;
+        final int decPos = str.indexOf('.');
+        final int expPos = str.indexOf('e') + str.indexOf('E') + 1; // assumes both not present
+        // if both e and E are present, this is caught by the checks on expPos (which prevent IOOBE)
+        // and the parsing which will detect if e or E appear in a number due to using the wrong offset
+
+        // Detect if the return type has been requested
+        final boolean requestType = !Character.isDigit(lastChar) && lastChar != '.';
+        if (decPos > -1) { // there is a decimal point
+            if (expPos > -1) { // there is an exponent
+                if (expPos <= decPos || expPos > length) { // prevents double exponent causing IOOBE
+                    throw new NumberFormatException(str + "" is not a valid number."");
+                }
+                dec = str.substring(decPos + 1, expPos);
+            } else {
+                // No exponent, but there may be a type character to remove
+                dec = str.substring(decPos + 1, requestType ? length - 1 : length);
+            }
+            mant = getMantissa(str, decPos);
+        } else {
+            if (expPos > -1) {
+                if (expPos > length) { // prevents double exponent causing IOOBE
+                    throw new NumberFormatException(str + "" is not a valid number."");
+                }
+                mant = getMantissa(str, expPos);
+            } else {
+                // No decimal, no exponent, but there may be a type character to remove
+                mant = getMantissa(str, requestType ? length - 1 : length);
+            }
+            dec = null;
+        }
+        if (requestType) {
+            if (expPos > -1 && expPos < length - 1) {
+                exp = str.substring(expPos + 1, length - 1);
+            } else {
+                exp = null;
+            }
+            //Requesting a specific type.
+            final String numeric = str.substring(0, length - 1);
+            switch (lastChar) {
+                case 'l' :
+                case 'L' :
+                    if (dec == null
+                        && exp == null
+                        && (!numeric.isEmpty() && numeric.charAt(0) == '-' && isDigits(numeric.substring(1)) || isDigits(numeric))) {
+                        try {
+                            return createLong(numeric);
+                        } catch (final NumberFormatException ignored) {
+                            // Too big for a long
+                        }
+                        return createBigInteger(numeric);
+
+                    }
+                    throw new NumberFormatException(str + "" is not a valid number."");
+                case 'f' :
+                case 'F' :
+                    try {
+                        final Float f = createFloat(str);
+                        if (!(f.isInfinite() || f.floatValue() == 0.0F && !isZero(mant, dec))) {
+                            //If it's too big for a float or the float value = 0 and the string
+                            //has non-zeros in it, then float does not have the precision we want
+                            return f;
+                        }
+
+                    } catch (final NumberFormatException ignored) {
+                        // ignore the bad number
+                    }
+                    //$FALL-THROUGH$
+                case 'd' :
+                case 'D' :
+                    try {
+                        final Double d = createDouble(str);
+                        if (!(d.isInfinite() || d.doubleValue() == 0.0D && !isZero(mant, dec))) {
+                            return d;
+                        }
+                    } catch (final NumberFormatException ignored) {
+                        // ignore the bad number
+                    }
+                    try {
+                        return createBigDecimal(numeric);
+                    } catch (final NumberFormatException ignored) {
+                        // ignore the bad number
+                    }
+                    //$FALL-THROUGH$
+                default :
+                    throw new NumberFormatException(str + "" is not a valid number."");
+
+            }
+        }
+        //User doesn't have a preference on the return type, so let's start
+        //small and go from there...
+        if (expPos > -1 && expPos < length - 1) {
+            exp = str.substring(expPos + 1);
+        } else {
+            exp = null;
+        }
+        if (dec == null && exp == null) { // no decimal point and no exponent
+            //Must be an Integer, Long, Biginteger
+            try {
+                return createInteger(str);
+            } catch (final NumberFormatException ignored) {
+                // ignore the bad number
+            }
+            try {
+                return createLong(str);
+            } catch (final NumberFormatException ignored) {
+                // ignore the bad number
+            }
+            return createBigInteger(str);
+        }
+
+        //Must be a Float, Double, BigDecimal
+        try {
+            final Float f = createFloat(str);
+            final Double d = createDouble(str);
+            if (!f.isInfinite()
+                    && !(f.floatValue() == 0.0F && !isZero(mant, dec))
+                    && f.toString().equals(d.toString())) {
+                return f;
+            }
+            if (!d.isInfinite() && !(d.doubleValue() == 0.0D && !isZero(mant, dec))) {
+                final BigDecimal b = createBigDecimal(str);
+                if (b.compareTo(BigDecimal.valueOf(d.doubleValue())) == 0) {
+                    return d;
+                }
+                return b;
+            }
+        } catch (final NumberFormatException ignored) {
+            // ignore the bad number
+        }
+        return createBigDecimal(str);
+    }",NumberUtils,"public  NumberUtils();
+"
+Lang_613,"@SuppressWarnings(""resource"") // inputStream is managed by the caller
+    public static <T> T deserialize(final InputStream inputStream) {
+        Objects.requireNonNull(inputStream, ""inputStream"");
+        try (ObjectInputStream in = new ObjectInputStream(inputStream)) {
+            @SuppressWarnings(""unchecked"")
+            final T obj = (T) in.readObject();
+            return obj;
+        } catch (final ClassNotFoundException | IOException ex) {
+            throw new SerializationException(ex);
+        }
+    }","@SuppressWarnings(""resource"") // inputStream is managed by the caller
+    public static <T> T deserialize(final InputStream inputStream) {
+        Objects.requireNonNull(inputStream, ""inputStream"");
+        try (ObjectInputStream in = new ObjectInputStream(inputStream)) {
+            @SuppressWarnings(""unchecked"")
+            final T obj = (T) in.readObject();
+            return obj;
+        } catch (final ClassNotFoundException | IOException | NegativeArraySizeException ex) {
+            throw new SerializationException(ex);
+        }
+    }",SerializationUtils,"public  SerializationUtils();
+"
+Lang_614,"private static String getMantissa(final String str, final int stopPos) {
+        final char firstChar = str.charAt(0);
+        final boolean hasSign = firstChar == '-' || firstChar == '+';
+
+        return hasSign ? str.substring(1, stopPos) : str.substring(0, stopPos);
+    }","private static String getMantissa(final String str, final int stopPos) {
+         final char firstChar = str.charAt(0);
+         final boolean hasSign = firstChar == '-' || firstChar == '+';
+         final int length = str.length();
+         if (length <= (hasSign ? 1 : 0) || length < stopPos) {
+             throw new NumberFormatException(str + "" is not a valid number."");
+         }
+         return hasSign ? str.substring(1, stopPos) : str.substring(0, stopPos);
+    }",NumberUtils,"public  NumberUtils();
+"

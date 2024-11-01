@@ -1,0 +1,7 @@
+public void testFactorial() {
+    try {
+        assertEquals(24, MathUtils.factorial(4));
+    } catch (ArithmeticException e) {
+        fail("Unexpected ArithmeticException");
+    }
+}

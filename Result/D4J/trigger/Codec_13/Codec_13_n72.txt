@@ -1,0 +1,5 @@
+public void test47() {
+        DoubleMetaphone doubleMetaphone0 = new DoubleMetaphone();
+        boolean boolean0 = doubleMetaphone0.isDoubleMetaphoneEqual("", "test");
+        assertFalse(boolean0);
+    }

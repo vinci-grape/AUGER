@@ -1,0 +1,6 @@
+public void test91() throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        TarArchiveOutputStream tarOut = new TarArchiveOutputStream(baos);
+        tarOut.close();
+        assertTrue(baos.size() == 0);
+    }

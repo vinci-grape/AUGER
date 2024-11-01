@@ -1,0 +1,18 @@
+public void testEqual() throws Throwable {
+    GeneralPath p1 = new GeneralPath();
+    GeneralPath p2 = new GeneralPath();
+    p1.moveTo(0, 0);
+    p1.lineTo(10, 10);
+    p2.moveTo(0, 0);
+    p2.lineTo(10, 10);
+    assertEquals(true, ShapeUtilities.equal(p1, p2));
+
+    GeneralPath p3 = new GeneralPath();
+    p3.moveTo(0, 0);
+    p3.lineTo(10, 10);
+    p3.lineTo(20, 20); // Additional line for the test
+    assertEquals(false, ShapeUtilities.equal(p1, p3));
+
+    GeneralPath p4 = null;
+    assertEquals(false, ShapeUtilities.equal(p1, p4));
+}

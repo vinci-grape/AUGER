@@ -1,0 +1,4 @@
+@Test
+public void test36() {
+    assertThrows(NumberFormatException.class, () -> NumberUtils.getMantissa("", 2));
+}

@@ -1,0 +1,7 @@
+public void test04() throws Throwable  {
+    byte[] byteArray0 = (byte[]) "This is a test".getBytes();
+    Base64 base640 = new Base64(0);
+    String string0 = base640.encodeBase64String(byteArray0);
+    String string1 = "VGhpcyBpcyBhIHRlc3Q=";
+    assertEquals(string1, string0);
+}

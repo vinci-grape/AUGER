@@ -1,0 +1,9 @@
+public void test33() throws Throwable  {
+    byte[] buffer = new byte[10];
+    buffer[2] = 1;
+    try {
+        long result = TarUtils.parseOctal(buffer, 0, 10);
+    } catch (IllegalArgumentException e) {
+        assertEquals(e.getMessage(), "Length 10 must be at least 2");
+    }
+}

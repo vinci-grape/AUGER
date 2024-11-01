@@ -1,0 +1,11 @@
+public void testPoissonDistributionImpl() {
+        double p = 2.0;
+        double epsilon = 0.01;
+        int maxIterations = 20;
+
+        try {
+            new PoissonDistributionImpl(p, epsilon, maxIterations);
+        } catch (MathRuntimeException e) {
+            assertEquals(LocalizedFormats.NOT_POSITIVE_POISSON_MEAN, e.getLocalizedMessage());
+        }
+    }

@@ -1,0 +1,12 @@
+public void test133() throws Throwable {
+    HelpFormatter helpFormatter0 = new HelpFormatter();
+    StringBuffer stringBuffer0 = new StringBuffer();
+    int int0 = 10;
+    int int1 = 2;
+    String string0 = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+    try {
+        helpFormatter0.renderWrappedText(stringBuffer0, int0, int1, string0);
+    } catch (RuntimeException e) {
+        assertEquals("Text too long for line - throwing exception to avoid infinite loop [CLI-162]: Lorem ipsum dolor sit amet, consectetur adipiscing elit.", e.getMessage());
+    }
+}

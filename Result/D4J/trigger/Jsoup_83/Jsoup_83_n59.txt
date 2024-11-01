@@ -1,0 +1,5 @@
+public void test56() throws Exception {
+        CharacterReader characterReader = new CharacterReader(new java.io.StringReader("<"));
+        String result = characterReader.consumeTagName();
+        assertEquals("", result);
+    }

@@ -1,0 +1,9 @@
+public void test20() throws Throwable  {
+    FileOutputStream fileOutputStream0 = new FileOutputStream("test.zip");
+    ZipArchiveOutputStream zipArchiveOutputStream0 = new ZipArchiveOutputStream(fileOutputStream0);
+    ZipArchiveEntry zipArchiveEntry0 = new ZipArchiveEntry("test.txt");
+    zipArchiveOutputStream0.putArchiveEntry(zipArchiveEntry0);
+    zipArchiveOutputStream0.close();
+    File file0 = new File("test.zip");
+    assertTrue(file0.exists());
+}

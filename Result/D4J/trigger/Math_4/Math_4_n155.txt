@@ -1,0 +1,10 @@
+public void test18() throws Throwable  {
+    Vector2D vector2D0 = new Vector2D(1.0, 2.0);
+    Vector2D vector2D1 = new Vector2D(3.0, 4.0);
+    SubLine subLine0 = new SubLine(vector2D0, vector2D1);
+    Vector2D vector2D2 = new Vector2D(5.0, 6.0);
+    Vector2D vector2D3 = new Vector2D(7.0, 8.0);
+    SubLine subLine1 = new SubLine(vector2D2, vector2D3);
+    Vector2D vector2D4 = subLine0.intersection(subLine1, true);
+    assertTrue(vector2D4 == null);
+}

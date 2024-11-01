@@ -1,0 +1,7 @@
+public void test63() throws Throwable  {
+    CSVFormat cSVFormat0 = CSVFormat.DEFAULT;
+    StringReader stringReader0 = new StringReader("");
+    CSVParser cSVParser0 = new CSVParser(stringReader0, cSVFormat0);
+    Map<String, Integer> map0 = cSVParser0.getHeaderMap();
+    assertTrue(map0 == null);
+}

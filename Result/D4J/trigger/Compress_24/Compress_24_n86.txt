@@ -1,0 +1,8 @@
+public void testOctal(){
+    byte[] buffer = "010".getBytes();
+    assertEquals(TarUtils.parseOctal(buffer, 0, 3), 8);
+    byte[] buffer1 = "0100".getBytes();
+    assertEquals(TarUtils.parseOctal(buffer1, 0, 4), 64);
+    byte[] buffer2 = "01000".getBytes();
+    assertEquals(TarUtils.parseOctal(buffer2, 0, 5), 512);
+}

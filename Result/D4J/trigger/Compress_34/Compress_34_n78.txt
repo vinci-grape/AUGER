@@ -1,0 +1,5 @@
+public void testGetCentralDirectoryLength() {
+    X7875_NewUnix newUnix0 = new X7875_NewUnix();
+    ZipShort zipShort0 = newUnix0.getCentralDirectoryLength();
+    assertTrue(zipShort0.getValue()<=0);
+}

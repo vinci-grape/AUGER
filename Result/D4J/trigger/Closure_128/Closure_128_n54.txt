@@ -1,0 +1,3 @@
+public void test66() throws Throwable {
+    assertTrue(CodeGenerator.isSimpleNumber("0"));
+}

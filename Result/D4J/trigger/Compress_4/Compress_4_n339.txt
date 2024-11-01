@@ -1,0 +1,6 @@
+public void test23() throws IOException  {
+    ByteArrayOutputStream byteArrayOutputStream0 = new ByteArrayOutputStream();
+    CpioArchiveOutputStream cpioArchiveOutputStream0 = new CpioArchiveOutputStream(byteArrayOutputStream0);
+    cpioArchiveOutputStream0.close();
+    assertEquals("", byteArrayOutputStream0.toString());
+}

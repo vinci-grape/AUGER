@@ -1,0 +1,7 @@
+public void test83() throws Throwable  {
+    KeyedObjects2D keyedObjects2D0 = new KeyedObjects2D();
+    Comparable comparable0 = new Integer(1);
+    Comparable comparable1 = new Integer(1);
+    keyedObjects2D0.removeObject(comparable0, comparable1);
+    assertEquals(0, keyedObjects2D0.getRowCount());
+}

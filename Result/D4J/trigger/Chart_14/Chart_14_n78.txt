@@ -1,0 +1,9 @@
+public void test93() throws Throwable  {
+    XYPlot xYPlot0 = new XYPlot();
+    int i = -1;
+    Marker marker0 = null;
+    Layer layer0 = Layer.FOREGROUND;
+    boolean notify = true;
+    boolean removed = xYPlot0.removeDomainMarker(i, marker0, layer0, notify);
+    assertFalse(removed);
+}

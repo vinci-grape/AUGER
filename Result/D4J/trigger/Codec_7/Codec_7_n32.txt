@@ -1,0 +1,7 @@
+public void test99() {
+    Base64 base64 = new Base64(true);
+    byte[] binaryData = "Test".getBytes();
+    String expected = "VGVzdA==";
+    String actual = base64.encodeBase64String(binaryData);
+    assertEquals(expected, actual);
+}

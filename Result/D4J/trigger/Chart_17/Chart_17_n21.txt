@@ -1,0 +1,5 @@
+public void test13() throws Exception {
+    TimeSeries timeSeries0 = new TimeSeries("Name");
+    Object clone = timeSeries0.clone();
+    assertFalse(timeSeries0 == clone); // Comparing two object reference
+}

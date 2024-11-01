@@ -1,0 +1,7 @@
+public void test99() throws Throwable  {
+    StringWriter sw = new StringWriter();
+    NumericEntityUnescaper neu = new NumericEntityUnescaper();
+    CharSequence cs = "&#";
+    neu.translate(cs, 0, sw);
+    assertEquals(0, sw.toString().length());
+}

@@ -1,0 +1,8 @@
+public void test23() throws Exception  {
+        HelpFormatter helpFormatter = new HelpFormatter();
+        String s = "1234567890\n\t\t\t\t\t\t\t\t\t\t\t\t\t1234567890";
+        int w = 5;
+        int actual = helpFormatter.findWrapPos(s, w, 0);
+        int expected = 5;
+        assertEquals(expected, actual);
+}

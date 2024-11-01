@@ -1,0 +1,14 @@
+public void test36() throws Throwable  {
+    UnivariateRealFunction univariateRealFunction0 = new UnivariateRealFunction() {
+        public double value(double x) {
+            return 0.0;
+        }
+    };
+    try {
+        double[] doubleArray0 = UnivariateRealSolverUtils.bracket(univariateRealFunction0, 0.0, -1.0, 1.0, 1);
+        assertEquals(-1.0, doubleArray0[0]);
+        assertEquals(1.0, doubleArray0[1]);
+    } catch (ConvergenceException e) {
+        assertTrue(false);
+    }
+}

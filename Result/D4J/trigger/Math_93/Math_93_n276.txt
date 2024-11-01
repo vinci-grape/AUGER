@@ -1,0 +1,7 @@
+public void test49() throws Throwable  {
+    try {
+        MathUtils.factorial(13);
+    } catch (Exception e) {
+        assertTrue(e.getMessage().equals("factorial value is too large to fit in a long"));
+    }
+}

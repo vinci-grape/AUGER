@@ -1,0 +1,8 @@
+public void test51() throws Throwable  {
+        ThreadGroup threadGroup0 = new ThreadGroup("test");
+        ThreadUtils threadUtils0 = new ThreadUtils();
+        boolean boolean0 = true;
+        Predicate<ThreadGroup> predicate0 = (threadGroup) -> threadGroup.getName().equals("test");
+        Collection<ThreadGroup> collection0 = ThreadUtils.findThreadGroups(threadGroup0, boolean0, predicate0);
+        assertTrue(collection0.isEmpty());
+    }

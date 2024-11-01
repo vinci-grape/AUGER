@@ -1,0 +1,8 @@
+public void test85() {
+        TimeSeries timeSeries = new TimeSeries(new String("TS1"));
+        try {
+            timeSeries.clone();
+        } catch (CloneNotSupportedException e) {
+            fail("TimeSeries could not be cloned");
+        }
+    }

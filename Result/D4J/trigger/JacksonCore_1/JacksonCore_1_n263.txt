@@ -1,0 +1,11 @@
+public void test89() throws Throwable  {
+    try {
+        TextBuffer textBuffer0 = new TextBuffer(null);
+        textBuffer0.contentsAsDecimal();
+    }
+    catch (NumberFormatException e) {
+        assertTrue(true);
+        return;
+    }
+    assertFalse(true);
+}

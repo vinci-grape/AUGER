@@ -1,0 +1,8 @@
+public void test01() {
+    try {
+        Number num = NumberUtils.createNumber("--123");
+        fail("Expected NumberFormatException");
+    } catch (NumberFormatException e) {
+        // Expected
+    }
+}

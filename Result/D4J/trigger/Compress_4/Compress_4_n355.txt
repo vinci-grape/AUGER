@@ -1,0 +1,8 @@
+public void test55() throws Throwable  {
+    ByteArrayOutputStream byteArrayOutputStream0 = new ByteArrayOutputStream();
+    CpioArchiveOutputStream cpioArchiveOutputStream0 = new CpioArchiveOutputStream(byteArrayOutputStream0);
+    cpioArchiveOutputStream0.close();
+    byteArrayOutputStream0.close();
+    byte[] bytes0 = byteArrayOutputStream0.toByteArray();
+    assertTrue(bytes0.length == 0);
+}

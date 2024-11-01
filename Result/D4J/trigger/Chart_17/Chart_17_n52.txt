@@ -1,0 +1,7 @@
+public void test87() throws Throwable  {
+    TimeSeries timeSeries0 = new TimeSeries("");
+    Object clone = timeSeries0.clone();
+    assertTrue(clone instanceof TimeSeries);
+    assertTrue(clone != timeSeries0);
+    assertTrue(clone.equals(timeSeries0));
+}

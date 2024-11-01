@@ -1,0 +1,12 @@
+public void testPoissonDistributionImpl() {
+    double mean = 5.5;
+    double epsilon = 0.1;
+    int maxIterations = 2000;
+    
+    PoissonDistributionImpl poissonDistributionImpl;
+    try {
+        poissonDistributionImpl = new PoissonDistributionImpl(mean, epsilon, maxIterations);
+    } catch (MathRuntimeException e) {
+        Assert.fail("Unexpected MathRuntimeException: " + e.getMessage());
+    }
+}

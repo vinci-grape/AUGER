@@ -1,0 +1,13 @@
+public void testPoissonDistribution() throws Exception {
+    double mean = 10;
+    double epsilon = 1E-15;
+    int maxIterations = 1000;
+
+    PoissonDistributionImpl poissonDistributionImpl = null;
+    try {
+        poissonDistributionImpl = new PoissonDistributionImpl(mean, epsilon, maxIterations);
+    } catch (Exception e) {
+        assertTrue(false);
+    }
+    assertTrue(poissonDistributionImpl != null);
+}

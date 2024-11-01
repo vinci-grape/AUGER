@@ -1,0 +1,6 @@
+public void test2() throws CloneNotSupportedException {
+
+    TimeSeries timeSeries = new TimeSeries("test");
+    Object clone = timeSeries.clone();
+    assertFalse(timeSeries == clone);
+}

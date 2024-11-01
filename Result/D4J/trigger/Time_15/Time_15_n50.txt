@@ -1,0 +1,8 @@
+public void test85() {
+    try {
+        FieldUtils.safeMultiply(Long.MAX_VALUE, 2);
+        fail("Expected exception for multiplying Long.MAX_VALUE with 2");
+    } catch (ArithmeticException ae) {
+        assertEquals("Multiplication overflows a long: 9223372036854775807 * 2", ae.getMessage());
+    }
+}

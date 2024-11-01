@@ -1,0 +1,10 @@
+public void testCSVPrinter() throws IOException {
+    Appendable appendable = new StringBuilder();
+    CSVFormat csvFormat = CSVFormat.DEFAULT.withHeader("A", "B", "C");
+    CSVPrinter csvPrinter = new CSVPrinter(appendable, csvFormat);
+    csvPrinter.printRecord("1", "2", "3");
+    csvPrinter.flush();
+
+    String expected = "A,B,C\r\n1,2,3\r\n";
+    assertEquals(expected, appendable.toString());
+}

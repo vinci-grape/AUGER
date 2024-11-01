@@ -1,0 +1,8 @@
+public void test30() throws Throwable {
+    ByteArrayOutputStream byteArrayOutputStream0 = new ByteArrayOutputStream();
+    ZipArchiveOutputStream zipArchiveOutputStream0 = new ZipArchiveOutputStream(byteArrayOutputStream0);
+    zipArchiveOutputStream0.close();
+    byteArrayOutputStream0.close();
+    boolean boolean0 = byteArrayOutputStream0.size() > 0;
+    assertFalse(boolean0);
+}

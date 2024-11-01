@@ -1,0 +1,8 @@
+public void test86() throws Throwable  {
+    XYSeries xYSeries0 = new XYSeries(new Integer(1), true, true);
+    Number number0 = new Integer(1);
+    Number number1 = new Double(1.0E0);
+    XYDataItem xYDataItem0 = xYSeries0.addOrUpdate(number0, number1);
+    assertEquals(1, xYSeries0.getItemCount());
+    assertTrue(xYSeries0.addOrUpdate(number0, number1) == xYDataItem0);
+}

@@ -1,0 +1,5 @@
+public void test63() throws Throwable  {
+    XYPlot xYPlot0 = new XYPlot(null, null, null, null);
+    boolean boolean0 = xYPlot0.removeDomainMarker(0, null, Layer.FOREGROUND, false);
+    assertFalse(boolean0);
+}

@@ -1,0 +1,7 @@
+public void test7() throws Throwable  {
+    ByteArrayOutputStream byteArrayOutputStream0 = new ByteArrayOutputStream();
+    ZipArchiveOutputStream zAO = new ZipArchiveOutputStream(byteArrayOutputStream0);
+    zAO.close();
+    boolean boolean0 = byteArrayOutputStream0.size() == 0;
+    assertTrue(boolean0);
+}

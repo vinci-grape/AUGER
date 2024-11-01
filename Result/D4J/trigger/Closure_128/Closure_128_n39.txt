@@ -1,0 +1,3 @@
+public void test80() throws Exception {
+    assertTrue(CodeGenerator.isSimpleNumber("0"));
+}

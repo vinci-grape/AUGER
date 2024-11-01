@@ -1,0 +1,4 @@
+public void test90() throws Exception{
+    String name = "";
+    DocumentType documentType = new DocumentType(name,"publicId", "systemId", "baseUri");
+}

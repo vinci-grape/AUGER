@@ -1,0 +1,20 @@
+public void testFindThreadGroups() {
+        ThreadGroup rootGroup = new ThreadGroup("root");
+        ThreadGroup group1 = new ThreadGroup(rootGroup, "group1");
+        ThreadGroup group2 = new ThreadGroup(rootGroup, "group2");
+        ThreadGroup group11 = new ThreadGroup(group1, "group11");
+        ThreadGroup group12 = new ThreadGroup(group1, "group12");
+        ThreadGroup group21 = new ThreadGroup(group2, "group21");
+
+        ThreadGroup group22 = new ThreadGroup(group2, "group22");
+
+
+        Predicate<ThreadGroup> predicate = g -> g.getName().startsWith("group1");
+
+        Collection<ThreadGroup> foundGroups = ThreadUtils.findThreadGroups(rootGroup, true, predicate);
+
+        Assert.assertEquals(3, foundGroups.size());
+        Assert.assertTrue(foundGroups.contains(group1));
+        Assert.assertTrue(foundGroups.contains(group11));
+        Assert.assertTrue(foundGroups.contains(group12));
+    }

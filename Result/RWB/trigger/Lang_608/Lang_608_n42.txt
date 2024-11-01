@@ -1,0 +1,6 @@
+public void test74() {
+    ThreadGroup threadGroup = new ThreadGroup("ThreadGroup");
+    Predicate<ThreadGroup> predicate = threadGroup1 -> threadGroup1.getMaxPriority() == 7;
+    Collection<ThreadGroup> list = ThreadUtils.findThreadGroups(threadGroup, true, predicate);
+    assertEquals(0, list.size());
+}

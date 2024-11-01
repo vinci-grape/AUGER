@@ -1,0 +1,6 @@
+public void test3() throws Exception {
+    JsonElement jsonElement = new JsonPrimitive(123);
+    JsonTreeReader jsonTreeReader = new JsonTreeReader(jsonElement);
+    jsonTreeReader.skipValue();
+    assertEquals(JsonToken.END_DOCUMENT, jsonTreeReader.peek());
+}

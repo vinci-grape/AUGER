@@ -1,0 +1,7 @@
+public void test80() throws Throwable  {
+    byte[] byteArray0 = new byte[2];
+    byteArray0[0] = ' ';
+    byteArray0[1] = '2';
+    long long0 = TarUtils.parseOctal(byteArray0, 0, 2);
+    assertEquals(2, long0);
+}

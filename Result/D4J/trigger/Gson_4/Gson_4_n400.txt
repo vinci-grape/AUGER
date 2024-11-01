@@ -1,0 +1,6 @@
+public void test1() throws Exception{
+    StringWriter sw = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(sw);
+    jsonWriter.value(20L);
+    assertEquals("20",sw.toString());
+}

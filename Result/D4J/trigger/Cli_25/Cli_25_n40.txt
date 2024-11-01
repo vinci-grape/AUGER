@@ -1,0 +1,9 @@
+public void test3() throws Throwable  {
+    HelpFormatter helpFormatter0 = new HelpFormatter();
+    StringBuffer stringBuffer0 = new StringBuffer("");
+    int int0 = 0;
+    int int1 = 0;
+    String string0 = "Test text";
+    helpFormatter0.renderWrappedText(stringBuffer0, int0, int1, string0);
+    assertEquals("Test text", stringBuffer0.toString());
+}

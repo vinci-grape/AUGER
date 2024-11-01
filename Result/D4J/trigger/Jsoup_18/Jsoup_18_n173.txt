@@ -1,0 +1,4 @@
+public void test80() {
+    CharacterReader characterReader = new CharacterReader("hello");
+    assertEquals("hello", characterReader.consumeToEnd());
+}

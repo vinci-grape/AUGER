@@ -1,0 +1,7 @@
+public void test61() throws Throwable  {
+    File tempFile = File.createTempFile("test", ".zip");
+    FileOutputStream fileOutputStream0 = new FileOutputStream(tempFile);
+    ZipArchiveOutputStream zipArchiveOutputStream0 = new ZipArchiveOutputStream(fileOutputStream0);
+    zipArchiveOutputStream0.close();
+    assertEquals(0, tempFile.length());
+}

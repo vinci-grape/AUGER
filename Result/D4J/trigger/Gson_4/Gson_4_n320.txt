@@ -1,0 +1,7 @@
+public void test20() throws Throwable  {
+    StringWriter stringWriter0 = new StringWriter();
+    JsonWriter jsonWriter0 = new JsonWriter(stringWriter0);
+    jsonWriter0.value(0.0D);
+    String string0 = stringWriter0.toString();
+    assertEquals("0.0", string0);
+}

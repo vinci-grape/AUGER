@@ -1,0 +1,6 @@
+public void test11() throws Throwable  {
+    StringWriter stringWriter0 = new StringWriter();
+    JsonWriter jsonWriter0 = new JsonWriter(stringWriter0);
+    jsonWriter0.value("\\u0000");
+    assertTrue(stringWriter0.toString().contains("\\u0000"));
+}

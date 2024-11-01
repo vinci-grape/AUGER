@@ -1,0 +1,4 @@
+public void test123() {
+        Whitelist whitelist = new Whitelist().addTags("p").addAttributes(":all", "style");
+        assertFalse(Jsoup.isValid("<p style=\"color:red;\">Hello</b>", whitelist));
+    }

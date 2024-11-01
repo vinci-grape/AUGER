@@ -1,0 +1,5 @@
+public void testDivide() {
+    Complex c1 = new Complex(2, 3);
+    Complex result = c1.divide(0);
+    assertEquals(Complex.NaN, result);
+}

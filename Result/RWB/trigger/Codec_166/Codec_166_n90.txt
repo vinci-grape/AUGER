@@ -1,0 +1,6 @@
+@Test
+public void test84() {
+    RefinedSoundex refinedSoundex = new RefinedSoundex("BCDFGHJKLMNPQRSTVWXYZ");
+    char character0 = refinedSoundex.getMappingCode('Z');
+    assertEquals(0, character0);
+}

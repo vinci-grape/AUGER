@@ -1,0 +1,11 @@
+public void test31() throws Throwable  {
+    String test = "This is not a valid zip file.";
+    ArchiveStreamFactory archiveStreamFactory = new ArchiveStreamFactory();
+    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(test.getBytes());
+    try {
+        ArchiveInputStream archiveInputStream = archiveStreamFactory.createArchiveInputStream(byteArrayInputStream);
+        fail("Expected an ArchiveException");
+    } catch (ArchiveException ex) {
+        // Expected
+    }
+}

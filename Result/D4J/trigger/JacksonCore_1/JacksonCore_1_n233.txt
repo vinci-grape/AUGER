@@ -1,0 +1,10 @@
+public void test41() {
+    TextBuffer textBuffer0 = new TextBuffer(null);
+    BigDecimal bigDecimal0;
+    try {
+        bigDecimal0 = textBuffer0.contentsAsDecimal();
+        fail("should have thrown NumberFormatException");
+    } catch (NumberFormatException numberFormatException0) {
+        assertTrue(true);
+    }
+}

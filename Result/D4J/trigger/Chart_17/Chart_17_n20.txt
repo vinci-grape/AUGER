@@ -1,0 +1,10 @@
+public void test37() throws CloneNotSupportedException  {
+        TimeSeries original = new TimeSeries(new Comparable() {
+
+            public int compareTo(Object o) {
+                return 0;
+            }
+        });
+        TimeSeries clone = (TimeSeries) original.clone();
+        assertFalse(original == clone); // should be different objects
+    }

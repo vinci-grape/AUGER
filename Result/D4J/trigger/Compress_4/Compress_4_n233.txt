@@ -1,0 +1,12 @@
+public void test19() throws Throwable {
+    ZipArchiveOutputStream zipArchiveOutputStream0 = new ZipArchiveOutputStream(new ByteArrayOutputStream());
+    try{
+        ZipArchiveEntry zipArchiveEntry0 = new ZipArchiveEntry("test");
+        zipArchiveOutputStream0.putArchiveEntry(zipArchiveEntry0);
+        zipArchiveOutputStream0.close();
+        zipArchiveOutputStream0.close();
+    }
+    finally{
+        zipArchiveOutputStream0.close();
+    }
+}

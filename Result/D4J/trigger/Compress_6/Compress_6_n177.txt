@@ -1,0 +1,6 @@
+public void testEquals() {
+    File file = new File("test.zip");
+    ZipArchiveEntry entry1 = new ZipArchiveEntry(file, "entry1");
+    ZipArchiveEntry entry2 = new ZipArchiveEntry(file, "entry2");
+    assertFalse(entry1.equals(entry2));
+}

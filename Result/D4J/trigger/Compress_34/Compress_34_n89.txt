@@ -1,0 +1,5 @@
+public void test1() throws Throwable  {
+    X7875_NewUnix newUnix = new X7875_NewUnix();
+    ZipShort zipShort0 = newUnix.getCentralDirectoryLength();
+    assertEquals(0, zipShort0.getValue());
+}

@@ -1,0 +1,10 @@
+public void test20() throws Throwable  {
+    StringWriter stringWriter0 = new StringWriter();
+    JsonWriter jsonWriter0 = new JsonWriter(stringWriter0);
+    try {
+        jsonWriter0.value(1.7976931348623157E308);
+    }
+    catch (Exception exception0) {
+        assertTrue(exception0 instanceof IllegalArgumentException);
+    }
+}

@@ -1,0 +1,9 @@
+public void test81() throws Throwable  {
+    byte[] buffer = "00000".getBytes();
+    try {
+        long result = TarUtils.parseOctal(buffer, 0, 5);
+        assertTrue(result == 0L);
+    } catch (IllegalArgumentException e) {
+        assertTrue(false);
+    }
+}

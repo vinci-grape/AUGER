@@ -1,0 +1,5 @@
+public void test89() throws Exception  {
+    ArrayRealVector vector = new ArrayRealVector(new double[] {2.0, -1.0, -3.0, 4.0});
+    double infNorm = vector.getLInfNorm();
+    assertEquals("Infinity norm should be 4", 4, infNorm, 0);
+}

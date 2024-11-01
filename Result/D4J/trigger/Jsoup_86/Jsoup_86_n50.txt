@@ -1,0 +1,5 @@
+public void test37() {
+    Comment comment = new Comment(" !foo : bar");
+    XmlDeclaration xmlDeclaration = comment.asXmlDeclaration();
+    assertNull(xmlDeclaration);
+}

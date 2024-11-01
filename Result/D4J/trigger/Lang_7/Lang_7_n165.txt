@@ -1,0 +1,8 @@
+public void test19() {
+    try {
+        NumberUtils.createNumber("--10");
+        fail("Should have thrown a NumberFormatException");
+    } catch (NumberFormatException nfe) {
+        // Expected
+    }
+}

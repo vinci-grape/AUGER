@@ -1,0 +1,11 @@
+public void test41() throws Throwable  {
+    Annotation ann = new Annotation() {
+      public Class<? extends Annotation> annotationType() { return this.getClass(); }
+    };
+
+    
+    AnnotationMap annotationMap = new AnnotationMap();
+    boolean bool = annotationMap.add(ann);
+    
+    assertEquals(bool, true);
+}

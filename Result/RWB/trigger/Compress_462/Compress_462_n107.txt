@@ -1,0 +1,11 @@
+@Test
+public void testFramedLZ4CompressorOutputStream() throws IOException {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    FramedLZ4CompressorOutputStream flz4cos = new FramedLZ4CompressorOutputStream(baos);
+    String testString = "Hello World";
+    flz4cos.write(testString.getBytes());
+    flz4cos.flush();
+    byte[] compressed = baos.toByteArray();
+    assertTrue(compressed.length > 0); // Asserting compressed data
+    assertTrue(compressed.length < testString.length()); // Asserting compression efficiency
+}

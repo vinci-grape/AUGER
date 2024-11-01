@@ -1,0 +1,20 @@
+public void test80() throws Throwable  {
+    ThreadGroup threadGroup0 = new ThreadGroup("ThreadGroup");
+    Thread thread0 = new Thread(threadGroup0, new Runnable() {
+        public void run() {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    });
+    thread0.start();
+
+    ThreadUtils.findThreads(threadGroup0, true, new Predicate<Thread>() {
+        public boolean test(Thread t) {
+            return t.isAlive();
+        }
+    });
+    assertTrue(thread0.isAlive());
+}

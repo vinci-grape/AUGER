@@ -1,0 +1,9 @@
+public void test141() {
+        try {
+            FDistribution fDistribution0 = new FDistribution(3.0, 4.0, 0.0);
+            assertFalse(fDistribution0.isSupportLowerBoundInclusive());
+        } catch (Exception exception0) {
+            exception0.printStackTrace();
+            fail("Unexpected exception: " + exception0);
+        }
+    }

@@ -1,0 +1,5 @@
+public void test45() {
+    Complex c = new Complex(0, 0);
+    Complex result = c.reciprocal();
+    assertEquals("Infinity", Double.toString(result.getImaginary()));
+}

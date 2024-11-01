@@ -1,0 +1,4 @@
+public void test81() throws Throwable  {
+    int int0 = MathUtils.lcm(0, 0);
+    assertEquals(0, int0);
+}

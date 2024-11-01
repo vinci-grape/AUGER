@@ -1,0 +1,6 @@
+public void test35() throws Throwable  {
+    JsonObject jsonObject0 = new JsonObject();
+    JsonTreeReader jsonTreeReader0 = new JsonTreeReader(jsonObject0);
+    jsonTreeReader0.skipValue();
+    assertTrue(jsonTreeReader0.hasNext());
+}

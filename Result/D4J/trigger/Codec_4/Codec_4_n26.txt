@@ -1,0 +1,5 @@
+public void test99() throws Exception {
+        Base64 base64 = new Base64();
+        byte[] encoded = base64.encode("testing".getBytes());
+        assertEquals(new String(encoded), "dGVzdGluZw==");
+    }

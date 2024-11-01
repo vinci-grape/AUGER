@@ -1,0 +1,8 @@
+public void test84() {
+    try {
+        NumberUtils.createNumber("--123");
+        assertTrue(false); // If we reach here, the function has failed the test.
+    } catch (NumberFormatException ex) {
+        assertTrue(true);
+    }
+}

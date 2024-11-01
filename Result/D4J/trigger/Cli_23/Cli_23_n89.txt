@@ -1,0 +1,12 @@
+public void test30() {
+    HelpFormatter helpFormatter = new HelpFormatter();
+    StringBuffer sb = new StringBuffer();
+    int width = 10;
+    int nextLineTabStop = 2;
+    String text = "This is a long text that should not fit into a single line";
+    try {
+        helpFormatter.renderWrappedText(sb, width, nextLineTabStop, text);
+    } catch (Exception e) {
+        fail("renderWrappedText() throw exception: " + e.getMessage());
+    }
+}

@@ -1,0 +1,6 @@
+public void test19() throws IOException {
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter writer = new JsonWriter(stringWriter);
+    writer.nullValue();
+    assertEquals("null", stringWriter.toString());
+}

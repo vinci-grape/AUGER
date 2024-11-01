@@ -1,0 +1,5 @@
+public void test15() throws Throwable  {
+    Complex c = new Complex(2,3);
+    Complex result = c.divide(0);
+    assertEquals(Double.NaN, result.getReal(), 0.000001);
+}

@@ -1,0 +1,10 @@
+public void testJsonWriterBug() {
+    StringWriter writer = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(writer);
+    try {
+      jsonWriter.value(100L);
+      Assert.assertEquals("100", writer.toString());
+    } catch (IOException e) {
+      Assert.fail("Unexpected IOException: " + e.getMessage());
+    }
+  }

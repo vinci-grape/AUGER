@@ -1,0 +1,13 @@
+public void test40() throws Throwable  {
+    ArrayList<Integer> arrayList0 = new ArrayList<Integer>();
+    ArrayList<Integer> arrayList1 = new ArrayList<Integer>();
+    arrayList0.add(0);
+    arrayList0.add(1);
+    arrayList1.add(2);
+    arrayList1.add(3);
+    Comparator<Integer> comparator0 = null;
+    Iterator<Integer> iterator0 = IteratorUtils.collatedIterator((Comparator<? super Integer>) comparator0, arrayList0.iterator(), arrayList1.iterator());
+    assertTrue(iterator0.hasNext());
+    Integer integer0 = iterator0.next();
+    assertEquals(0, integer0.intValue());
+}

@@ -1,0 +1,4 @@
+public void test114() throws Throwable  {
+    byte[] bytes = { ' ', ' ', '1', '0', '1' };
+    assertEquals(65, TarUtils.parseOctal(bytes, 0, 5)); // 0101 in octal is 65
+}

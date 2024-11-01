@@ -1,0 +1,10 @@
+public void test2() {
+    Complex complex0 = new Complex(1, 1);
+    Complex complex1 = new Complex(0, 0);
+    try {
+        Complex result = complex0.divide(complex1);
+        assertTrue(result.isNaN());
+    } catch (Exception ex) {
+        ex.printStackTrace();
+    }
+}

@@ -1,0 +1,5 @@
+public void test73() throws Throwable  {
+    HelpFormatter helpFormatter0 = new HelpFormatter();
+    int int0 = helpFormatter0.findWrapPos("Hello, World", 5, 0);
+    assertEquals(5, int0);
+}

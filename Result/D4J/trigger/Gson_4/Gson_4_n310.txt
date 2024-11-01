@@ -1,0 +1,8 @@
+public void test27() throws IOException, Exception  {
+    StringWriter stringWriter0 = new StringWriter();
+    JsonWriter jsonWriter0 = new JsonWriter(stringWriter0);
+    boolean boolean0 = true;
+    jsonWriter0.value(boolean0);
+    String string0 = stringWriter0.toString();
+    assertEquals("true", string0);
+  }

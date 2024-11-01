@@ -1,0 +1,5 @@
+public void testZipShort() {
+        X7875_NewUnix X7875_NewUnix0 = new X7875_NewUnix();
+        ZipShort zipShort0 = X7875_NewUnix0.getCentralDirectoryLength();
+        assertTrue(zipShort0.getValue() == 0);
+    }

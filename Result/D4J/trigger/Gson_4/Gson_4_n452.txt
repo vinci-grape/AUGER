@@ -1,0 +1,7 @@
+public void test94() throws Throwable  {
+    StringWriter stringWriter0 = new StringWriter();
+    JsonWriter jsonWriter0 = new JsonWriter(stringWriter0);
+    boolean boolean0 = false;
+    jsonWriter0.value(boolean0);
+    assertEquals("false", stringWriter0.toString());
+}

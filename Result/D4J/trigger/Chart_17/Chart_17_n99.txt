@@ -1,0 +1,7 @@
+public void test11() throws Exception{
+    TimeSeries timeSeries = new TimeSeries("Test");
+    TimeSeries clone = (TimeSeries)timeSeries.clone();
+    assertEquals(timeSeries.getItemCount(), clone.getItemCount());
+    assertTrue(timeSeries.equals(clone));
+    assertFalse(timeSeries == clone);
+}

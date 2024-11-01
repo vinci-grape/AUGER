@@ -1,0 +1,10 @@
+public void test88() throws Throwable  {
+    UnivariateRealFunction univariateRealFunction0 = new UnivariateRealFunction() {
+        public double value(double x) {
+            return Math.pow(x, 3) - 1;
+        }
+    };
+    BrentSolver brentSolver0 = new BrentSolver(univariateRealFunction0);
+    double double0 = brentSolver0.solve(0, 1);
+    assertEquals(1, double0, 1e-10);
+}

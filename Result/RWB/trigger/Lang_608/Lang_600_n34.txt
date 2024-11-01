@@ -1,0 +1,9 @@
+public void test81() throws Throwable  {
+    MethodUtils methodUtils0 = new MethodUtils();
+    Class<?> class0 = Class.forName("java.util.LinkedList");
+    String string0 = "add";
+    Class<?>[] classArray0 = new Class<?>[1];
+    classArray0[0] = Integer.TYPE;
+    Method method0 = methodUtils0.getMatchingMethod(class0, string0, classArray0);
+    assertNotNull(method0);
+}

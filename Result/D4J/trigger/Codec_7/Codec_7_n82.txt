@@ -1,0 +1,5 @@
+public void test123() throws Throwable  {
+    byte[] bytes = "Hello World".getBytes("UTF-8");
+    String encodedStr = Base64.encodeBase64String(bytes); // This line will call Buggy method
+    assertEquals("SGVsbG8gV29ybGQ=", encodedStr); // Comparison with actual value
+}

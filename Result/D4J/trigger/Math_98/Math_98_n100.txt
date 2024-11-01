@@ -1,0 +1,7 @@
+public void test38() throws Throwable  {
+    BigDecimal[][] d = {{new BigDecimal(1)}, {new BigDecimal(1)}};
+    BigMatrixImpl bigMatrixImpl0 = new BigMatrixImpl(d);
+    BigDecimal[] v = {new BigDecimal(1)};
+    BigDecimal[] result0 = bigMatrixImpl0.operate(v);
+    assertEquals(new BigDecimal(1), result0[0]);
+}

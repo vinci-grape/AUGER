@@ -1,0 +1,4 @@
+public void test30() throws Throwable  {
+    DocumentType documentType0 = new DocumentType("","","","");
+    assertNotNull(documentType0);
+}

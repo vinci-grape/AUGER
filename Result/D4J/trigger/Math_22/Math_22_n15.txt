@@ -1,0 +1,4 @@
+public void testIsSupportUpperBoundInclusive() {
+        UniformRealDistribution uniformRealDistribution = new UniformRealDistribution(0, 1);
+        assertTrue(uniformRealDistribution.isSupportUpperBoundInclusive());
+    }

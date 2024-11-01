@@ -1,0 +1,5 @@
+public void test41() throws Throwable  {
+    Attribute attribute0 = new Attribute("http", "http://www.w3.org");
+    attribute0.setValue("http://www.w3.org/1999/xhtml");
+    assertTrue("Attribute value has changed correctly", attribute0.getValue().equals("http://www.w3.org/1999/xhtml"));
+}

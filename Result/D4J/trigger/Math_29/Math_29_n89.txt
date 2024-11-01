@@ -1,0 +1,7 @@
+public void test51() throws Throwable  {
+    OpenMapRealVector openMapRealVector0 = new OpenMapRealVector(new double[] {0.0d});
+    OpenMapRealVector openMapRealVector1 = new OpenMapRealVector(new double[] {Double.NaN});
+    OpenMapRealVector openMapRealVector2 = openMapRealVector0.ebeMultiply(openMapRealVector1);
+    double double0 = openMapRealVector2.getEntry(0);
+    assertEquals(Double.NaN, double0, 0.01d);
+}

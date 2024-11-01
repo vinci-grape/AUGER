@@ -1,0 +1,11 @@
+public void test34() throws Throwable  {
+    double d0 = 0;
+    double d1 = 1E-4;
+    int i0 = 100;
+    try {
+        PoissonDistributionImpl poissonDistributionImpl0 = new PoissonDistributionImpl(d0, d1, i0);
+        fail();
+    } catch (MathIllegalArgumentException e) {
+        // pass
+    }
+}

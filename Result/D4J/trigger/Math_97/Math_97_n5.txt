@@ -1,0 +1,10 @@
+public void test60() throws Throwable  {
+    BrentSolver brentSolver0 = new BrentSolver(
+     new UnivariateRealFunction(){
+         public double value(double x) {
+             return Math.sin(x);
+         }
+     });
+
+    brentSolver0.solve(0, 1);
+ }

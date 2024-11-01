@@ -1,0 +1,11 @@
+public void test55() throws Throwable  {
+    Gson gson0 = new Gson();
+    JsonObject jsonObject0 = new JsonObject();
+    jsonObject0.addProperty("A", "B");
+    JsonTreeReader jsonTreeReader0 = new JsonTreeReader(jsonObject0);
+    boolean boolean0 = jsonTreeReader0.hasNext();
+    assertTrue(boolean0);
+    jsonTreeReader0.skipValue();
+    boolean boolean1 = jsonTreeReader0.hasNext();
+    assertTrue(boolean1);
+}

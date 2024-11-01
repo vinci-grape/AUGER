@@ -1,0 +1,7 @@
+public void test103() throws Throwable  {
+    StringWriter stringWriter0 = new StringWriter();
+    JsonWriter jsonWriter0 = new JsonWriter(stringWriter0);
+    double double0 = 1.7976931348623157E308d;
+    jsonWriter0.value(double0);
+    assertEquals("1.7976931348623157E308", stringWriter0.toString());
+  }

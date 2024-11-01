@@ -1,0 +1,9 @@
+public void testTryCatch() {
+    try {
+        Node tryBody = new Node(Token.BLOCK);
+        Node catchNode = new Node(Token.CATCH);
+        Node result = IR.tryCatch(tryBody, catchNode);
+    } catch (IllegalStateException e) {
+        assertTrue(e.getMessage().equals("Catch node is not a block"));
+    }
+  }

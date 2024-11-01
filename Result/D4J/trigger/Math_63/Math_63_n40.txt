@@ -1,0 +1,5 @@
+public void testEqualsWithNaN() {
+        double d1 = Double.NaN;
+        double d2 = Double.NaN;
+        assertFalse(MathUtils.equals(d1, d2));
+    }

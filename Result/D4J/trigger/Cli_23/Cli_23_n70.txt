@@ -1,0 +1,9 @@
+public void test88() {
+    StringBuffer sb = new StringBuffer();
+    int width = 10;
+    int nextLineTabStop = 2;
+    String text = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+    HelpFormatter helpFormatter = new HelpFormatter();
+    StringBuffer result = helpFormatter.renderWrappedText(sb, width, nextLineTabStop, text);
+    assertNotNull(result);
+}

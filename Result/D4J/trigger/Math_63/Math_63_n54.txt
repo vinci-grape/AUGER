@@ -1,0 +1,4 @@
+public void test28() {
+    boolean b = MathUtils.equals(Double.NaN, 0.0d/0.0d);
+    assertFalse(b);
+}

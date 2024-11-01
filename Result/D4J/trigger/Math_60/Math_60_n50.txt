@@ -1,0 +1,12 @@
+public void test32() throws Throwable  {
+    double mean = 0;
+    double sd = 1;
+    NormalDistributionImpl normalDistributionImpl0 = new NormalDistributionImpl(mean, sd);
+    double x = Double.POSITIVE_INFINITY;
+    try {
+        double double0 = normalDistributionImpl0.cumulativeProbability(x);
+        assertEquals(1.0, double0, 0);
+    } catch (MathException ex) {
+        fail("Unexpected exception thrown: " + ex);
+    }
+}

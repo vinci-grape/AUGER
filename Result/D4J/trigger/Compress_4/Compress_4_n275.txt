@@ -1,0 +1,6 @@
+public void test01() throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        CpioArchiveOutputStream o = new CpioArchiveOutputStream(baos);
+        o.close();
+        assertEquals(baos.size(), 0);  // This line should fail
+    }

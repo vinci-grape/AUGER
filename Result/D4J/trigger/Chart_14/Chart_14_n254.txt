@@ -1,0 +1,4 @@
+public void test8() {
+    XYPlot plot = new XYPlot(null, null, null, null);
+    assertEquals(false, plot.removeDomainMarker(0, null, Layer.FOREGROUND, false));
+}

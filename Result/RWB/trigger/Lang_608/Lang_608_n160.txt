@@ -1,0 +1,10 @@
+public void test31() throws Throwable  {
+        ThreadGroup threadGroup0 = new ThreadGroup("threadGroup0");
+        ThreadUtils threadUtils0 = new ThreadUtils();
+
+        Predicate<ThreadGroup> predicate0 = threadGroup -> {
+            return threadGroup.getName().equals("root");
+        };
+        Collection<ThreadGroup> collection0 = ThreadUtils.findThreadGroups(threadGroup0, true, predicate0);
+        assertTrue(collection0.isEmpty());
+    }

@@ -1,0 +1,8 @@
+public void test4() throws Throwable {
+        double d0 = 0.0D;
+        double d1 = 1.0D;
+        double inverseCumAccuracy = 1.0D;
+        UniformRealDistribution uniformRealDistribution0 = new UniformRealDistribution(d0, d1, inverseCumAccuracy);
+        boolean boolean0 = uniformRealDistribution0.isSupportUpperBoundInclusive();
+        assertTrue(boolean0);
+    }

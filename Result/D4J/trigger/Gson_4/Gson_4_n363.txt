@@ -1,0 +1,11 @@
+public void test61() throws Throwable {
+    try {
+      StringWriter stringWriter = new StringWriter();
+      JsonWriter jsonWriter = new JsonWriter(stringWriter);
+      jsonWriter.nullValue();
+      assertEquals("null", stringWriter.toString());
+    } catch (Exception exception) {
+      exception.printStackTrace();
+      throw exception;
+    }
+  }

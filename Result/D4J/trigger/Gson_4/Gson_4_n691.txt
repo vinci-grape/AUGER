@@ -1,0 +1,7 @@
+public void test102() throws Throwable  {
+    StringWriter stringWriter0 = new StringWriter();
+    JsonWriter jsonWriter0 = new JsonWriter(stringWriter0);
+    String string0 = null;
+    jsonWriter0.value(string0);
+    assertTrue(true);
+}

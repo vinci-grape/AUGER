@@ -1,0 +1,7 @@
+public void test28() throws Throwable  {
+    Base64 base640 = new Base64(76, new byte[]{(byte) 10}, false);
+    byte[] byteArray0 = new byte[1];
+    byteArray0[0] = (byte) 0;
+    String string0 = base640.encodeBase64String(byteArray0);
+    assertEquals("AA==", string0);
+}

@@ -1,0 +1,6 @@
+public void test85() throws Exception {
+    int int0 = 0;
+    int int1 = 0;
+    int int2 = MathUtils.lcm(int0, int1);
+    assert(int2 == 0);
+}

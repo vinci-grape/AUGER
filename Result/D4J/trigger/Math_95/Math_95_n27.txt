@@ -1,0 +1,8 @@
+public void test06() {
+    double expected = 1;
+    double d = 2;
+    double numericDegreeOfFreedom = 3;
+    FDistributionImpl fDistributionImpl = new FDistributionImpl(numericDegreeOfFreedom, d);
+    double actual = fDistributionImpl.getInitialDomain(0.5);
+    assertEquals(expected, actual, 0);
+}

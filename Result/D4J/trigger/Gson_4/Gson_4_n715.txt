@@ -1,0 +1,8 @@
+public void testValue() {
+    try {
+        JsonWriter writer = new JsonWriter(new StringWriter());
+        writer.value(123456789);
+    } catch (IOException e) {
+        Assert.fail("Unexpected IOException: " + e.getMessage());
+    }
+}

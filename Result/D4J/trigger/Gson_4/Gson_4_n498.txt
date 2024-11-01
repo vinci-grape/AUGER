@@ -1,0 +1,6 @@
+public void test85() throws Throwable {
+    StringWriter stringWriter0 = new StringWriter();
+    JsonWriter jsonWriter0 = new JsonWriter(stringWriter0);
+    jsonWriter0.value(0.0d);
+    stringWriter0.toString();
+}

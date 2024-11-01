@@ -1,0 +1,6 @@
+public void test74() throws Exception {
+    String string0 = "000010";
+    byte[] byteArray0 = string0.getBytes();
+    long long0 = TarUtils.parseOctal(byteArray0, 0, byteArray0.length);
+    assertEquals(8, long0);
+}

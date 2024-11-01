@@ -1,0 +1,8 @@
+public void test22() throws Throwable  {
+    CharArrayWriter cA = new CharArrayWriter();
+    JsonWriter jsonWriter0 = new JsonWriter(cA);
+    boolean boolean0 = true;
+    jsonWriter0.value(boolean0);
+    String string0 = cA.toString();
+    assertEquals("true", string0);
+}

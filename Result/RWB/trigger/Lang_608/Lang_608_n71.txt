@@ -1,0 +1,10 @@
+public void test28() throws Throwable {
+    ThreadGroup threadGroup = new ThreadGroup("Group 1");
+    new Thread(threadGroup, () -> { /* empty body */}).start();
+    ThreadUtils threadUtils = new ThreadUtils();
+    ThreadGroup threadGroup1 = new ThreadGroup(threadGroup, "Group 2");
+    Predicate<Thread> predicate = (thread) -> thread.getThreadGroup().equals(threadGroup1);
+    Collection<Thread> threads = ThreadUtils.findThreads(threadGroup, true, predicate);
+    assertNotNull(threads);
+    assertTrue(threads.isEmpty());
+}

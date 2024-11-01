@@ -1,0 +1,9 @@
+public void test84() throws Throwable {
+    HelpFormatter helpFormatter0 = new HelpFormatter();
+    StringBuffer stringBuffer0 = new StringBuffer();
+    int width = 8;
+    int nextLineTabStop = 0;
+    String text = "a a a a a a a a a a a a a a a a a a a a";
+    Object object0 = helpFormatter0.renderWrappedText(stringBuffer0, width, nextLineTabStop, text);
+    assertNotNull(object0);
+}

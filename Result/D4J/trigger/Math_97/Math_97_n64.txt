@@ -1,0 +1,14 @@
+public void test0() throws Throwable {
+    BrentSolver brentSolver = new BrentSolver(new UnivariateRealFunction() {
+        public double value(double x) {
+            return 0;
+        }
+    });
+    try {
+        brentSolver.solve(1, 2);
+    } catch (MaxIterationsExceededException e) {
+        fail("MaxIterationsExceededException was thrown.");
+    } catch (FunctionEvaluationException e) {
+        fail("FunctionEvaluationException was thrown.");
+    }
+}

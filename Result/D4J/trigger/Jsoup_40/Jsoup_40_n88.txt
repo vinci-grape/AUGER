@@ -1,0 +1,3 @@
+public void test27() throws Throwable {
+        DocumentType documentType0 = new DocumentType("", "", "", "");
+}

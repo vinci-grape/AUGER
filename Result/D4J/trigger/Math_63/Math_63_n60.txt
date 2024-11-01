@@ -1,0 +1,6 @@
+public void testEquals() {
+
+    double x = Double.NaN;
+    double y = Double.NaN;
+    assertEquals(false, MathUtils.equals(x,y));
+}

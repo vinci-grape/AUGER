@@ -1,0 +1,10 @@
+public void test78() throws Throwable  {
+    GeneralPath generalPath0 = new GeneralPath();
+    generalPath0.moveTo(1.0f, 1.0f);
+    generalPath0.lineTo(2.0f, 2.0f);
+    GeneralPath generalPath1 = new GeneralPath();
+    generalPath1.moveTo(1.0f, 1.0f);
+    generalPath1.lineTo(2.0f, 3.0f); // Different point
+    boolean boolean0 = ShapeUtilities.equal(generalPath0, generalPath1);
+    assertFalse(boolean0);
+}

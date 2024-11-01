@@ -1,0 +1,7 @@
+public void testNullValue() throws IOException {
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(stringWriter);
+    jsonWriter.jsonValue(null);
+    String result = stringWriter.toString();
+    assertEquals("null", result);
+}

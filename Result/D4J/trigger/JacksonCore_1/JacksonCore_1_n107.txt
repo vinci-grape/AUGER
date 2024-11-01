@@ -1,0 +1,9 @@
+public void test31() throws Throwable {
+    TextBuffer textBuffer0 = new TextBuffer(null);
+    try {
+        BigDecimal bigDecimal0 = textBuffer0.contentsAsDecimal();
+        fail();
+    } catch (NumberFormatException e) {
+        assertTrue(true);
+    }
+}

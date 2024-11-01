@@ -1,0 +1,9 @@
+public void test22() throws Throwable {
+    byte[] bytes = new byte[] { ' ', 0x30 };
+    try {
+        TarUtils.parseOctal(bytes, 0, 2);
+        assertFalse(true);
+    } catch (IllegalArgumentException e) {
+        assertTrue(true);
+    }
+}

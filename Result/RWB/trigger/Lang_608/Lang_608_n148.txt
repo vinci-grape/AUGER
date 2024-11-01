@@ -1,0 +1,17 @@
+public void test46() {
+        ThreadGroup rootGroup = new ThreadGroup("root");
+        ThreadGroup firstChildGroup = new ThreadGroup(rootGroup, "first child");
+        ThreadGroup secondChildGroup = new ThreadGroup(rootGroup, "second child");
+        ThreadGroup thirdChildGroup = new ThreadGroup(secondChildGroup, "third child");
+
+
+
+        Predicate<ThreadGroup> predicate = g -> g.getParent() == rootGroup;
+
+        Collection<ThreadGroup> result = ThreadUtils.findThreadGroups(rootGroup, true, predicate);
+
+
+        assertTrue(result.contains(firstChildGroup));
+        assertTrue(result.contains(secondChildGroup));
+        assertFalse(result.contains(thirdChildGroup));
+    }

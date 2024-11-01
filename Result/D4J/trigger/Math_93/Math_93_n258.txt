@@ -1,0 +1,9 @@
+public void test134() throws Throwable  {
+    int n = 21; // The result is too large and exceed Long.MAX_VALUE
+    try {
+        MathUtils.factorial(n);
+        fail("Expected an ArithmeticException for factorial of " + n);
+    } catch (ArithmeticException e) {
+        assertEquals("factorial value is too large to fit in a long", e.getMessage());
+    }
+}

@@ -1,0 +1,8 @@
+public void test06() throws Throwable  {
+    StringWriter stringWriter0 = new StringWriter();
+    JsonWriter jsonWriter0 = new JsonWriter(stringWriter0);
+    Number number0 = 1;
+    JsonWriter jsonWriter1 = jsonWriter0.value(number0);
+    assertTrue(jsonWriter1 == jsonWriter0);
+    assertEquals("1", stringWriter0.toString());
+}

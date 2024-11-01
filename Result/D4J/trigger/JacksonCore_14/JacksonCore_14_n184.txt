@@ -1,0 +1,10 @@
+public void test54() throws Throwable  {
+    IOContext iOContext0 = new IOContext((BufferRecycler) null, (Object) null, false);
+    char[] charArray0 = new char[2];
+    charArray0[0] = 3;
+    charArray0[1] = 2;
+    char[] charArray1 = new char[2];
+    charArray1[0] = 1;
+    charArray1[1] = 0;
+    iOContext0._verifyRelease(charArray0, charArray1);
+}

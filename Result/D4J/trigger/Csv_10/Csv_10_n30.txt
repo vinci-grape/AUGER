@@ -1,0 +1,7 @@
+public void testPrintHeaders() throws Exception {
+    CSVFormat csvFormat = CSVFormat.DEFAULT.withHeader("Name", "Age", "Email");
+    StringBuilder stringBuilder = new StringBuilder();
+    CSVPrinter csvPrinter = new CSVPrinter(stringBuilder, csvFormat);
+    csvPrinter.printRecord("John Smith", 30, "jsmith@email.com");
+    Assert.assertEquals("Name,Age,Email\r\nJohn Smith,30,jsmith@email.com\r\n", stringBuilder.toString());
+}

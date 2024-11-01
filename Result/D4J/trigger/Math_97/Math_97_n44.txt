@@ -1,0 +1,12 @@
+public void test() throws MaxIterationsExceededException, FunctionEvaluationException  {
+    UnivariateRealFunction f = new UnivariateRealFunction() {
+        public double value(double x) {
+            return Math.sin(x);
+        }
+    };
+    
+    BrentSolver brentSolver = new BrentSolver(f);
+    double min = 0.0;
+    double max = 1.0;
+    brentSolver.solve(min, max);
+}

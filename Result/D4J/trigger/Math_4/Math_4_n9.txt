@@ -1,0 +1,7 @@
+public void test88() throws Throwable  {
+    final SubLine subLine0 = new SubLine(new Vector2D(1,1), new Vector2D(3,3));
+    final Vector2D vector2D0 = new Vector2D(3,3);
+    final Vector2D vector2D1 = new Vector2D(5,5);
+    Vector2D vector2D2 = subLine0.intersection(new SubLine(vector2D0, vector2D1), false);
+    assertNull(vector2D2);
+}

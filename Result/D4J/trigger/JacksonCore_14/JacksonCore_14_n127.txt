@@ -1,0 +1,12 @@
+public void test61() throws Throwable {
+    BufferRecycler bufferRecycler0 = new BufferRecycler();
+    boolean boolean0 = false;
+    IOContext iOContext0 = new IOContext(bufferRecycler0, null, boolean0);
+    char[] charArray0 = new char[2];
+    charArray0[0] = 'd';
+    charArray0[1] = 'i';
+    char[] charArray1 = new char[2];
+    charArray1[0] = 'r';
+    charArray1[1] = 'c';
+    iOContext0._verifyRelease(charArray0, charArray1); // Test that char[2] passes as toRelease, but char[1] fails
+}

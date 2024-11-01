@@ -1,0 +1,5 @@
+public void test101() throws Throwable  {
+    Complex complex0 = new Complex(1.0E308, 1.0E308);
+    Complex complex1 = complex0.divide(0d);
+    assertTrue(complex1.isNaN());
+}

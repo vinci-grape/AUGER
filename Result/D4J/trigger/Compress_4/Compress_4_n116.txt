@@ -1,0 +1,7 @@
+public void test35() throws Exception {
+    ByteArrayOutputStream byteArrayOutputStream0 = new ByteArrayOutputStream();
+    TarArchiveOutputStream tarArchiveOutputStream0 = new TarArchiveOutputStream(byteArrayOutputStream0);
+    tarArchiveOutputStream0.close();
+    byteArrayOutputStream0.close();
+    assertEquals(0, byteArrayOutputStream0.toByteArray().length);
+}

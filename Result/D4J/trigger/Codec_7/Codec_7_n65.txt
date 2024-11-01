@@ -1,0 +1,5 @@
+public void test97() throws Exception {
+        byte[] byteArray = "test".getBytes("UTF-8");
+        String encoded = Base64.encodeBase64String(byteArray);
+        assertEquals("dGVzdA==", encoded);
+    }

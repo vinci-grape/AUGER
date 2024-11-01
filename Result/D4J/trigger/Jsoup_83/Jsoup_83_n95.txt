@@ -1,0 +1,4 @@
+public void test0() {
+        CharacterReader characterReader = new CharacterReader("<");
+        assertTrue("", characterReader.consumeTagName().isEmpty()); // Trigger Bug
+    }

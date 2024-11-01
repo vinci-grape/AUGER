@@ -1,0 +1,10 @@
+public void test44() throws Throwable {
+    try {
+      StringWriter writer = new StringWriter();
+      JsonWriter jsonWriter = new JsonWriter(writer);
+      jsonWriter.nullValue();
+      assertEquals("null", writer.toString());
+    } catch (Exception exception) {
+      throw new Throwable("Failed :(");
+    }
+}

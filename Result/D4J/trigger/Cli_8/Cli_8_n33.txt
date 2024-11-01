@@ -1,0 +1,9 @@
+public void test108() throws Throwable {
+        HelpFormatter helpFormatter0 = new HelpFormatter();
+        StringBuffer stringBuffer0 = new StringBuffer();
+        int int0 = 12;
+        int int1 = 8;
+        String string0 = "Test string with spaces";
+        helpFormatter0.renderWrappedText(stringBuffer0, int0, int1, string0);
+        assertEquals("Test stri\ng\t with\nspaces", stringBuffer0.toString());
+    }

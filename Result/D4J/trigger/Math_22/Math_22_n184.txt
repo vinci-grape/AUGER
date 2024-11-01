@@ -1,0 +1,5 @@
+public void test43() throws Throwable  {
+    FDistribution fDistribution0 = new FDistribution(5.0, 5.0);
+    boolean boolean0 = fDistribution0.isSupportLowerBoundInclusive();
+    assertEquals(false, boolean0);
+}

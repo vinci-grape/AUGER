@@ -1,0 +1,9 @@
+public void test03() throws Throwable {
+    OpenMapRealVector openMapRealVector0 = new OpenMapRealVector(1);
+    openMapRealVector0.setEntry(0, 0d);
+    OpenMapRealVector openMapRealVector1 = new OpenMapRealVector(1);
+    openMapRealVector1.setEntry(0, Double.NaN);
+    OpenMapRealVector openMapRealVector2 = openMapRealVector0.ebeMultiply(openMapRealVector1);
+    double double0 = openMapRealVector2.getEntry(0);
+    assertTrue(Double.isNaN(double0));
+}

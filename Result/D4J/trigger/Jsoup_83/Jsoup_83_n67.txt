@@ -1,0 +1,6 @@
+public void test1() {
+    String input = "<test>";
+    CharacterReader cr = new CharacterReader(input);
+    String result = cr.consumeTagName();
+    assertEquals("", result);
+}

@@ -1,0 +1,10 @@
+public void test1() {
+    long val1 = Long.MAX_VALUE;
+    int val2 = 2;
+    try {
+        FieldUtils.safeMultiply(val1, val2);
+        fail("Expected ArithmeticException");
+    } catch (ArithmeticException ex) {
+        assertEquals("Multiplication overflows a long: " + val1 + " * " + val2, ex.getMessage());
+    }
+}

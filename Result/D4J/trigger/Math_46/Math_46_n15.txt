@@ -1,0 +1,6 @@
+public void test72() throws Exception {
+    Complex complex0 = new Complex(12d, 13d);
+    Complex complex1 = complex0.divide(0d);
+    assertEquals(Double.NaN, complex1.getReal(), 0d); // NaN checking
+    assertEquals(Double.NaN, complex1.getImaginary(), 0d); // NaN checking
+}

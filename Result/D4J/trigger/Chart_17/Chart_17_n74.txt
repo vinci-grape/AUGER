@@ -1,0 +1,13 @@
+public void test79() throws Throwable  {
+    Comparable comparable0 = new Comparable() {
+    		public int compareTo(Object obj) {
+			return 0;
+		}
+		public boolean equals(Object obj) {
+			return true;
+		}
+	};
+    TimeSeries timeSeries0 = new TimeSeries(comparable0);
+    Object object0 = timeSeries0.clone();
+    assertEquals(0, comparable0.compareTo(object0));
+}

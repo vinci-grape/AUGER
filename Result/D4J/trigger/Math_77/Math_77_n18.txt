@@ -1,0 +1,5 @@
+public void test1() {
+        double[] data = new double[]{3, 0.5, 2, 1.5, 2.5, -0.5};
+        ArrayRealVector arrayRealVector = new ArrayRealVector(data);
+        assertEquals(3.0, arrayRealVector.getLInfNorm(), 1e-12);
+    }

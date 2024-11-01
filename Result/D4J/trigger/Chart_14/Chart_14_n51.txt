@@ -1,0 +1,12 @@
+public void test30() throws Throwable  {
+    XYDataset xYDataset0 = new DefaultXYDataset();
+    ValueAxis valueAxis0 = new NumberAxis("X");
+    ValueAxis valueAxis1 = new NumberAxis("Y");
+    XYItemRenderer xYItemRenderer0 = new XYLineAndShapeRenderer();
+    XYPlot xYPlot0 = new XYPlot(xYDataset0, valueAxis0, valueAxis1, xYItemRenderer0);
+    int index0 = 0;
+    Marker marker0 = new ValueMarker(0.0);
+    Layer layer0 = Layer.FOREGROUND;
+    boolean boolean0 = xYPlot0.removeRangeMarker(index0, marker0, layer0, true);
+    assertFalse(boolean0);
+}

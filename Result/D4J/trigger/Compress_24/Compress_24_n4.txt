@@ -1,0 +1,5 @@
+public void test24() throws Throwable  {
+    byte[] buffer = {' ', '0', '7', '5', '5'};
+    long result = TarUtils.parseOctal(buffer, 0, 5);
+    assertEquals(493, result);
+}

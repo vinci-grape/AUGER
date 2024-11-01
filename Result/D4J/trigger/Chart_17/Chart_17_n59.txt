@@ -1,0 +1,8 @@
+public void test59() {
+    TimeSeries t = new TimeSeries("test");
+    try {
+        TimeSeries c = (TimeSeries) t.clone();
+    } catch (CloneNotSupportedException e) {
+        fail();
+    }
+}

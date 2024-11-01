@@ -1,0 +1,8 @@
+public void test36() throws Throwable {
+        ThreadGroup threadGroup0 = new ThreadGroup("");
+        AtomicInteger atomicInteger0 = new AtomicInteger(0);
+        final int i = atomicInteger0.get();
+        Predicate<Thread> predicate0 = (Thread t) -> t.getId() == i;
+        Collection<Thread> collection0 = ThreadUtils.findThreads(threadGroup0, true, predicate0);
+        assertEquals(0, collection0.size());
+    }

@@ -1,0 +1,6 @@
+public void test26() throws Throwable {
+        String string0 = "2\r\n =34Y\n =\r\r\n Z";
+        byte[] byteArray0 = string0.getBytes();
+        QuotedPrintableCodec.decodeQuotedPrintable(byteArray0);
+        assertEquals("2\r\n =34Y\n =\r\r\n Z", string0);
+    }

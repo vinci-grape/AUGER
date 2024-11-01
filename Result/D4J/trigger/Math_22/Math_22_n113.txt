@@ -1,0 +1,7 @@
+public void test32() {
+    double d = 32.0;
+    double d1 = 64.0;
+    UniformRealDistribution uniformRealDistribution0 = new UniformRealDistribution(d, d1);
+    boolean b = uniformRealDistribution0.isSupportUpperBoundInclusive();
+    assertTrue(b);
+}

@@ -1,0 +1,10 @@
+public void test13() throws Throwable  {
+    double p = 0;
+    double epsilon = 1;
+    int maxIterations = 2;
+    try {
+        PoissonDistributionImpl poissonDistributionImpl = new PoissonDistributionImpl(p, epsilon, maxIterations);
+    } catch (MathIllegalArgumentException ex) {
+        assertTrue(true);
+    }
+}

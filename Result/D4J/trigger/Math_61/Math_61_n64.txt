@@ -1,0 +1,7 @@
+public void testPoissonDistributionImpl() {
+        try {
+            PoissonDistributionImpl poissonDistribution = new PoissonDistributionImpl(5, 0.01, 100);
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.getMessage());
+        }
+    }

@@ -1,0 +1,11 @@
+public void testMultiply() {
+    assertEquals(Long.MIN_VALUE, FieldUtils.safeMultiply(Long.MIN_VALUE, 1));
+    assertEquals(0L, FieldUtils.safeMultiply(2L, 0));
+    assertEquals(Long.MAX_VALUE, FieldUtils.safeMultiply(Long.MAX_VALUE, 1));
+    try {
+        FieldUtils.safeMultiply(Long.MAX_VALUE, Integer.MAX_VALUE);
+        fail("Expected ArithmeticException");
+    } catch (ArithmeticException e) {
+        assertEquals("Multiplication overflows a long: 9223372036854775807 * 2147483647", e.getMessage());
+    }
+}

@@ -1,0 +1,11 @@
+public void testCholeskyDecompositionImpl() {
+    final RealMatrix matrix = MatrixUtils.createRealMatrix(new double[][] {{1, 2, 3}, {2, 4, 7}, {3, 7, 11}});
+    try {
+        CholeskyDecompositionImpl choleskyDecompositionImpl = new CholeskyDecompositionImpl(matrix);
+        assertTrue(false); // Test should fail here, as the matrix is not positive definite
+    } catch (NotPositiveDefiniteMatrixException e) {
+        assertTrue(true); // Expected exception
+    } catch (Exception e) {
+        assertTrue(false); // Unexpected exception
+    }
+}

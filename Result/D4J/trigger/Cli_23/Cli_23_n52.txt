@@ -1,0 +1,7 @@
+public void test46() {
+    HelpFormatter helpFormatter = new HelpFormatter();
+    StringBuffer stringBuffer = new StringBuffer();
+    String string0 = "This is a long string that should be wrapped properly for this test";
+    helpFormatter.renderWrappedText(stringBuffer, 10, 0, string0);
+    assertTrue(stringBuffer.length() > 0);
+}

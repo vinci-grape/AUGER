@@ -1,0 +1,11 @@
+public void test60() {
+    GrayPaintScale grayPaintScale0 = new GrayPaintScale(0.0, 1.0);
+    Paint paint0 = grayPaintScale0.getPaint(2.0);
+    Color color0 = (Color) paint0;
+    int red0 = color0.getRed();
+    int green0 = color0.getGreen();
+    int blue0 = color0.getBlue();
+    assertEquals(255, red0);
+    assertEquals(255, green0);
+    assertEquals(255, blue0);
+}

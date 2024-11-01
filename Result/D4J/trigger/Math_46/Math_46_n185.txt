@@ -1,0 +1,5 @@
+public void test68() {
+    Complex complex0 = new Complex(1d, 1d);
+    Complex complex1 = complex0.divide(0);
+    assertEquals(Double.NaN, complex1.getReal(), 0);
+}

@@ -1,0 +1,9 @@
+public void test37() throws Throwable  {
+    double[] doubles0 = new double[]{ 1, 2, 0 };
+    OpenMapRealVector openMapRealVector0 = new OpenMapRealVector(doubles0);
+    double[] doubles1 = new double[]{ 1, 2, 0 };
+    OpenMapRealVector openMapRealVector1 = new OpenMapRealVector(doubles1);
+    OpenMapRealVector openMapRealVector2 = openMapRealVector0.ebeDivide(openMapRealVector1);
+    double double0 = openMapRealVector2.getEntry(2);
+    assertEquals(Double.NaN, double0, 0.0);
+}

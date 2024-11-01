@@ -1,0 +1,9 @@
+public void test36() throws Throwable  {
+    HelpFormatter helpFormatter0 = new HelpFormatter();
+    StringBuffer stringBuffer0 = new StringBuffer();
+    int int0 = 10;
+    int int1 = 20;
+    String string0 = "This is a very very very very very very long string. It should definitely be longer than 20 characters.";
+    helpFormatter0.renderWrappedText(stringBuffer0, int0, int1, string0);
+    assertTrue(stringBuffer0.toString().length() > 0);
+}

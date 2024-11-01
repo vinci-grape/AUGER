@@ -1,0 +1,6 @@
+public void test93() throws Throwable  {
+    ByteArrayOutputStream byteArrayOutputStream0 = new ByteArrayOutputStream();
+    TarArchiveOutputStream tarArchiveOutputStream0 = new TarArchiveOutputStream(byteArrayOutputStream0);
+    tarArchiveOutputStream0.close();
+    assertEquals(byteArrayOutputStream0.toString(), "");
+}

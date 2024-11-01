@@ -1,0 +1,8 @@
+public void test94() throws IOException {
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(stringWriter);
+    String value = "test";
+    jsonWriter.jsonValue(value);
+    String result = stringWriter.toString();
+    assertTrue(result.equals(value));
+  }

@@ -1,0 +1,5 @@
+public void test100() {
+    Complex complex100 = new Complex(4, 2);
+    Complex result = complex100.divide(0);
+    assertTrue(result.isNaN()); // is NaN 
+}

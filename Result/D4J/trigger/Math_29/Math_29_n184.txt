@@ -1,0 +1,11 @@
+public void test86() throws Throwable  {
+    OpenMapRealVector openMapRealVector0 = new OpenMapRealVector(2);
+    openMapRealVector0.setEntry(0, 0.0);
+    openMapRealVector0.setEntry(1, 0.0);
+    OpenMapRealVector openMapRealVector1 = new OpenMapRealVector(2);
+    openMapRealVector1.setEntry(0, 0.0);
+    openMapRealVector1.setEntry(1, 0.0);
+    OpenMapRealVector openMapRealVector2 = openMapRealVector0.ebeDivide(openMapRealVector1);
+    double double0 = openMapRealVector2.getEntry(1);
+    assertEquals(Double.NaN, double0, 0.001);
+}

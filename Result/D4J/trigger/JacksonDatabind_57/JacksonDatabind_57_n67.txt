@@ -1,0 +1,6 @@
+public void test12() throws Throwable  {
+    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectReader objectReader = objectMapper.readerFor(List.class);
+    List<String> list = null;
+    objectReader.readValues(null, 0, 0); //Triggers the Bug
+}

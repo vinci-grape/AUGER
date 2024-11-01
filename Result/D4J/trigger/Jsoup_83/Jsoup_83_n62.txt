@@ -1,0 +1,6 @@
+public void test30() {
+    StringReader stringReader0 = new StringReader("<script>");
+    CharacterReader characterReader0 = new CharacterReader(stringReader0);
+    String string0 = characterReader0.consumeTagName();
+    assertEquals("", string0);
+}

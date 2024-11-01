@@ -1,0 +1,4 @@
+public void test1() {
+        Attribute attribute = new Attribute("name", "value");
+        attribute.setValue("new value");
+    }

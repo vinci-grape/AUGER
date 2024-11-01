@@ -1,0 +1,8 @@
+public void test33() throws Throwable  {
+    double[] doubleArray0 = new double[1];
+    doubleArray0[0] = Double.NaN;
+    double[] doubleArray1 = new double[1];
+    doubleArray1[0] = Double.NaN;
+    double double0 = MathArrays.linearCombination(doubleArray0, doubleArray1);
+    assertTrue(Double.isNaN(double0));
+}

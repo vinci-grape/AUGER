@@ -1,0 +1,16 @@
+public void test51() throws Throwable  {
+    Base64 base640 = new Base64();
+    byte[] byteArray0 = new byte[10];
+    byteArray0[0] = 0;
+    byteArray0[1] = 1;
+    byteArray0[2] = 2;
+    byteArray0[3] = 3;
+    byteArray0[4] = 4;
+    byteArray0[5] = 5;
+    byteArray0[6] = 6;
+    byteArray0[7] = 7;
+    byteArray0[8] = 8;
+    byteArray0[9] = 9;
+    byte[] byteArray1 = base640.encode(byteArray0);
+    assertEquals(16, byteArray1.length);
+}

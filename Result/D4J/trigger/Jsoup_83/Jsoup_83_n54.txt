@@ -1,0 +1,6 @@
+public void test88() throws Throwable {
+    // Test Buggy method
+    CharacterReader characterReader = new CharacterReader(new StringReader("<a>"));
+    String string = characterReader.consumeTagName();
+    assertEquals("", string);
+}

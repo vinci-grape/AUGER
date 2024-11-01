@@ -1,0 +1,6 @@
+public void testParseOctal() throws Exception {
+    String testString = "0123";
+    byte[] testBytes = testString.getBytes();
+    long result = TarUtils.parseOctal(testBytes, 0, testBytes.length);
+    assertEquals(0123, result);
+}

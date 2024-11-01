@@ -1,0 +1,8 @@
+public void test39() throws Throwable  {
+    double[] doubleArray0 = new double[3];
+    OpenMapRealVector openMapRealVector0 = new OpenMapRealVector(3);
+    openMapRealVector0.setEntry(0, 1.0);
+    openMapRealVector0.setEntry(1, 1.0);
+    openMapRealVector0.setEntry(2, 1.0);
+    OpenMapRealVector openMapRealVector1 = openMapRealVector0.ebeMultiply(doubleArray0); // This will cause an error because doubleArray0 length is 0
+}

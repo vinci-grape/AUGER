@@ -1,0 +1,4 @@
+public void testEquals() {
+    boolean result = MathUtils.equals(Double.NaN, Double.NaN);
+    assertFalse(result); // The test should fail because NaN values are not equal.
+}

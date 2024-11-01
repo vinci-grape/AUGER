@@ -1,0 +1,7 @@
+public void test86() throws Throwable  {
+    double d0 = 0.13511531471498568;
+    double d1 = 0.0063705587055115494;
+    NormalDistributionImpl normalDistributionImpl0 = new NormalDistributionImpl(d0, d1);
+    double d2 = normalDistributionImpl0.cumulativeProbability(1.2971076955565419);
+    assertEquals(1, d2, 0.00001);
+}
