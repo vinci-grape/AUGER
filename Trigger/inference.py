@@ -162,7 +162,8 @@ def main():
             output = tokenizer.decode(outputs[i], skip_special_tokens=True)
             test_case.append(output)
         torch.cuda.empty_cache()
-
+        
+    df = pd.read_csv(args.dataset)
     df = pd.concat([df] * args.sample, ignore_index=True, axis=0)
     df["test_case"] = test_case
     df = df[["bug_id", "test_case"]]
